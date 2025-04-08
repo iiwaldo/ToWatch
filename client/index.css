@@ -1,0 +1,27 @@
+/* Global styles for the dark theme */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, #000000, #1a1a1a, #232323); /* Darker gradient with black */
+    background-size: 400% 400%; /* Large size for the gradient to move */
+    animation: gradientAnimation 10s ease infinite; /* Animated gradient */
+    font-family: 'Arial', sans-serif;
+    color: #ffffff; /* White text for contrast */
+}
+
+/* Keyframes for moving gradient animation */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
