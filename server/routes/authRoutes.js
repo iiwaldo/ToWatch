@@ -1,8 +1,12 @@
 import express from "express";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs"; // For password hashing
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
+const createToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "3d" });
+};
 
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
@@ -37,7 +41,14 @@ router.post("/login", async (req, res) => {
     if (!isCorrect) {
       return res.status(400).json({ message: "Incorrect Password" });
     }
-    res.status(200).json({ message: "User signed in" });
+    const token = createToken(userExists.email);
+    res
+      .status(200)
+      .json({
+        message: "User signed in",
+        token,
+        user: { email: userExists.email },
+      });
   } catch (error) {
     res.status(500).json({ message: "Error creating user", error });
   }

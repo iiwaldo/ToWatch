@@ -3,6 +3,7 @@ import Login from "./pages/Login"; // Path to your login component
 import SignUp from "./pages/SignUp"; // Path to your signup component
 import Home from "./pages/Home"; // Path to your signup component
 import "../index.css";
+
 function App() {
   return (
     <Router>

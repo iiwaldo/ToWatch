@@ -4,13 +4,18 @@ import "../styles/auth.css";
 import InputField from "../components/InputField"; // Import InputField
 import Button from "../components/Button";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const {login,isAuthenticated} = useAuth();
+  
 
   const handleLogin = async (e) => {
+    console.log(isAuthenticated);
     e.preventDefault();
     console.log("Logging in with", { email, password });
     // Implement login logic here (e.g., call API to authenticate)
@@ -24,6 +29,7 @@ export default function Login() {
       );
       if (response.status === 200) {
         alert("success");
+        login(response.data.token,response.data.user)
         navigate("/home");
       }
     } catch (error) {
