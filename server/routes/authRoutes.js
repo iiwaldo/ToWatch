@@ -2,17 +2,19 @@ import express from "express";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs"; // For password hashing
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv"; // Import dotenv
+dotenv.config();
 
 const router = express.Router();
 const createToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "3d" });
 };
-router.post("/verify-token",async (req,res) =>{
-  const {token} =req.body;
+router.post("/verify-token", async (req, res) => {
+  const { token } = req.body;
   try {
-    const decoded = jwt.verify(token,process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     res.status(200).send({ message: "Token is valid", user: decoded });
-    console.log("token is valid",decoded);
+    console.log("token is valid", decoded);
   } catch (error) {
     res.status(200).send({ message: "Token is valid", user: decoded });
   }
@@ -51,13 +53,11 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Incorrect Password" });
     }
     const token = createToken(userExists.email);
-    res
-      .status(200)
-      .json({
-        message: "User signed in",
-        token,
-        user: { email: userExists.email },
-      });
+    res.status(200).json({
+      message: "User signed in",
+      token,
+      user: { email: userExists.email },
+    });
   } catch (error) {
     res.status(500).json({ message: "Error creating user", error });
   }
