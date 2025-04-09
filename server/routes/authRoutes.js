@@ -7,7 +7,16 @@ const router = express.Router();
 const createToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "3d" });
 };
-
+router.post("/verify-token",async (req,res) =>{
+  const {token} =req.body;
+  try {
+    const decoded = jwt.verify(token,process.env.JWT_SECRET);
+    res.status(200).send({ message: "Token is valid", user: decoded });
+    console.log("token is valid",decoded);
+  } catch (error) {
+    res.status(200).send({ message: "Token is valid", user: decoded });
+  }
+});
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
 
