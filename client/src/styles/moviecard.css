@@ -1,0 +1,96 @@
+/* Home page container */
+
+.home-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 0px; /* Remove large padding */
+  margin-top: 1450px; /* Add margin-top equal to the height of your navbar */
+}
+
+/* Movie Cards container */
+.movie-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 20px;
+}
+
+/* Movie card */
+.movie-card {
+  width: 200px;
+  margin: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+}
+
+/* Movie card hover effect */
+.movie-card:hover {
+  transform: scale(1.05); /* Zoom effect */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+  border: 2px solid #00bcd4; /* Blue border */
+  animation: glow 1.5s infinite alternate; /* Glow animation */
+}
+
+/* Glow animation for blue border */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(0, 188, 212, 1), 0 0 30px rgba(0, 188, 212, 0.6);
+  }
+}
+
+/* Movie poster */
+.movie-poster {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+/* Movie title */
+.movie-title {
+  text-align: center;
+  padding: 10px;
+  font-size: 1.2rem;
+  color: #fff;
+  background-color: #333;
+}
+
+/* Pagination styling */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination-btn {
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0 10px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-btn:hover {
+  background-color: #00e5ff;
+}
+
+.pagination-btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+/* Pagination button active state */
+.pagination-btn.active {
+  background-color: #00e5ff; /* Blue background for the active page */
+  color: white;
+}
+

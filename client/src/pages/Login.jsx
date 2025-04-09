@@ -59,7 +59,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Button label="Login" />
+          <Button label="Login" type="submit" />
         </form>
         <p className="auth-link">
           Don't have an account? <Link to="/signup">Sign up</Link>

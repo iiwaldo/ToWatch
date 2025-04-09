@@ -31,7 +31,7 @@ export default function Navbar() {
         )}
         {isAuthenticated && (
           <>
-            <Button label={"Log out"} onClick={handleLogOut}/>
+            <Button label="Log out" onClick={handleLogOut} />
           </>
         )}
       </div>

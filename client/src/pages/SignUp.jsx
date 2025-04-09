@@ -26,9 +26,8 @@ const SignUp = () => {
           password,
         }
       );
-      console.log("signed up")
+      console.log("signed up");
       navigate("/");
-
     } catch (error) {
       console.log("error creating user");
       console.error("Signup error:", error.response?.data || error.message);
@@ -64,7 +63,7 @@ const SignUp = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <Button label="Sign Up" />
+          <Button label="Sign Up" type="submit" />
         </form>
         <p className="auth-link">
           Already have an account? <Link to="/">Login</Link>
