@@ -1,0 +1,91 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #0d0d0d, #1a1a1a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 48px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+  }
+  
+  .navbar-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo a {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00e5ff;
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+  }
+  
+  .logo a:hover {
+    color: #ffffff;
+  }
+  
+  .search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 0 24px;
+  }
+  
+  .search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 16px;
+    background-color: transparent;
+    color: white;
+    font-size: 1rem;
+    border: 2px solid transparent;
+    border-radius: 0;
+    background-clip: padding-box;
+  
+    /* Gradient Border Animation */
+    border-image: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
+    border-image-slice: 1;
+    animation: border-glow 3s linear infinite;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    background-color: #121212;
+    border-color: transparent;
+    box-shadow: 0 0 8px #00e5ff, 0 0 16px #00e5ff;
+  }
+  
+  @keyframes border-glow {
+    0% {
+      border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
+    }
+    50% {
+      border-image-source: linear-gradient(270deg, #00e5ff, #00bcd4, #00e5ff);
+    }
+    100% {
+      border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
+    }
+  }
+  
+  .links a {
+    margin-left: 24px;
+    color: #f0f0f0;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+  }
+  
+  .links a:hover {
+    color: #00e5ff;
+  }
+  
