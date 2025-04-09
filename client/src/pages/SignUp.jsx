@@ -1,20 +1,39 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 import InputField from "../components/InputField"; // Import the reusable InputField
 import Button from "../components/Button";
+import axios from "axios";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle the sign-up logic here (e.g., send the data to the backend)
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       console.log("error");
     }
     console.log("Signing up with", email, password);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/signup",
+        {
+          email,
+          password,
+        }
+      );
+      console.log("signed up")
+      navigate("/");
+
+    } catch (error) {
+      console.log("error creating user");
+      console.error("Signup error:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Signup failed!");
+    }
   };
 
   return (
