@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import MovieCard from "../components/MovieCard";
 import MovieDetailsModal from "../components/MovieDetailsModal";
+import Pagination from "../components/Pagination";
 
 export default function Home() {
   const { user } = useAuth();
@@ -16,7 +17,7 @@ export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Handle movie click to show modal
+  // Handle movie click to show modal and current movie
   const handleMovieClick = (movie) => {
     setSelectedMovie(movie); // Set selected movie
     setShowModal(true); // Show modal
@@ -45,7 +46,7 @@ export default function Home() {
       setMovies([]); // Reset to empty array if error occurs
     }
   };
-
+  //whenever the page changes we fetch data
   useEffect(() => {
     fetchData();
   }, [currentPage]);
@@ -107,35 +108,11 @@ export default function Home() {
           )}
         </div>
 
-        <div className="pagination">
-          <button
-            className="pagination-btn"
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-
-          {generatePageNumbers().map((pageNumber) => (
-            <button
-              key={pageNumber}
-              className={`pagination-btn ${
-                pageNumber === currentPage ? "active" : ""
-              }`}
-              onClick={() => goToPage(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          ))}
-
-          <button
-            className="pagination-btn"
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          goToPage={goToPage}
+        />
 
         {/* Modal */}
         {showModal && selectedMovie && (
