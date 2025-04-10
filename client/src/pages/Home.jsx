@@ -45,6 +45,7 @@ export default function Home() {
           setMovies(response.data || []);
           setTitle(""); // No title when searching
         } else {
+          console.log("im dall");
           const response = await axios.get("http://localhost:3000/api/movies/popular", {
             params: { page, limit: 20 },
           });

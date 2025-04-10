@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/modal.css";
+import { useAuth } from "../context/AuthContext";
+import Button from "./Button";
+import { FaRegBookmark, FaCheckCircle } from "react-icons/fa"; // FontAwesome icons
 
 const MovieDetailsModal = ({ movie, onClose }) => {
   const id = movie.id;
   const [trailerId, setTrailerId] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchTrailer = async () => {
@@ -23,7 +27,7 @@ const MovieDetailsModal = ({ movie, onClose }) => {
       fetchTrailer();
     }
   }, [id]);
-  console.log(movie);
+
   return (
     <div className="movie-details-modal">
       <div className="modal-content animated-glow">
@@ -38,6 +42,17 @@ const MovieDetailsModal = ({ movie, onClose }) => {
               alt={movie.title}
               className="movie-poster"
             />
+            {/* Watch Later and Watched icons */}
+            {user && (
+              <div className="button-group">
+                <button className="icon-btn">
+                  <FaRegBookmark size={24} />
+                </button>
+                <button className="icon-btn">
+                  <FaCheckCircle size={24} />
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="movie-description">
