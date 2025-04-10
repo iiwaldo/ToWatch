@@ -23,7 +23,7 @@ const MovieDetailsModal = ({ movie, onClose }) => {
       fetchTrailer();
     }
   }, [id]);
-
+  console.log(movie);
   return (
     <div className="movie-details-modal">
       <div className="modal-content animated-glow">

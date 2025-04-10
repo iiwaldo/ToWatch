@@ -29,11 +29,27 @@ router.get("/popular", async (req, res) => {
       totalResults,
     });
   } catch (error) {
-    console.error("Failed to fetch movies from TMDB:", error.message);
-    res.status(500).json({ error: "Failed to fetch movies" });
+    //console.error("Failed to fetch movies from TMDB:", error.message);
+    //res.status(500).json({ error: "Failed to fetch movies" });
   }
 });
+router.get("/search", async (req, res) => {
+  const { query } = req.query;
+  console.log("Searching for movies with query:", query);
 
+  try {
+    const response = await axios.get(`${BASE_URL}/search/movie`, {
+      params: {
+        api_key: TMDB_API_KEY,
+        query: query, // query from the user's search input
+      },
+    });
+    res.json(response.data.results); // Send the search results back to the client
+  } catch (error) {
+    console.log("Error searching for movies:");
+    res.status(500).json({ error: "Failed to fetch searched movies" });
+  }
+});
 router.get("/:id", async (req, res) => {
   const movieId = req.params.id; // Correctly accessing the movie ID from the URL params
   try {
@@ -45,20 +61,18 @@ router.get("/:id", async (req, res) => {
     });
     const videos = response.data.results;
     const trailer = videos.find(
-      (video) =>
-        video.type === "Trailer" &&
-        video.site === "YouTube"
+      (video) => video.type === "Trailer" && video.site === "YouTube"
     );
     if (trailer) {
       res.json({ trailerId: trailer.key });
     } else {
       res.status(404).json({ error: "Trailer not found" });
     }
-    console.log(trailer);
     res.json(response.data); // Return the movie details
   } catch (error) {
     console.error("Error fetching movie details:", error);
     res.status(500).json({ error: "Failed to fetch movie details" });
   }
 });
+
 export default router;

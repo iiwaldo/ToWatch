@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 
 const ScrollToTop = () => {
   const location = useLocation();
-  console.log(location);
 
   useEffect(() => {
     console.log("window is running");
