@@ -37,13 +37,24 @@ router.get("/popular", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const movieId = req.params.id; // Correctly accessing the movie ID from the URL params
   try {
-    const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {
+    const response = await axios.get(`${BASE_URL}/movie/${movieId}/videos`, {
       // Fixed URL to include "movie"
       params: {
         api_key: TMDB_API_KEY, // API key from environment
-        language: "en-US", // Language can be changed if needed
       },
     });
+    const videos = response.data.results;
+    const trailer = videos.find(
+      (video) =>
+        video.type === "Trailer" &&
+        video.site === "YouTube"
+    );
+    if (trailer) {
+      res.json({ trailerId: trailer.key });
+    } else {
+      res.status(404).json({ error: "Trailer not found" });
+    }
+    console.log(trailer);
     res.json(response.data); // Return the movie details
   } catch (error) {
     console.error("Error fetching movie details:", error);
