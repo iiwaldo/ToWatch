@@ -7,7 +7,7 @@ import MovieCard from "../components/MovieCard";
 import MovieDetailsModal from "../components/MovieDetailsModal";
 import Pagination from "../components/Pagination";
 
-export default function Home() {
+export default function Home({type}) {
   const { user } = useAuth();
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +44,7 @@ export default function Home() {
           });
           setMovies(response.data || []);
           setTitle(""); // No title when searching
-        } else {
+        } else if(!searchQuery) {
           console.log("im dall");
           const response = await axios.get("http://localhost:3000/api/movies/popular", {
             params: { page, limit: 20 },
@@ -54,6 +54,9 @@ export default function Home() {
           setTotalPages(data.totalPages);
           setTitle("Popular Movies");
         }
+        // else if(type === "watch-later") {
+        //   //const response = await axios.get("")
+        // }
       } catch (error) {
         console.error("Error fetching movies", error);
         setMovies([]);

@@ -89,3 +89,70 @@
 .links a:hover {
   color: #00e5ff;
 }
+/* Add these styles to your navbar.css file */
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.profile-icon:hover {
+  background-color: rgba(0, 188, 212, 0.1); /* Light hover effect */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px; /* Adjust to fit below the icon */
+  right: 0;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 200px; /* Fixed width for the dropdown */
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.dropdown-menu button {
+  background: none;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s, padding 0.2s;
+  padding-left: 20px; /* Indentation for text */
+}
+
+.dropdown-menu button:hover {
+  background-color: #00bcd4;
+  padding-left: 24px; /* Slightly move to the right on hover */
+}
+
+.dropdown-menu button:focus {
+  outline: none;
+}
+
+/* Optional: Adding a smooth transition for the dropdown appearance */
+.profile-dropdown .dropdown-menu {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+}

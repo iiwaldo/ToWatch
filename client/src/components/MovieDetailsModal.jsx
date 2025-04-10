@@ -25,8 +25,38 @@ const MovieDetailsModal = ({ movie, onClose }) => {
 
     if (id) {
       fetchTrailer();
+      console.log(movie);
     }
   }, [id]);
+
+  const handleWatchLater = async () => {
+    console.log(user);
+    const data = {
+      userEmail:user.email,
+      movie : movie,
+      trailerId : trailerId,
+    }
+    try {
+      const response = await axios.post(`http://localhost:3000/api/user/watch-later`,data);
+
+    } catch (error) {
+      console.log("Error adding to watch later");
+    }
+  };
+  const handleWatched = async () => {
+    console.log(user);
+    const data = {
+      userEmail:user.email,
+      movie : movie,
+      trailerId : trailerId,
+    }
+    try {
+      const response = await axios.post(`http://localhost:3000/api/user/watched`,data);
+
+    } catch (error) {
+      console.log("Error adding to watch later");
+    }
+  };
 
   return (
     <div className="movie-details-modal">
@@ -45,10 +75,10 @@ const MovieDetailsModal = ({ movie, onClose }) => {
             {/* Watch Later and Watched icons */}
             {user && (
               <div className="button-group">
-                <button className="icon-btn">
+                <button onClick={handleWatchLater} className="icon-btn">
                   <FaRegBookmark size={24} />
                 </button>
-                <button className="icon-btn">
+                <button onClick={handleWatched} className="icon-btn">
                   <FaCheckCircle size={24} />
                 </button>
               </div>

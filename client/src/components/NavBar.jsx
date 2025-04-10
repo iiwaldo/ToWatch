@@ -1,14 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import { useAuth } from "../context/AuthContext";
-import Button from "./Button";
 import { useState, useCallback } from "react";
+import { FaUserCircle } from "react-icons/fa"; // Add a user profile icon from react-icons
 
 export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [debounceTimer, setDebounceTimer] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State to control dropdown visibility
 
   const handleLogOut = () => {
     logout();
@@ -38,6 +39,20 @@ export default function Navbar() {
     [debounceTimer, navigate]
   );
 
+  const toggleDropdown = () => {
+    setDropdownOpen((prevState) => !prevState); // Toggle dropdown visibility
+  };
+
+  const goToWatchLater = () => {
+    navigate("/watch-later");
+    setDropdownOpen(false); // Close dropdown after clicking
+  };
+
+  const goToWatched = () => {
+    navigate("/watched");
+    setDropdownOpen(false); // Close dropdown after clicking
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-section logo">
@@ -56,11 +71,24 @@ export default function Navbar() {
         {!isAuthenticated && (
           <>
             <Link to="/signup">Sign Up</Link>
-            <Link to="/">Login</Link>
+            <Link to="/login">Login</Link>
           </>
         )}
+
         {isAuthenticated && (
-          <Button label="Log out" onClick={handleLogOut} />
+          <div className="profile-dropdown">
+            <button className="profile-icon" onClick={toggleDropdown}>
+              <FaUserCircle size={24} color="#00bcd4" /> {/* Profile icon */}
+            </button>
+
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <button onClick={goToWatchLater}>Watch Later</button>
+                <button onClick={goToWatched}>Watched</button>
+                <button onClick={handleLogOut}>Logout</button>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </nav>

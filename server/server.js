@@ -4,6 +4,7 @@ import dotenv from "dotenv"; // Import dotenv
 dotenv.config();
 import authRoutes from "./routes/authRoutes.js";
 import moviesRoute from "./routes/movies.js";
+import details from "./routes/details.js";
 import cors from "cors";
 
 const app = express();
@@ -28,6 +29,7 @@ connectDB();
 app.use(express.json()); // For parsing JSON data
 app.use("/api/auth", authRoutes); // Use auth routes for login/signup
 app.use("/api/movies", moviesRoute);
+app.use("/api/user",details);
 
 app.listen(port, () => {
   console.log("works");
