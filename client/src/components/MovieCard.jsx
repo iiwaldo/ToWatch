@@ -1,8 +1,9 @@
-import "../styles/moviecard.css"; // You can style the card here
+import "../styles/moviecard.css";
+import { useNavigate } from "react-router-dom";
 
-const MovieCard = ({ movie }) => {
+const MovieCard = ({ movie, onClick }) => {
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={() => onClick(movie)}>
       <img
         src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} // TMDB image URL
         alt={movie.title}

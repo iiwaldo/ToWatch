@@ -19,7 +19,7 @@ router.get("/popular", async (req, res) => {
         language,
       },
     });
-    const movies = response.data.results.slice(0,limit);
+    const movies = response.data.results.slice(0, limit);
     const totalPages = response.data.total_pages;
     const totalResults = response.data.total_results;
     res.json({
@@ -31,6 +31,23 @@ router.get("/popular", async (req, res) => {
   } catch (error) {
     console.error("Failed to fetch movies from TMDB:", error.message);
     res.status(500).json({ error: "Failed to fetch movies" });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  const movieId = req.params.id; // Correctly accessing the movie ID from the URL params
+  try {
+    const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {
+      // Fixed URL to include "movie"
+      params: {
+        api_key: TMDB_API_KEY, // API key from environment
+        language: "en-US", // Language can be changed if needed
+      },
+    });
+    res.json(response.data); // Return the movie details
+  } catch (error) {
+    console.error("Error fetching movie details:", error);
+    res.status(500).json({ error: "Failed to fetch movie details" });
   }
 });
 export default router;
