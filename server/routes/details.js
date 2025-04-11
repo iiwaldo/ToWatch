@@ -10,7 +10,7 @@ router.post("/watch-later", async (req, res) => {
     if (!existingMovie) {
       existingMovie = new Movie({
         id: movie.id, // TMDB ID
-        title: movie.title,
+        original_title: movie.original_title,
         overview: movie.overview,
         poster_path: movie.poster_path,
         release_date: movie.release_date,
@@ -76,10 +76,13 @@ router.delete("/watch-later", async (req, res) => {
     const user = await User.findOne({ email: userEmail });
     const movieID = await Movie.findOne({ id: movie.id });
     let movieObjectId = movieID._id;
-    await User.findOneAndUpdate({email:userEmail},{$pull:{moviesSaved:movieObjectId}});
+    await User.findOneAndUpdate(
+      { email: userEmail },
+      { $pull: { moviesSaved: movieObjectId } }
+    );
     res.status(200).json("movie deleted from watch later...");
   } catch (error) {
-    console.log("error deleting movie saved...",error);
+    console.log("error deleting movie saved...", error);
   }
 });
 router.post("/watched", async (req, res) => {
@@ -89,7 +92,7 @@ router.post("/watched", async (req, res) => {
     if (!existingMovie) {
       existingMovie = new Movie({
         id: movie.id, // TMDB ID
-        title: movie.title,
+        original_title: movie.original_title,
         overview: movie.overview,
         poster_path: movie.poster_path,
         release_date: movie.release_date,

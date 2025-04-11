@@ -7,7 +7,7 @@ const movieSchema = new mongoose.Schema(
       required: true,
       unique: true, // Ensure each movie is unique by its ID
     },
-    title: {
+    original_title: {
       type: String,
       required: true,
     },
