@@ -133,5 +133,23 @@ router.get("/watched", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+router.get("/movie",async(req,res)=>{
+    try {
+        const {movieID,userEmail} = req.query;
+        let isWatched = false;
+        let isSaved = false;
+        const user = await User.findOne({email:userEmail});
+        const movie = await Movie.findOne({id:movieID});
+        if(!movie) {
+            res.status(200).json({isSaved:isSaved,isWatched:isWatched});
+        }
+        const movieObjectId = movie._id.toString();
+        isSaved = user.moviesSaved.some ((savedID)=> movieObjectId===savedID.toString());
+        isWatched = user.moviesWatched.some ((watchedID)=> movieObjectId===watchedID.toString());
+        res.status(200).json({isSaved:isSaved,isWatched:isWatched});
+    } catch (error) {
+        console.log("error checking status...");
+    }
+});
 
 export default router;

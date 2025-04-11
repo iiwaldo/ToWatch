@@ -166,11 +166,11 @@ button:hover {
 
 .movie-description::-webkit-scrollbar {
   width: 6px;
+  background: transparent; /* Make the track transparent */
 }
 
 .movie-description::-webkit-scrollbar-thumb {
-  background: #00e5ff;
-  border-radius: 10px;
+  background: transparent; /* Make the thumb transparent */
 }
 
 .trailer-container {
@@ -187,4 +187,14 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
+}
+.icon-btn.active {
+  background-color: #00e5ff;
+  color: white;
+  border-color: #00e5ff;
+}
+
+.icon-btn.active:hover {
+  background-color: #00bcd4;
+  color: white;
 }

@@ -5,7 +5,9 @@ dotenv.config();
 
 const router = express.Router();
 const TMDB_API_KEY = process.env.TMBD_API_KEY;
+const GOOGLE_API_KEY = process.env.GOOGLE_CLOUD_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
+const GOOGLE_URL = "https://www.googleapis.com/youtube/v3/search";
 
 router.get("/popular", async (req, res) => {
   const page = req.query.page;
@@ -50,28 +52,36 @@ router.get("/search", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch searched movies" });
   }
 });
-router.get("/:id", async (req, res) => {
-  const movieId = req.params.id; // Correctly accessing the movie ID from the URL params
+router.get("/trailer", async (req, res) => {
+  const { original_title, original_language, release_date } = req.query;
+  console.log(original_language);
+  console.log(original_title);
+  console.log(release_date);
+  const year = release_date.split("-")[0];
+  const query =
+    original_language === "en"
+      ? `${original_title} ${year} trailer`
+      : `اعلان فيلم ${original_title} ${year}`;
+  console.log(query);
+
   try {
-    const response = await axios.get(`${BASE_URL}/movie/${movieId}/videos`, {
-      // Fixed URL to include "movie"
+    const response = await axios.get(`${GOOGLE_URL}`, {
       params: {
-        api_key: TMDB_API_KEY, // API key from environment
+        part: "snippet", // required to get title, thumbnails, etc.
+        q: query, // your search string
+        type: "video", // we want only videos
+        maxResults: 1, // top result only
+        videoEmbeddable: "true", // important for iframe embeds
+        key: GOOGLE_API_KEY, // your YouTube API key
       },
     });
-    const videos = response.data.results;
-    const trailer = videos.find(
-      (video) => video.type === "Trailer" && video.site === "YouTube"
-    );
-    if (trailer) {
-      res.json({ trailerId: trailer.key });
-    } else {
-      res.status(404).json({ error: "Trailer not found" });
+    const trailerId = response.data.items[0]?.id?.videoId;
+    if(trailerId) {
+      console.log(trailerId);
+      res.status(200).json(trailerId);
     }
-    res.json(response.data); // Return the movie details
   } catch (error) {
-    console.error("Error fetching movie details:", error);
-    res.status(500).json({ error: "Failed to fetch movie details" });
+    console.log("Error getting trailer");
   }
 });
 

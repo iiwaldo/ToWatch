@@ -2,22 +2,60 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/modal.css";
 import { useAuth } from "../context/AuthContext";
-import Button from "./Button";
-import { FaRegBookmark, FaCheckCircle } from "react-icons/fa"; // FontAwesome icons
+import {
+  FaRegBookmark,
+  FaCheckCircle,
+  FaRegCheckCircle,
+  FaBookmark,
+} from "react-icons/fa"; // Import both filled and outlined icons
 
-const MovieDetailsModal = ({ movie, onClose }) => {
+const MovieDetailsModal = ({ movie, onClose, type }) => {
   const id = movie.id;
   const [trailerId, setTrailerId] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
   const { user } = useAuth();
+  const [watched, isWatched] = useState(false);
+  const [saved, isSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  console.log(movie);
 
   useEffect(() => {
-    const fetchTrailer = async () => {
+    if(movie.trailerId) {
+      setLoading(false);
+    }
+    if (type !== "home") {
+      setTrailerId(movie.trailerId);
+      console.log("fetch trailer failed", movie);
+      return;
+    }
+    const checkStatus = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/movies/${id}`
+          `http://localhost:3000/api/user/movie`,
+          { params: { movieID: movie.id, userEmail: user.email } }
         );
-        setTrailerId(response.data.trailerId);
+        isWatched(response.data.isWatched);
+        isSaved(response.data.isSaved);
+      } catch (error) {
+        console.log("error getting status");
+      }
+    };
+    const fetchTrailer = async () => {
+      console.log(movie.original_title);
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/movies/trailer",
+          {
+            params: {
+              original_title: movie.original_title,
+              original_language: movie.original_language,
+              release_date: movie.release_date,
+            },
+          }
+        );
+        console.log(response.data);
+        setTrailerId(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching trailer", error);
       }
@@ -25,36 +63,76 @@ const MovieDetailsModal = ({ movie, onClose }) => {
 
     if (id) {
       fetchTrailer();
-      console.log(movie);
+      checkStatus();
     }
-  }, [id]);
+  }, [id, type]);
 
   const handleWatchLater = async () => {
     console.log(user);
     const data = {
-      userEmail:user.email,
-      movie : movie,
-      trailerId : trailerId,
-    }
+      userEmail: user.email,
+      movie: movie,
+      trailerId: trailerId,
+    };
     try {
-      const response = await axios.post(`http://localhost:3000/api/user/watch-later`,data);
+      const response = await axios.post(
+        `http://localhost:3000/api/user/watch-later`,
+        data
+      );
 
+      isSaved((prev) => !prev);
     } catch (error) {
       console.log("Error adding to watch later");
     }
   };
+
   const handleWatched = async () => {
     console.log(user);
     const data = {
-      userEmail:user.email,
-      movie : movie,
-      trailerId : trailerId,
-    }
+      userEmail: user.email,
+      movie: movie,
+      trailerId: trailerId,
+    };
     try {
-      const response = await axios.post(`http://localhost:3000/api/user/watched`,data);
-
+      const response = await axios.post(
+        `http://localhost:3000/api/user/watched`,
+        data
+      );
+      isWatched((prev) => !prev);
     } catch (error) {
-      console.log("Error adding to watch later");
+      console.log("Error marking as watched");
+    }
+  };
+
+  const renderWatchLaterButton = () => {
+    if (type === "watch-later" || saved) {
+      return (
+        <button onClick={handleWatchLater} className="icon-btn active">
+          <FaBookmark size={24} />
+        </button>
+      );
+    } else {
+      return (
+        <button onClick={handleWatchLater} className="icon-btn">
+          <FaRegBookmark size={24} />
+        </button>
+      );
+    }
+  };
+
+  const renderWatchedButton = () => {
+    if (type === "watched" || watched) {
+      return (
+        <button onClick={handleWatched} className="icon-btn active">
+          <FaCheckCircle size={24} />
+        </button>
+      );
+    } else {
+      return (
+        <button onClick={handleWatched} className="icon-btn">
+          <FaRegCheckCircle size={24} />
+        </button>
+      );
     }
   };
 
@@ -75,12 +153,8 @@ const MovieDetailsModal = ({ movie, onClose }) => {
             {/* Watch Later and Watched icons */}
             {user && (
               <div className="button-group">
-                <button onClick={handleWatchLater} className="icon-btn">
-                  <FaRegBookmark size={24} />
-                </button>
-                <button onClick={handleWatched} className="icon-btn">
-                  <FaCheckCircle size={24} />
-                </button>
+                {renderWatchLaterButton()}
+                {renderWatchedButton()}
               </div>
             )}
           </div>
@@ -95,10 +169,15 @@ const MovieDetailsModal = ({ movie, onClose }) => {
               <strong>Rating:</strong> {movie.vote_average}
             </p>
 
-            {trailerId && !showTrailer && (
-              <button onClick={() => setShowTrailer(true)}>
-                Watch Trailer
-              </button>
+            {loading ? (
+              <div>Loading trailer...</div>
+            ) : (
+              trailerId &&
+              !showTrailer && (
+                <button onClick={() => setShowTrailer(true)}>
+                  Watch Trailer
+                </button>
+              )
             )}
 
             {showTrailer && (
