@@ -17,14 +17,14 @@ const MovieDetailsModal = ({ movie, onClose, type }) => {
   const [watched, isWatched] = useState(false);
   const [saved, isSaved] = useState(false);
   const [loading, setLoading] = useState(true);
-  console.log(movie);
+  console.log(saved);
 
   useEffect(() => {
-    if(movie.trailerId) {
-      setLoading(false);
-    }
     if (type !== "home") {
       setTrailerId(movie.trailerId);
+      if (trailerId) {
+        setLoading(false);
+      }
       console.log("fetch trailer failed", movie);
       return;
     }
@@ -68,21 +68,34 @@ const MovieDetailsModal = ({ movie, onClose, type }) => {
   }, [id, type]);
 
   const handleWatchLater = async () => {
+    console.log(saved);
     console.log(user);
     const data = {
       userEmail: user.email,
       movie: movie,
       trailerId: trailerId,
     };
-    try {
-      const response = await axios.post(
-        `http://localhost:3000/api/user/watch-later`,
-        data
-      );
-
-      isSaved((prev) => !prev);
-    } catch (error) {
-      console.log("Error adding to watch later");
+    if (!saved) {
+      try {
+        const response = await axios.post(
+          `http://localhost:3000/api/user/watch-later`,
+          data
+        );
+        isSaved((prev) => !prev);
+      } catch (error) {
+        console.log("Error adding to watch later");
+      }
+    }
+    else {
+      try {
+        const response = await axios.delete(
+          `http://localhost:3000/api/user/watch-later`,
+          {data : data}
+        );
+        isSaved((prev) => !prev);
+      } catch (error) {
+        console.log("Error adding to watch later");
+      }
     }
   };
 
