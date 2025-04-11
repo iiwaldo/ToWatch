@@ -14,7 +14,10 @@ export function AuthProvider({ children }) {
   const verifyTokenWithBackend = async (token) => {
     try {
       console.log("checking with backend..");
-      const response = await axios.post("http://localhost:3000/api/auth/verify-token", { token });
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/verify-token",
+        { token }
+      );
       if (response.status === 200) {
         setIsAuthenticated(true);
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -63,7 +66,7 @@ export function AuthProvider({ children }) {
         setUser(null);
       }
     }
-  }, [isAuthenticated]); // Empty dependency array ensures this runs once on mount
+  }, []); // Empty dependency array ensures this runs once on mount
 
   const login = (token, user) => {
     localStorage.setItem("token", token);

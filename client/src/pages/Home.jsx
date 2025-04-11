@@ -7,7 +7,7 @@ import MovieCard from "../components/MovieCard";
 import MovieDetailsModal from "../components/MovieDetailsModal";
 import Pagination from "../components/Pagination";
 
-export default function Home({type}) {
+export default function Home({ type }) {
   const { user } = useAuth();
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,25 +38,49 @@ export default function Home({type}) {
 
     const fetchMovies = async () => {
       try {
-        if (searchQuery) {
-          const response = await axios.get("http://localhost:3000/api/movies/search", {
-            params: { query: searchQuery },
-          });
+        if (searchQuery && type === "home") {
+          const response = await axios.get(
+            "http://localhost:3000/api/movies/search",
+            {
+              params: { query: searchQuery },
+            }
+          );
           setMovies(response.data || []);
           setTitle(""); // No title when searching
-        } else if(!searchQuery) {
-          console.log("im dall");
-          const response = await axios.get("http://localhost:3000/api/movies/popular", {
-            params: { page, limit: 20 },
-          });
+        } else if (!searchQuery && type === "home") {
+          const response = await axios.get(
+            "http://localhost:3000/api/movies/popular",
+            {
+              params: { page, limit: 20 },
+            }
+          );
           const data = response.data;
           setMovies(data.movies || []);
-          setTotalPages(data.totalPages);
+          setTotalPages(data.totalPages); // Set total pages from the response
           setTitle("Popular Movies");
+        } else if (type === "watch-later") {
+          if (!user) {
+            return;
+          }
+          setTitle("Watch Later");
+          const response = await axios.get(
+            "http://localhost:3000/api/user/watch-later",
+            { params: { userEmail: user.email, page, limit: 20 } }
+          );
+          setMovies(response.data.movies || []);
+          setTotalPages(response.data.totalPages); // Set total pages from the response
+        } else if (type === "watched") {
+          if (!user){
+            return;
+          }
+          setTitle("My Watched Movies");
+          const response = await axios.get(
+            "http://localhost:3000/api/user/watched",
+            { params: { userEmail: user.email, page, limit: 20 } }
+          );
+          setMovies(response.data.movies || []);
+          setTotalPages(response.data.totalPages); // Set total pages from the response
         }
-        // else if(type === "watch-later") {
-        //   //const response = await axios.get("")
-        // }
       } catch (error) {
         console.error("Error fetching movies", error);
         setMovies([]);
@@ -64,7 +88,7 @@ export default function Home({type}) {
     };
 
     fetchMovies();
-  }, [location.search]);
+  }, [location.search, type, user]);
 
   const goToPage = (page) => {
     const params = new URLSearchParams(location.search);
@@ -98,7 +122,9 @@ export default function Home({type}) {
             )}
           </div>
 
-          {title === "Popular Movies" && (
+          {["Popular Movies", "Watch Later", "My Watched Movies"].includes(
+            title
+          ) && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

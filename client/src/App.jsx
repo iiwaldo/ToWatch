@@ -18,7 +18,9 @@ function App() {
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<Home type={"home"} />} />
+        <Route path="/watch-later" element={<Home type={"watch-later"} />} />
+        <Route path="/watched" element={<Home type={"watched"} />} />
       </Routes>
     </Router>
   );

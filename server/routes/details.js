@@ -67,6 +67,71 @@ router.post("/watched", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-router.get("/watch-later", async (req, res) => {});
-router.get("/watched", async (req, res) => {});
+router.get("/watch-later", async (req, res) => {
+  try {
+    const { userEmail, page = 1, limit = 20 } = req.query; // Default limit is 20
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Calculate skip based on the current page and limit
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    // Find all saved movies for the user
+    const totalMovies = user.moviesSaved.length; // Total number of saved movies
+    const totalPages = Math.ceil(totalMovies / parseInt(limit)); // Calculate total pages
+
+    // Retrieve movies for the current page
+    const moviesSaved = await Movie.find({
+      _id: { $in: user.moviesSaved },
+    })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.status(200).json({
+      movies: moviesSaved,
+      currentPage: parseInt(page),
+      totalPages: totalPages, // Return totalPages
+    });
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+router.get("/watched", async (req, res) => {
+  try {
+    const { userEmail, page = 1, limit = 20 } = req.query; // Default limit is 20
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Calculate skip based on the current page and limit
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    // Find all watched movies for the user
+    const totalMovies = user.moviesWatched.length; // Total number of watched movies
+    const totalPages = Math.ceil(totalMovies / parseInt(limit)); // Calculate total pages
+
+    // Retrieve movies for the current page (pagination)
+    const moviesWatched = await Movie.find({
+      _id: { $in: user.moviesWatched },
+    })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.status(200).json({
+      movies: moviesWatched,
+      currentPage: parseInt(page),
+      totalPages: totalPages, // Return totalPages
+    });
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;
