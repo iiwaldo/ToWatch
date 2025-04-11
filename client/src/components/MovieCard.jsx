@@ -9,7 +9,7 @@ const MovieCard = ({ movie, onClick }) => {
         alt={movie.title}
         className="movie-poster"
       />
-      <h3 className="movie-title">{movie.title}</h3> {/* Add the movie title */}
+      <h3 className="movie-title">{movie.original_title}</h3> {/* Add the movie title */}
     </div>
   );
 };

@@ -160,7 +160,7 @@ const MovieDetailsModal = ({ movie, onClose, type }) => {
           </div>
 
           <div className="movie-description">
-            <h1>{movie.title}</h1>
+            <h1>{movie.original_title}</h1>
             <p>{movie.overview}</p>
             <p>
               <strong>Release Date:</strong> {movie.release_date}
