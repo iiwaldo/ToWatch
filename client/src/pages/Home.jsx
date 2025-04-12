@@ -6,6 +6,7 @@ import axios from "axios";
 import MovieCard from "../components/MovieCard";
 import MovieDetailsModal from "../components/MovieDetailsModal";
 import Pagination from "../components/Pagination";
+import FilterModal from "../components/FilterModal";
 
 export default function Home({ type }) {
   const { user } = useAuth();
@@ -15,7 +16,9 @@ export default function Home({ type }) {
   const [selectedCard, setSelectedCard] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("Popular Movies");
-
+  const [search, isSearch] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
+  const [filter, setFilter] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -27,19 +30,23 @@ export default function Home({ type }) {
   const closeModal = () => {
     setShowModal(false);
     setSelectedCard(null);
+    if (isFilter) {
+      setIsFilter(false);
+    }
   };
-  console.log("im called");
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const page = parseInt(params.get("page")) || 1;
     const searchQuery = params.get("search");
+    isSearch(false);
 
     setCurrentPage(page);
 
     const fetchMovies = async () => {
       try {
         if (searchQuery && type === "home") {
+          isSearch(true);
           let response = await axios.get(
             "http://localhost:3000/api/movies/search/movie",
             {
@@ -55,7 +62,7 @@ export default function Home({ type }) {
             }
           );
           let showsArray = response.data || [];
-          let combined = [...moviesArray,...showsArray];
+          let combined = [...moviesArray, ...showsArray];
           setTotalPages(combined.length);
           setCards(combined);
         } else if (!searchQuery && type === "home") {
@@ -111,13 +118,24 @@ export default function Home({ type }) {
       navigate(`?page=${page}`);
     }
   };
+  const onFilterClick = () => {
+    setIsFilter((prev) => !prev);
+    setShowModal(true);
+  };
 
   return (
     <div>
       <Navbar />
       <div className="con">
         <div className="home-container">
-          <h1 className="home-title">{title}</h1>
+          <div className="home-header">
+            <h1 className="home-title">{title}</h1>
+            {type === "home" && !search && (
+              <button onClick={onFilterClick} className="filter-button">
+                Filter
+              </button>
+            )}
+          </div>
 
           <div className="movie-cards-container">
             {cards.length === 0 ? (
@@ -131,13 +149,12 @@ export default function Home({ type }) {
                 />
               ))
             )}
-          </div>          
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              goToPage={goToPage}
-            />
-          
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            goToPage={goToPage}
+          />
 
           {showModal && selectedCard && (
             <MovieDetailsModal
@@ -146,6 +163,9 @@ export default function Home({ type }) {
               card={selectedCard}
               onClose={closeModal}
             />
+          )}
+          {showModal && isFilter && (
+            <FilterModal onClose={closeModal} setFilter={setFilter} />
           )}
         </div>
       </div>

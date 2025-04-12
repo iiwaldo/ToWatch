@@ -10,6 +10,27 @@
 .con {
   height: 1000px;
 }
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-button {
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+  background-color: #00e5ff;
+}
 .home-title {
   text-align: center;
 }

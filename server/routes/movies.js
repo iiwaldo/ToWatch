@@ -83,9 +83,8 @@ router.get("/trailer", async (req, res) => {
     } else {
       query = `اعلان مسلسل ${original_title} ${year}`;
     }
-  }
-  else {
-      query = `${original_title} ${year} trailer`;
+  } else {
+    query = `${original_title} ${year} trailer`;
   }
 
   try {
@@ -102,6 +101,28 @@ router.get("/trailer", async (req, res) => {
     }
   } catch (error) {
     console.log("Error getting trailer");
+  }
+});
+
+router.get("/movie-genres", async (req, res) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/genre/movie/list`, {
+      params: { api_key: TMDB_API_KEY },
+    });
+    res.status(200).json(response.data.genres);
+  } catch (error) {
+    console.log("error getting movie genres");
+  }
+});
+
+router.get("/tv-genres", async (req, res) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/genre/tv/list`, {
+      params: { api_key: TMDB_API_KEY },
+    });
+    res.status(200).json(response.data.genres);
+  } catch (error) {
+    console.log("error getting movie genres");
   }
 });
 
