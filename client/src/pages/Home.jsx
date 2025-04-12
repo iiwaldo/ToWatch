@@ -28,6 +28,7 @@ export default function Home({ type }) {
     setShowModal(false);
     setSelectedMovie(null);
   };
+  console.log("im called");
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

@@ -151,6 +151,21 @@ router.get("/watched", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+router.delete("/watched", async (req, res) => {
+  const { userEmail, movie } = req.body;
+  try {
+    const user = await User.findOne({ email: userEmail });
+    const movieID = await Movie.findOne({ id: movie.id });
+    let movieObjectId = movieID._id;
+    await User.findOneAndUpdate(
+      { email: userEmail },
+      { $pull: { moviesWatched: movieObjectId } }
+    );
+    res.status(200).json("movie deleted from watched...");
+  } catch (error) {
+    console.log("error deleting movie watched...", error);
+  }
+});
 router.get("/movie", async (req, res) => {
   try {
     const { movieID, userEmail } = req.query;

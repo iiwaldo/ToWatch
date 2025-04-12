@@ -17,6 +17,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
   const [watched, isWatched] = useState(false);
   const [saved, isSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [originalIndex, setOriginalIndex] = useState(null);
 
   useEffect(() => {
     if (type !== "home") {
@@ -26,6 +27,9 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
       }
       if (type === "watch-later") {
         isSaved(true);
+      }
+      if (type === "watched") {
+        isWatched(true);
       }
       console.log("fetch trailer failed", movie);
       return;
@@ -68,66 +72,107 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
       checkStatus();
     }
   }, [id, type]);
-
   const handleWatchLater = async () => {
-    console.log(saved);
-    console.log(user);
     const data = {
       userEmail: user.email,
-      movie: movie,
-      trailerId: trailerId,
+      movie,
+      trailerId,
     };
-    let index = null;
+
     if (!saved) {
       try {
-        console.log("im here");
         const response = await axios.post(
           `http://localhost:3000/api/user/watch-later`,
           data
         );
-        isSaved((prev) => !prev);
-        if (type === "watch-later") {
-          setMovies((prevMovies) => prevMovies.splice(index,0,movie));
+        isSaved(true);
+        if (type === "watch-later" && originalIndex !== null) {
+          setMovies((prevMovies) => {
+            console.log("movie id after adding = ",movie.id)
+            const updated = [...prevMovies];
+            updated.splice(originalIndex, 0, movie);
+            return updated;
+          });
+          setOriginalIndex(null); // Reset after reinserting
         }
       } catch (error) {
-        console.log("Error adding to watch later");
+        console.log("Error adding to watched");
       }
     } else {
       try {
         const response = await axios.delete(
           `http://localhost:3000/api/user/watch-later`,
-          { data: data }
+          {
+            data,
+          }
         );
-        isSaved((prev) => !prev);
+        isSaved(false);
         if (type === "watch-later") {
-          setMovies((prevMovieCards) => {
-            index = prevMovieCards.indexOf(movie);
-            prevMovieCards.filter(
-              (card) => card.id !== (movie.id)
-            );
+          setMovies((prevMovies) => {
+            console.log("movie id before removing = ",movie.id);
+            const index = prevMovies.findIndex((card) => card.id === movie.id);
+            if (index !== -1) {
+              setOriginalIndex(index); // store index before removal
+              return prevMovies.filter((card) => card.id !== movie.id);
+            }
+            return prevMovies;
           });
         }
       } catch (error) {
-        console.log("Error adding to watch later");
+        console.log("Error removing from watch later");
       }
     }
   };
 
   const handleWatched = async () => {
-    console.log(user);
     const data = {
       userEmail: user.email,
-      movie: movie,
-      trailerId: trailerId,
+      movie,
+      trailerId,
     };
-    try {
-      const response = await axios.post(
-        `http://localhost:3000/api/user/watched`,
-        data
-      );
-      isWatched((prev) => !prev);
-    } catch (error) {
-      console.log("Error marking as watched");
+
+    if (!watched) {
+      try {
+        const response = await axios.post(
+          `http://localhost:3000/api/user/watched`,
+          data
+        );
+        isWatched(true);
+        if (type === "watched" && originalIndex !== null) {
+          setMovies((prevMovies) => {
+            console.log("movie id after adding = ",movie.id)
+            const updated = [...prevMovies];
+            updated.splice(originalIndex, 0, movie);
+            return updated;
+          });
+          setOriginalIndex(null); // Reset after reinserting
+        }
+      } catch (error) {
+        console.log("Error adding to watched");
+      }
+    } else {
+      try {
+        const response = await axios.delete(
+          `http://localhost:3000/api/user/watched`,
+          {
+            data,
+          }
+        );
+        isWatched(false);
+        if (type === "watched") {
+          setMovies((prevMovies) => {
+            console.log("movie id before removing = ",movie.id);
+            const index = prevMovies.findIndex((card) => card.id === movie.id);
+            if (index !== -1) {
+              setOriginalIndex(index); // store index before removal
+              return prevMovies.filter((card) => card.id !== movie.id);
+            }
+            return prevMovies;
+          });
+        }
+      } catch (error) {
+        console.log("Error removing from watched");
+      }
     }
   };
 
@@ -148,7 +193,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
   };
 
   const renderWatchedButton = () => {
-    if (type === "watched" || watched) {
+    if (watched) {
       return (
         <button onClick={handleWatched} className="icon-btn active">
           <FaCheckCircle size={24} />

@@ -2,7 +2,6 @@ import "../styles/moviecard.css";
 import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({ movie, onClick }) => {
-  console.log(movie);
   return (
     <div className="movie-card" onClick={() => onClick(movie)}>
       <img
