@@ -56,7 +56,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-section logo">
-        <Link to="/">🍿 MovieStack</Link>
+        <Link to="/">🍿 ToWatch</Link>
       </div>
       <div className="navbar-section search">
         <input
@@ -64,7 +64,7 @@ export default function Navbar() {
           value={searchQuery}
           onChange={handleSearchChange}
           className="search-input"
-          placeholder="Search movies..."
+          placeholder="Search movies or tv shows..."
         />
       </div>
       <div className="navbar-section links">

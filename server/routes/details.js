@@ -10,10 +10,10 @@ router.post("/watch-later", async (req, res) => {
     if (!existingMovie) {
       existingMovie = new Movie({
         id: card.id, // TMDB ID
-        original_title: card.original_title,
+        original_title: card.original_title || card.original_name,
         overview: card.overview,
         poster_path: card.poster_path,
-        release_date: card.release_date,
+        release_date: card.release_date || card.first_air_date || null,
         genre_ids: card.genre_ids,
         vote_average: card.vote_average,
         backdrop_path: card.backdrop_path,
@@ -88,14 +88,15 @@ router.delete("/watch-later", async (req, res) => {
 router.post("/watched", async (req, res) => {
   try {
     const { userEmail, card, trailerId } = req.body;
+    console.log(card);
     let existingMovie = await Movie.findOne({ id: card.id });
     if (!existingMovie) {
       existingMovie = new Movie({
         id: card.id, // TMDB ID
-        original_title: card.original_title,
+        original_title: card.original_title || card.original_name,
         overview: card.overview,
         poster_path: card.poster_path,
-        release_date: card.release_date,
+        release_date: card.release_date || card.first_air_date || null,
         genre_ids: card.genre_ids,
         vote_average: card.vote_average,
         backdrop_path: card.backdrop_path,
