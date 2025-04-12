@@ -5,18 +5,18 @@ import Movie from "../models/Movie.js";
 const router = express.Router();
 router.post("/watch-later", async (req, res) => {
   try {
-    const { userEmail, movie, trailerId } = req.body;
-    let existingMovie = await Movie.findOne({ id: movie.id });
+    const { userEmail, card, trailerId } = req.body;
+    let existingMovie = await Movie.findOne({ id: card.id });
     if (!existingMovie) {
       existingMovie = new Movie({
-        id: movie.id, // TMDB ID
-        original_title: movie.original_title,
-        overview: movie.overview,
-        poster_path: movie.poster_path,
-        release_date: movie.release_date,
-        genre_ids: movie.genre_ids,
-        vote_average: movie.vote_average,
-        backdrop_path: movie.backdrop_path,
+        id: card.id, // TMDB ID
+        original_title: card.original_title,
+        overview: card.overview,
+        poster_path: card.poster_path,
+        release_date: card.release_date,
+        genre_ids: card.genre_ids,
+        vote_average: card.vote_average,
+        backdrop_path: card.backdrop_path,
         trailerId: trailerId,
       });
       await existingMovie.save();
@@ -71,10 +71,10 @@ router.get("/watch-later", async (req, res) => {
 });
 
 router.delete("/watch-later", async (req, res) => {
-  const { userEmail, movie } = req.body;
+  const { userEmail, card } = req.body;
   try {
     const user = await User.findOne({ email: userEmail });
-    const movieID = await Movie.findOne({ id: movie.id });
+    const movieID = await Movie.findOne({ id: card.id });
     let movieObjectId = movieID._id;
     await User.findOneAndUpdate(
       { email: userEmail },
@@ -87,18 +87,18 @@ router.delete("/watch-later", async (req, res) => {
 });
 router.post("/watched", async (req, res) => {
   try {
-    const { userEmail, movie, trailerId } = req.body;
-    let existingMovie = await Movie.findOne({ id: movie.id });
+    const { userEmail, card, trailerId } = req.body;
+    let existingMovie = await Movie.findOne({ id: card.id });
     if (!existingMovie) {
       existingMovie = new Movie({
-        id: movie.id, // TMDB ID
-        original_title: movie.original_title,
-        overview: movie.overview,
-        poster_path: movie.poster_path,
-        release_date: movie.release_date,
-        genre_ids: movie.genre_ids,
-        vote_average: movie.vote_average,
-        backdrop_path: movie.backdrop_path,
+        id: card.id, // TMDB ID
+        original_title: card.original_title,
+        overview: card.overview,
+        poster_path: card.poster_path,
+        release_date: card.release_date,
+        genre_ids: card.genre_ids,
+        vote_average: card.vote_average,
+        backdrop_path: card.backdrop_path,
         trailerId: trailerId,
       });
       await existingMovie.save();
@@ -152,10 +152,10 @@ router.get("/watched", async (req, res) => {
   }
 });
 router.delete("/watched", async (req, res) => {
-  const { userEmail, movie } = req.body;
+  const { userEmail, card } = req.body;
   try {
     const user = await User.findOne({ email: userEmail });
-    const movieID = await Movie.findOne({ id: movie.id });
+    const movieID = await Movie.findOne({ id: card.id });
     let movieObjectId = movieID._id;
     await User.findOneAndUpdate(
       { email: userEmail },

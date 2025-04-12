@@ -7,7 +7,7 @@ const router = express.Router();
 const TMDB_API_KEY = process.env.TMBD_API_KEY;
 const GOOGLE_API_KEY = process.env.GOOGLE_CLOUD_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
-const PIPE_URL = "https://pipedapi.adminforge.de/search"; 
+const PIPE_URL = "https://pipedapi.adminforge.de/search";
 
 router.get("/popular", async (req, res) => {
   const page = req.query.page;
@@ -35,7 +35,7 @@ router.get("/popular", async (req, res) => {
     //res.status(500).json({ error: "Failed to fetch movies" });
   }
 });
-router.get("/search", async (req, res) => {
+router.get("/search/movie", async (req, res) => {
   const { query } = req.query;
   console.log("Searching for movies with query:", query);
 
@@ -52,26 +52,50 @@ router.get("/search", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch searched movies" });
   }
 });
+router.get("/search/tv", async (req, res) => {
+  const { query } = req.query;
+  console.log("Searching for tv-shows with query:", query);
+
+  try {
+    const response = await axios.get(`${BASE_URL}/search/tv`, {
+      params: {
+        api_key: TMDB_API_KEY,
+        query: query,
+      },
+    });
+    console.log(response.data.results);
+    res.json(response.data.results); // Send the search results back to the client
+  } catch (error) {
+    console.log("Error searching for movies:");
+    res.status(500).json({ error: "Failed to fetch searched tv shows" });
+  }
+});
 router.get("/trailer", async (req, res) => {
-  const { original_title, original_language, release_date } = req.query;
+  const { original_title, original_language, release_date, type } = req.query;
   console.log(original_language);
   console.log(original_title);
   console.log(release_date);
   const year = release_date.split("-")[0];
-  const query =
-    original_language === "en"
-      ? `${original_title} ${year} trailer`
-      : `اعلان فيلم ${original_title} ${year}`;
-  console.log(query);
+  let query = "";
+  if (original_language === "ar") {
+    if (type === "movie") {
+      query = `اعلان فيلم ${original_title} ${year}`;
+    } else {
+      query = `اعلان مسلسل ${original_title} ${year}`;
+    }
+  }
+  else {
+      query = `${original_title} ${year} trailer`;
+  }
 
   try {
     const response = await axios.get(`${PIPE_URL}`, {
       params: {
         q: query, // your search string
-        filter:"videos",
+        filter: "videos",
       },
     });
-    const trailerId = response.data.items[0]?.url.split('v=')[1];
+    const trailerId = response.data.items[0]?.url.split("v=")[1];
     if (trailerId) {
       console.log(trailerId);
       res.status(200).json(trailerId);

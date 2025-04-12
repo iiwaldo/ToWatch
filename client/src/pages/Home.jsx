@@ -9,24 +9,24 @@ import Pagination from "../components/Pagination";
 
 export default function Home({ type }) {
   const { user } = useAuth();
-  const [movies, setMovies] = useState([]);
+  const [cards, setCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("Popular Movies");
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleMovieClick = (movie) => {
-    setSelectedMovie(movie);
+  const handleCardClick = (card) => {
+    setSelectedCard(card);
     setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setSelectedMovie(null);
+    setSelectedCard(null);
   };
   console.log("im called");
 
@@ -40,14 +40,24 @@ export default function Home({ type }) {
     const fetchMovies = async () => {
       try {
         if (searchQuery && type === "home") {
-          const response = await axios.get(
-            "http://localhost:3000/api/movies/search",
+          let response = await axios.get(
+            "http://localhost:3000/api/movies/search/movie",
             {
               params: { query: searchQuery },
             }
           );
-          setMovies(response.data || []);
+          let moviesArray = response.data || [];
           setTitle(""); // No title when searching
+          response = await axios.get(
+            "http://localhost:3000/api/movies/search/tv",
+            {
+              params: { query: searchQuery },
+            }
+          );
+          let showsArray = response.data || [];
+          let combined = [...moviesArray,...showsArray];
+          setTotalPages(combined.length);
+          setCards(combined);
         } else if (!searchQuery && type === "home") {
           const response = await axios.get(
             "http://localhost:3000/api/movies/popular",
@@ -56,8 +66,8 @@ export default function Home({ type }) {
             }
           );
           const data = response.data;
-          setMovies(data.movies || []);
-          setTotalPages(data.totalPages); // Set total pages from the response
+          setCards(data.movies || []);
+          setTotalPages(totalPages + data.totalPages); // Set total pages from the response
           setTitle("Popular Movies");
         } else if (type === "watch-later") {
           if (!user) {
@@ -68,10 +78,10 @@ export default function Home({ type }) {
             "http://localhost:3000/api/user/watch-later",
             { params: { userEmail: user.email, page, limit: 20 } }
           );
-          setMovies(response.data.movies || []);
+          setCards(response.data.movies || []);
           setTotalPages(response.data.totalPages); // Set total pages from the response
         } else if (type === "watched") {
-          if (!user){
+          if (!user) {
             return;
           }
           setTitle("My Watched Movies");
@@ -79,12 +89,12 @@ export default function Home({ type }) {
             "http://localhost:3000/api/user/watched",
             { params: { userEmail: user.email, page, limit: 20 } }
           );
-          setMovies(response.data.movies || []);
+          setCards(response.data.movies || []);
           setTotalPages(response.data.totalPages); // Set total pages from the response
         }
       } catch (error) {
         console.error("Error fetching movies", error);
-        setMovies([]);
+        setCards([]);
       }
     };
 
@@ -110,31 +120,32 @@ export default function Home({ type }) {
           <h1 className="home-title">{title}</h1>
 
           <div className="movie-cards-container">
-            {movies.length === 0 ? (
-              <p>No movies found</p>
+            {cards.length === 0 ? (
+              <p>No movies / tv-shows found</p>
             ) : (
-              movies.map((movie) => (
+              cards.map((card) => (
                 <MovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={handleMovieClick}
+                  key={card.id}
+                  card={card}
+                  onClick={handleCardClick}
                 />
               ))
             )}
-          </div>
-
-          {["Popular Movies", "Watch Later", "My Watched Movies"].includes(
-            title
-          ) && (
+          </div>          
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               goToPage={goToPage}
             />
-          )}
+          
 
-          {showModal && selectedMovie && (
-            <MovieDetailsModal type={type} setMovies={setMovies} movie={selectedMovie} onClose={closeModal} />
+          {showModal && selectedCard && (
+            <MovieDetailsModal
+              type={type}
+              setCards={setCards}
+              card={selectedCard}
+              onClose={closeModal}
+            />
           )}
         </div>
       </div>

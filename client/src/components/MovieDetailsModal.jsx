@@ -9,20 +9,22 @@ import {
   FaBookmark,
 } from "react-icons/fa"; // Import both filled and outlined icons
 
-const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
-  const id = movie.id;
-  const [trailerId, setTrailerId] = useState(movie.trailerId || null);
+const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
+  const id = card.id;
+  const [trailerId, setTrailerId] = useState(card.trailerId || null);
   const [showTrailer, setShowTrailer] = useState(false);
   const { user } = useAuth();
   const [watched, isWatched] = useState(false);
   const [saved, isSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [originalIndex, setOriginalIndex] = useState(null);
-  console.log("trailer id=", movie.trailerId);
+  const datatype = card.original_title ? "movie" : "show";
+  console.log("trailer id=", card.trailerId);
+  console.log(card);
 
   useEffect(() => {
     if (type !== "home") {
-      setTrailerId(movie.trailerId);
+      setTrailerId(card.trailerId);
       if (trailerId) {
         setLoading(false);
       }
@@ -32,14 +34,14 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
       if (type === "watched") {
         isWatched(true);
       }
-      console.log("fetch trailer failed", movie);
+      console.log("fetch trailer failed", card);
       return;
     }
     const checkStatus = async () => {
       try {
         const response = await axios.get(
           `http://localhost:3000/api/user/movie`,
-          { params: { movieID: movie.id, userEmail: user.email } }
+          { params: { movieID: card.id, userEmail: user.email } }
         );
         isWatched(response.data.isWatched);
         isSaved(response.data.isSaved);
@@ -48,15 +50,16 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
       }
     };
     const fetchTrailer = async () => {
-      console.log(movie.original_title);
+      console.log(card.original_title);
       try {
         const response = await axios.get(
           "http://localhost:3000/api/movies/trailer",
           {
             params: {
-              original_title: movie.original_title,
-              original_language: movie.original_language,
-              release_date: movie.release_date,
+              original_title: card.original_title || card.original_name,
+              original_language: card.original_language,
+              release_date: card.release_date || card.first_air_date || null,
+              type : datatype,
             },
           }
         );
@@ -76,7 +79,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
   const handleWatchLater = async () => {
     const data = {
       userEmail: user.email,
-      movie,
+      card,
       trailerId,
     };
 
@@ -88,10 +91,10 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         );
         isSaved(true);
         if (type === "watch-later" && originalIndex !== null) {
-          setMovies((prevMovies) => {
-            console.log("movie id after adding = ", movie.id);
-            const updated = [...prevMovies];
-            updated.splice(originalIndex, 0, movie);
+          setMovies((prevCards) => {
+            console.log("card id after adding = ", card.id);
+            const updated = [...prevCards];
+            updated.splice(originalIndex, 0, card);
             return updated;
           });
           setOriginalIndex(null); // Reset after reinserting
@@ -109,14 +112,14 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         );
         isSaved(false);
         if (type === "watch-later") {
-          setMovies((prevMovies) => {
-            console.log("movie id before removing = ", movie.id);
-            const index = prevMovies.findIndex((card) => card.id === movie.id);
+          setMovies((prevCards) => {
+            console.log("card id before removing = ", card.id);
+            const index = prevCards.findIndex((card) => card.id === card.id);
             if (index !== -1) {
               setOriginalIndex(index); // store index before removal
-              return prevMovies.filter((card) => card.id !== movie.id);
+              return prevCards.filter((card) => card.id !== card.id);
             }
-            return prevMovies;
+            return prevCards;
           });
         }
       } catch (error) {
@@ -128,7 +131,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
   const handleWatched = async () => {
     const data = {
       userEmail: user.email,
-      movie,
+      card,
       trailerId,
     };
 
@@ -140,10 +143,10 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         );
         isWatched(true);
         if (type === "watched" && originalIndex !== null) {
-          setMovies((prevMovies) => {
-            console.log("movie id after adding = ", movie.id);
-            const updated = [...prevMovies];
-            updated.splice(originalIndex, 0, movie);
+          setMovies((prevCards) => {
+            console.log("card id after adding = ", card.id);
+            const updated = [...prevCards];
+            updated.splice(originalIndex, 0, card);
             return updated;
           });
           setOriginalIndex(null); // Reset after reinserting
@@ -161,14 +164,14 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         );
         isWatched(false);
         if (type === "watched") {
-          setMovies((prevMovies) => {
-            console.log("movie id before removing = ", movie.id);
-            const index = prevMovies.findIndex((card) => card.id === movie.id);
+          setCards((prevCards) => {
+            console.log("movie id before removing = ", card.id);
+            const index = prevCards.findIndex((card) => card.id === card.id);
             if (index !== -1) {
               setOriginalIndex(index); // store index before removal
-              return prevMovies.filter((card) => card.id !== movie.id);
+              return prevCards.filter((card) => card.id !== card.id);
             }
-            return prevMovies;
+            return prevCards;
           });
         }
       } catch (error) {
@@ -219,8 +222,8 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         <div className="modal-body">
           <div className="movie-image">
             <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.original_title}
+              src={`https://image.tmdb.org/t/p/w500${card.poster_path}`}
+              alt={card.original_title || card.original_name}
               className="movie-poster"
             />
             {/* Watch Later and Watched icons */}
@@ -233,13 +236,13 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
           </div>
 
           <div className="movie-description">
-            <h1>{movie.original_title}</h1>
-            <p>{movie.overview}</p>
+            <h1>{card.original_title || card.original_name}</h1>
+            <p>{card.overview}</p>
             <p>
-              <strong>Release Date:</strong> {movie.release_date}
+              <strong>Release Date:</strong> {card.release_date || card.first_air_date}
             </p>
             <p>
-              <strong>Rating:</strong> {movie.vote_average}
+              <strong>Rating:</strong> {card.vote_average}
             </p>
 
             {loading || !trailerId ? (
