@@ -145,7 +145,7 @@ button:hover {
 }
 
 .close-btn:hover {
-  color: #00e5ff;
+  background-color: #00bcd4;
 }
 
 @media (max-width: 768px) {
