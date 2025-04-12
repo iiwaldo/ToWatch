@@ -11,13 +11,14 @@ import {
 
 const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
   const id = movie.id;
-  const [trailerId, setTrailerId] = useState(null);
+  const [trailerId, setTrailerId] = useState(movie.trailerId || null);
   const [showTrailer, setShowTrailer] = useState(false);
   const { user } = useAuth();
   const [watched, isWatched] = useState(false);
   const [saved, isSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [originalIndex, setOriginalIndex] = useState(null);
+  console.log("trailer id=", movie.trailerId);
 
   useEffect(() => {
     if (type !== "home") {
@@ -88,7 +89,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         isSaved(true);
         if (type === "watch-later" && originalIndex !== null) {
           setMovies((prevMovies) => {
-            console.log("movie id after adding = ",movie.id)
+            console.log("movie id after adding = ", movie.id);
             const updated = [...prevMovies];
             updated.splice(originalIndex, 0, movie);
             return updated;
@@ -109,7 +110,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         isSaved(false);
         if (type === "watch-later") {
           setMovies((prevMovies) => {
-            console.log("movie id before removing = ",movie.id);
+            console.log("movie id before removing = ", movie.id);
             const index = prevMovies.findIndex((card) => card.id === movie.id);
             if (index !== -1) {
               setOriginalIndex(index); // store index before removal
@@ -140,7 +141,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         isWatched(true);
         if (type === "watched" && originalIndex !== null) {
           setMovies((prevMovies) => {
-            console.log("movie id after adding = ",movie.id)
+            console.log("movie id after adding = ", movie.id);
             const updated = [...prevMovies];
             updated.splice(originalIndex, 0, movie);
             return updated;
@@ -161,7 +162,7 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
         isWatched(false);
         if (type === "watched") {
           setMovies((prevMovies) => {
-            console.log("movie id before removing = ",movie.id);
+            console.log("movie id before removing = ", movie.id);
             const index = prevMovies.findIndex((card) => card.id === movie.id);
             if (index !== -1) {
               setOriginalIndex(index); // store index before removal
@@ -241,10 +242,9 @@ const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
               <strong>Rating:</strong> {movie.vote_average}
             </p>
 
-            {loading ? (
+            {loading || !trailerId ? (
               <div>Loading trailer...</div>
             ) : (
-              trailerId &&
               !showTrailer && (
                 <button onClick={() => setShowTrailer(true)}>
                   Watch Trailer
