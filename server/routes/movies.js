@@ -7,7 +7,7 @@ const router = express.Router();
 const TMDB_API_KEY = process.env.TMBD_API_KEY;
 const GOOGLE_API_KEY = process.env.GOOGLE_CLOUD_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
-const GOOGLE_URL = "https://www.googleapis.com/youtube/v3/search";
+const PIPE_URL = "https://pipedapi.adminforge.de/search"; 
 
 router.get("/popular", async (req, res) => {
   const page = req.query.page;
@@ -65,18 +65,14 @@ router.get("/trailer", async (req, res) => {
   console.log(query);
 
   try {
-    const response = await axios.get(`${GOOGLE_URL}`, {
+    const response = await axios.get(`${PIPE_URL}`, {
       params: {
-        part: "snippet", // required to get title, thumbnails, etc.
         q: query, // your search string
-        type: "video", // we want only videos
-        maxResults: 1, // top result only
-        videoEmbeddable: "true", // important for iframe embeds
-        key: GOOGLE_API_KEY, // your YouTube API key
+        filter:"videos",
       },
     });
-    const trailerId = response.data.items[0]?.id?.videoId;
-    if(trailerId) {
+    const trailerId = response.data.items[0]?.url.split('v=')[1];
+    if (trailerId) {
       console.log(trailerId);
       res.status(200).json(trailerId);
     }

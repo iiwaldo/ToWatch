@@ -133,7 +133,7 @@ export default function Home({ type }) {
           )}
 
           {showModal && selectedMovie && (
-            <MovieDetailsModal type={type} movie={selectedMovie} onClose={closeModal} />
+            <MovieDetailsModal type={type} setMovies={setMovies} movie={selectedMovie} onClose={closeModal} />
           )}
         </div>
       </div>

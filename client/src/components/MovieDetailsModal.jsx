@@ -9,7 +9,7 @@ import {
   FaBookmark,
 } from "react-icons/fa"; // Import both filled and outlined icons
 
-const MovieDetailsModal = ({ movie, onClose, type }) => {
+const MovieDetailsModal = ({ movie, onClose, type, setMovies }) => {
   const id = movie.id;
   const [trailerId, setTrailerId] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -17,13 +17,15 @@ const MovieDetailsModal = ({ movie, onClose, type }) => {
   const [watched, isWatched] = useState(false);
   const [saved, isSaved] = useState(false);
   const [loading, setLoading] = useState(true);
-  console.log(saved);
 
   useEffect(() => {
     if (type !== "home") {
       setTrailerId(movie.trailerId);
       if (trailerId) {
         setLoading(false);
+      }
+      if (type === "watch-later") {
+        isSaved(true);
       }
       console.log("fetch trailer failed", movie);
       return;
@@ -75,24 +77,36 @@ const MovieDetailsModal = ({ movie, onClose, type }) => {
       movie: movie,
       trailerId: trailerId,
     };
+    let index = null;
     if (!saved) {
       try {
+        console.log("im here");
         const response = await axios.post(
           `http://localhost:3000/api/user/watch-later`,
           data
         );
         isSaved((prev) => !prev);
+        if (type === "watch-later") {
+          setMovies((prevMovies) => prevMovies.splice(index,0,movie));
+        }
       } catch (error) {
         console.log("Error adding to watch later");
       }
-    }
-    else {
+    } else {
       try {
         const response = await axios.delete(
           `http://localhost:3000/api/user/watch-later`,
-          {data : data}
+          { data: data }
         );
         isSaved((prev) => !prev);
+        if (type === "watch-later") {
+          setMovies((prevMovieCards) => {
+            index = prevMovieCards.indexOf(movie);
+            prevMovieCards.filter(
+              (card) => card.id !== (movie.id)
+            );
+          });
+        }
       } catch (error) {
         console.log("Error adding to watch later");
       }
@@ -118,7 +132,7 @@ const MovieDetailsModal = ({ movie, onClose, type }) => {
   };
 
   const renderWatchLaterButton = () => {
-    if (type === "watch-later" || saved) {
+    if (saved) {
       return (
         <button onClick={handleWatchLater} className="icon-btn active">
           <FaBookmark size={24} />
@@ -160,7 +174,7 @@ const MovieDetailsModal = ({ movie, onClose, type }) => {
           <div className="movie-image">
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
+              alt={movie.original_title}
               className="movie-poster"
             />
             {/* Watch Later and Watched icons */}
