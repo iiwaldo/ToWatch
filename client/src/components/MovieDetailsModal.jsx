@@ -21,8 +21,18 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const [originalIndex, setOriginalIndex] = useState(null);
   const datatype = card.original_title ? "movie" : "show";
   const [cast, setCast] = useState([]);
-  console.log("trailer id=", card.trailerId);
-  console.log(card);
+  const imageUrl = card.poster_path
+    ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
+    : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg";
+  let date = card.release_date || card.first_air_date;
+  let formattedDate = null;
+  if (date) {
+    date = new Date(date);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const year = date.getFullYear();
+    formattedDate = `${day}/${month}/${year}`;
+  }
 
   const fetchCast = async () => {
     try {
@@ -237,7 +247,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
         <div className="modal-body">
           <div className="movie-image">
             <img
-              src={`https://image.tmdb.org/t/p/w500${card.poster_path}`}
+              src={imageUrl}
               alt={card.original_title || card.original_name}
               className="movie-poster"
             />
@@ -254,8 +264,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
             <h1>{card.original_title || card.original_name}</h1>
             <p>{card.overview}</p>
             <p>
-              <strong>Release Date:</strong>{" "}
-              {card.release_date || card.first_air_date}
+              <strong>Release Date:</strong> {formattedDate}
             </p>
             <p>
               <strong>Rating:</strong> {card.vote_average}
@@ -290,7 +299,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                 <h3>Cast</h3>
                 <div className="cast-list">
                   {cast.map((actor) => (
-                    <ActorCard key={actor.id} actor={actor} />
+                    <ActorCard key={actor.id} actor={actor} onClose={onClose} />
                   ))}
                 </div>
               </div>

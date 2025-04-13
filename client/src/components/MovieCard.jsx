@@ -2,10 +2,11 @@ import "../styles/moviecard.css";
 import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({ card, onClick }) => {
+  const imageUrl = card.poster_path ? `https://image.tmdb.org/t/p/w500${card.poster_path}` : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg";
   return (
     <div className="movie-card" onClick={() => onClick(card)}>
       <img
-        src={`https://image.tmdb.org/t/p/w500${card.poster_path}`} // TMDB image URL
+        src={imageUrl} // TMDB image URL
         alt={card.title}
         className="movie-poster"
       />

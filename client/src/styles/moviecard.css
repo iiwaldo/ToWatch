@@ -1,4 +1,3 @@
-/* Home page container */
 .home-container {
   padding-top: 250px; /* Push below fixed navbar */
   padding-left: 20px;
@@ -118,5 +117,40 @@
 .pagination-btn.active {
   background-color: #00e5ff; /* Blue background for the active page */
   color: white;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  z-index: 10;
+}
+
+.dropdown-menu button {
+  background: none;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s, padding 0.2s;
+  padding-left: 20px;
+}
+
+.dropdown-menu button:hover {
+  background-color: #00bcd4;
+  padding-left: 24px;
+}
+
+.dropdown-menu button:focus {
+  outline: none;
 }
 

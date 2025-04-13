@@ -1,4 +1,4 @@
-/* Global styles for the dark theme */
+/* 🔥 Ultra Dark & Futuristic Global Theme */
 body {
     margin: 0;
     padding: 0;
@@ -6,14 +6,23 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(45deg, #000000, #1a1a1a, #232323); /* Darker gradient with black */
-    background-size: 400% 400%; /* Large size for the gradient to move */
-    animation: gradientAnimation 10s ease infinite; /* Animated gradient */
-    font-family: 'Arial', sans-serif;
-    color: #ffffff; /* White text for contrast */
+
+    /* Enhanced deep animated gradient */
+    background: linear-gradient(135deg, #020202, #0a0a0a, #111, #1c1c1c, #020202);
+    background-size: 1000% 1000%;
+    animation: gradientAnimation 30s linear infinite;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #e0f7fa;
+    text-shadow: 0 0 6px rgba(0, 255, 255, 0.1);
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    transition: all 0.3s ease-in-out;
 }
 
-/* Keyframes for moving gradient animation */
+/* 🔄 Sexy animated background */
 @keyframes gradientAnimation {
     0% {
         background-position: 0% 50%;
@@ -23,5 +32,39 @@ body {
     }
     100% {
         background-position: 0% 50%;
+    }
+}
+
+/* 💎 Glassy Neon Glow Box */
+.glow-box {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    box-shadow:
+        0 0 30px rgba(0, 229, 255, 0.07),
+        0 0 60px rgba(0, 229, 255, 0.04),
+        inset 0 0 10px rgba(0, 255, 255, 0.03);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.4s ease;
+    animation: floatPulse 6s ease-in-out infinite;
+}
+
+/* 🧊 Hover: More glow and scale */
+.glow-box:hover {
+    transform: scale(1.025);
+    box-shadow:
+        0 0 45px rgba(0, 255, 255, 0.15),
+        0 0 90px rgba(0, 255, 255, 0.12),
+        inset 0 0 20px rgba(0, 255, 255, 0.08);
+}
+
+/* 💫 Floating pulse animation */
+@keyframes floatPulse {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
     }
 }

@@ -7,7 +7,7 @@ import MovieCard from "../components/MovieCard";
 import MovieDetailsModal from "../components/MovieDetailsModal";
 import Pagination from "../components/Pagination";
 import FilterModal from "../components/FilterModal";
-
+import "../styles/moviecard.css";
 export default function Home({ type }) {
   const { user } = useAuth();
   const [cards, setCards] = useState([]);
@@ -21,8 +21,20 @@ export default function Home({ type }) {
   const [genreNames, setGenreNames] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const [actorFilter, setActorFilter] = useState(false);
+  const [showDropMenu, setShowDropMenu] = useState(false);
+  const [sortOrder, setSortOrder] = useState("desc"); //new first
+  const [actorArr, setActorArr] = useState([]);
   console.log(cards);
 
+  const toggleSortMenu = () => {
+    setShowDropMenu((prev) => !prev);
+  };
+
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+    setShowDropMenu(false); // Close dropdown after selection
+  };
   const handleCardClick = (card) => {
     setSelectedCard(card);
     setShowModal(true);
@@ -44,38 +56,69 @@ export default function Home({ type }) {
     isSearch(false);
     setIsFilter(false);
     setCurrentPage(page);
-
+    setActorFilter(false);
+    setActorArr([]);
     const fetchMovies = async () => {
       try {
         if (filterQuery && type === "home") {
           const decodedFilter = decodeURIComponent(filterQuery);
           const filterParams = new URLSearchParams(decodedFilter);
-          const type = filterParams.get("type");
-          const sortOrder = filterParams.get("sortOrder");
-          const genres = filterParams.get("genres")
-            ? filterParams.get("genres").split(",")
-            : [];
-          const year = filterParams.get("year");
-          const language = filterParams.get("language");
-          const genreNamesToDisplay = genres ? genreNames.join("-") : "";
-          setGenreNames([]);
-          setTitle(`${year ? year : ""} ${genreNamesToDisplay} ${type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}'s`);
-          const data = {
-            year: year,
-            language: language,
-            page: page || 1,
-            genres: genres.join(","),
-            sortOrder: sortOrder,
-            type: type,
-          };
-          let response = await axios.get(
-            "http://localhost:3000/api/movies/filter",
-            { params: data }
-          );
-          console.log(response.data);
-          setCards(response.data.results);
-          setTotalPages(response.data.total_pages);
+          const actorID = filterParams.get("actorID");
+          if (actorID) {
+            const response = await axios.get(
+              "http://localhost:3000/api/movies/combined_credits",
+              {
+                params: { actorID: actorID },
+              }
+            );
+            setActorFilter(true);
+            const actorName = filterParams.get("actorName");
+            const credits = response.data;
+            const uniqueCredits = Array.from(
+              new Map(credits.map((item) => [item.id, item])).values()
+            );
+
+            const sortedCredits = uniqueCredits.sort((a, b) => {
+              const dateA = new Date(a.release_date || a.first_air_date || 0);
+              const dateB = new Date(b.release_date || b.first_air_date || 0);
+              return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+            });
+            console.log(credits);
+            setCards(sortedCredits);
+            setTitle(actorName);
+          } else {
+            const type = filterParams.get("type");
+            const sortOrder = filterParams.get("sortOrder");
+            const genres = filterParams.get("genres")
+              ? filterParams.get("genres").split(",")
+              : [];
+            const year = filterParams.get("year");
+            const language = filterParams.get("language");
+            const genreNamesToDisplay = genres ? genreNames.join("-") : "";
+            setGenreNames([]);
+            setTitle(
+              `${year ? year : ""} ${genreNamesToDisplay} ${
+                type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()
+              }'s`
+            );
+            const data = {
+              year: year,
+              language: language,
+              page: page || 1,
+              genres: genres.join(","),
+              sortOrder: sortOrder,
+              type: type,
+            };
+            let response = await axios.get(
+              "http://localhost:3000/api/movies/filter",
+              { params: data }
+            );
+            console.log(response.data);
+            setCards(response.data.results);
+            setTotalPages(response.data.total_pages);
+          }
         } else if (searchQuery && type === "home") {
+          setCards([]);
           isSearch(true);
           let response = await axios.get(
             "http://localhost:3000/api/movies/search/movie",
@@ -134,7 +177,6 @@ export default function Home({ type }) {
         setCards([]);
       }
     };
-
     fetchMovies();
   }, [location.search, type, user]);
 
@@ -142,10 +184,9 @@ export default function Home({ type }) {
     const params = new URLSearchParams(location.search);
     const searchQuery = params.get("search");
     const filterQuery = params.get("filter");
-    if(filterQuery) {
+    if (filterQuery) {
       navigate(`?filter=${encodeURIComponent(filterQuery)}&page=${page}`);
-    }
-    else if (searchQuery) {
+    } else if (searchQuery) {
       navigate(`?search=${encodeURIComponent(searchQuery)}&page=${page}`);
     } else {
       navigate(`?page=${page}`);
@@ -163,10 +204,27 @@ export default function Home({ type }) {
         <div className="home-container">
           <div className="home-header">
             <h1 className="home-title">{title}</h1>
-            {type === "home" && !search && (
+            {type === "home" && !search && !actorFilter && (
               <button onClick={onFilterClick} className="filter-button">
                 Filter
               </button>
+            )}
+            {actorFilter && (
+              <div style={{ position: "relative" }}>
+                <button className="filter-button" onClick={toggleSortMenu}>
+                  Sort By
+                </button>
+                {showDropMenu && (
+                  <div className="dropdown-menu">
+                    <button onClick={() => handleSortChange("desc")}>
+                      Newest First
+                    </button>
+                    <button onClick={() => handleSortChange("asc")}>
+                      Oldest First
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -183,11 +241,13 @@ export default function Home({ type }) {
               ))
             )}
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            goToPage={goToPage}
-          />
+          {!actorFilter && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              goToPage={goToPage}
+            />
+          )}
 
           {showModal && selectedCard && (
             <MovieDetailsModal
