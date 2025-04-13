@@ -3,7 +3,7 @@ import axios from "axios";
 import "../styles/modal.css";
 import { useNavigate } from "react-router-dom";
 
-const FilterModal = ({ onClose, setFilter }) => {
+const FilterModal = ({ onClose, setGenreNames }) => {
   const [movieGenres, setMovieGenres] = useState([]);
   const [tvGenres, setTvGenres] = useState([]);
   const [dataType, setDataType] = useState("movie");
@@ -12,6 +12,7 @@ const FilterModal = ({ onClose, setFilter }) => {
   const [genres, setGenres] = useState([]);
   const [language, setLanguage] = useState("");
   const navigate = useNavigate();
+  const [genresToSave,setGenresToSave] = useState([]);
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -33,13 +34,6 @@ const FilterModal = ({ onClose, setFilter }) => {
   }, [dataType]);
 
   const handleFilterApply = () => {
-    setFilter({
-      type: dataType,
-      sortOrder,
-      year: selectedYear,
-      genres,
-      language,
-    });
     const filterParams = new URLSearchParams({
       // or use currentPage if you want to persist the page number
       type: dataType,
@@ -56,11 +50,17 @@ const FilterModal = ({ onClose, setFilter }) => {
     onClose();
   };
 
-  const toggleGenre = (id) => {
+  const toggleGenre = (id, name) => {
     if (genres.includes(id)) {
+      // Remove the genre from both lists
       setGenres(genres.filter((g) => g !== id));
+      setGenresToSave(genresToSave.filter((n) => n !== name));
+      setGenreNames((prev) => prev.filter((n) => n !== name));
     } else {
+      // Add the genre to both lists
       setGenres([...genres, id]);
+      setGenresToSave([...genresToSave, name]);
+      setGenreNames((prev) => [...prev, name]);
     }
   };
 
@@ -137,7 +137,7 @@ const FilterModal = ({ onClose, setFilter }) => {
                   className={`genre-btn ${
                     genres.includes(genre.id) ? "selected" : ""
                   }`}
-                  onClick={() => toggleGenre(genre.id)}
+                  onClick={() => toggleGenre(genre.id,genre.name)}
                 >
                   {genre.name}
                 </button>
@@ -152,7 +152,6 @@ const FilterModal = ({ onClose, setFilter }) => {
               onChange={(e) => setLanguage(e.target.value)}
               className="auth-input"
             >
-              <option value="">All</option>
               <option value="en">English</option>
               <option value="ar">Arabic</option>
               <option value="fr">French</option>

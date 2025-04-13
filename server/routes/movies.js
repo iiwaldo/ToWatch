@@ -141,9 +141,9 @@ router.get("/filter", async (req, res) => {
         [dateType]: year,
       },
     });
-    console.log(genres);
+    console.log(page);
     console.log(language);
-    console.log(sortOrder);
+    console.log(response.data.total_pages);
     res.status(200).json(response.data);
   } catch (error) {
     console.log("error filter", error);

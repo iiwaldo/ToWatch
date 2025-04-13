@@ -18,7 +18,7 @@ export default function Home({ type }) {
   const [title, setTitle] = useState("Popular Movies");
   const [search, isSearch] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
-  const [filter, setFilter] = useState(null);
+  const [genreNames, setGenreNames] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
   console.log(cards);
@@ -57,7 +57,8 @@ export default function Home({ type }) {
             : [];
           const year = filterParams.get("year");
           const language = filterParams.get("language");
-          const page = filterParams.get("page");
+          const genreNamesToDisplay = genres ? genreNames.join("-") : "";
+          setTitle(`${year ? year : ""} ${genreNamesToDisplay} ${type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}'s`);
           const data = {
             year: year,
             language: language,
@@ -139,8 +140,11 @@ export default function Home({ type }) {
   const goToPage = (page) => {
     const params = new URLSearchParams(location.search);
     const searchQuery = params.get("search");
-
-    if (searchQuery) {
+    const filterQuery = params.get("filter");
+    if(filterQuery) {
+      navigate(`?filter=${encodeURIComponent(filterQuery)}&page=${page}`);
+    }
+    else if (searchQuery) {
       navigate(`?search=${encodeURIComponent(searchQuery)}&page=${page}`);
     } else {
       navigate(`?page=${page}`);
@@ -193,7 +197,7 @@ export default function Home({ type }) {
             />
           )}
           {showModal && isFilter && (
-            <FilterModal onClose={closeModal} setFilter={setFilter} />
+            <FilterModal onClose={closeModal} setGenreNames={setGenreNames} />
           )}
         </div>
       </div>
