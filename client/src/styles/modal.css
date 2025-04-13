@@ -321,3 +321,74 @@ button:hover {
   flex: 1;
   min-width: 200px;
 }
+/* actor card */
+/* Cast section styles */
+.cast-section {
+  margin-top: 30px;
+}
+
+.cast-section h3 {
+  font-size: 1.5rem;
+  color: #00e5ff;
+  margin-bottom: 15px;
+}
+
+.cast-list {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: #00bcd4 #333;
+}
+
+.cast-list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.cast-list::-webkit-scrollbar-track {
+  background: #333;
+  border-radius: 10px;
+}
+
+.cast-list::-webkit-scrollbar-thumb {
+  background-color: #00bcd4;
+  border-radius: 10px;
+}
+
+/* Actor card styles */
+.actor-card {
+  flex: 0 0 auto;
+  width: 150px;
+  background: rgba(30, 30, 30, 0.8);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.actor-card:hover {
+  transform: translateY(-5px);
+}
+
+.actor-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.actor-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.actor-name {
+  font-size: 1rem;
+  margin: 5px 0;
+  color: white;
+}
+
+.actor-character {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin: 0;
+}

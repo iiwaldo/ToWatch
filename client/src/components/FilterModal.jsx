@@ -158,7 +158,7 @@ const FilterModal = ({ onClose, setGenreNames }) => {
               <option value="ja">Japanese</option>
               <option value="ko">Korean</option>
               <option value="hi">Hindi</option>
-              <option value="de">German</option>
+              <option value="tr">Turkish</option>
             </select>
           </div>
 

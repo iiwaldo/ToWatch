@@ -149,5 +149,18 @@ router.get("/filter", async (req, res) => {
     console.log("error filter", error);
   }
 });
+router.get("/cast", async (req, res) => {
+  try {
+    const { movieID,datatype } = req.query;
+    const url = datatype==="movie" ? `${BASE_URL}/movie/${movieID}/credits` : `${BASE_URL}/tv/${movieID}/credits`
+    const response = await axios.get(url, {
+      params: { api_key: TMDB_API_KEY },
+    });
+    console.log(response.data);
+    res.status(200).json(response.data.cast);
+  } catch (error) {
+    console.log("Error getting cast",error );
+  }
+});
 
 export default router;

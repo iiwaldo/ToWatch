@@ -8,6 +8,7 @@ import {
   FaRegCheckCircle,
   FaBookmark,
 } from "react-icons/fa"; // Import both filled and outlined icons
+import ActorCard from "./ActorCard";
 
 const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const id = card.id;
@@ -19,9 +20,22 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const [loading, setLoading] = useState(true);
   const [originalIndex, setOriginalIndex] = useState(null);
   const datatype = card.original_title ? "movie" : "show";
+  const [cast, setCast] = useState([]);
   console.log("trailer id=", card.trailerId);
   console.log(card);
 
+  const fetchCast = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/movies/cast",
+        {
+          params: { movieID: card.id, datatype: datatype },
+        }
+      );
+      console.log(response.data[0]);
+      setCast(response.data);
+    } catch (error) {}
+  };
   useEffect(() => {
     if (type !== "home") {
       setTrailerId(card.trailerId);
@@ -59,7 +73,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
               original_title: card.original_title || card.original_name,
               original_language: card.original_language,
               release_date: card.release_date || card.first_air_date || null,
-              type : datatype,
+              type: datatype,
             },
           }
         );
@@ -72,6 +86,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     };
 
     if (id) {
+      fetchCast();
       fetchTrailer();
       checkStatus();
     }
@@ -239,7 +254,8 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
             <h1>{card.original_title || card.original_name}</h1>
             <p>{card.overview}</p>
             <p>
-              <strong>Release Date:</strong> {card.release_date || card.first_air_date}
+              <strong>Release Date:</strong>{" "}
+              {card.release_date || card.first_air_date}
             </p>
             <p>
               <strong>Rating:</strong> {card.vote_average}
@@ -266,6 +282,17 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
+              </div>
+            )}
+            {/* Add the cast section */}
+            {cast.length > 0 && (
+              <div className="cast-section">
+                <h3>Cast</h3>
+                <div className="cast-list">
+                  {cast.map((actor) => (
+                    <ActorCard key={actor.id} actor={actor} />
+                  ))}
+                </div>
               </div>
             )}
           </div>

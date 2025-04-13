@@ -58,6 +58,7 @@ export default function Home({ type }) {
           const year = filterParams.get("year");
           const language = filterParams.get("language");
           const genreNamesToDisplay = genres ? genreNames.join("-") : "";
+          setGenreNames([]);
           setTitle(`${year ? year : ""} ${genreNamesToDisplay} ${type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}'s`);
           const data = {
             year: year,
