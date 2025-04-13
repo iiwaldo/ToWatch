@@ -125,5 +125,29 @@ router.get("/tv-genres", async (req, res) => {
     console.log("error getting movie genres");
   }
 });
+router.get("/filter", async (req, res) => {
+  try {
+    const { type, sortOrder, year, genres, language, page } = req.query;
+    const dateType =
+      type === "movie" ? "primary_release_year" : "first_air_date_year";
+
+    const response = await axios.get(`${BASE_URL}/discover/${type}`, {
+      params: {
+        api_key: TMDB_API_KEY,
+        page: page,
+        sort_by: `popularity.${sortOrder}`,
+        with_original_language: language,
+        with_genres: genres,
+        [dateType]: year,
+      },
+    });
+    console.log(genres);
+    console.log(language);
+    console.log(sortOrder);
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.log("error filter", error);
+  }
+});
 
 export default router;

@@ -289,8 +289,7 @@ button:hover {
   display: block;
   width: 100%;
   background-color: #00e5ff;
-  color: black;
-  font-weight: bold;
+  color: white;
   padding: 12px;
   border-radius: 8px;
   border: none;
@@ -302,4 +301,23 @@ button:hover {
 
 .apply-btn:hover {
   background-color: #00bcd4;
+}
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #121212;
+  color: #fff;
+  font-size: 1rem;
+}
+.filter-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.half-width {
+  flex: 1;
+  min-width: 200px;
 }

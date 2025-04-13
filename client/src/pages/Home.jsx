@@ -21,6 +21,7 @@ export default function Home({ type }) {
   const [filter, setFilter] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  console.log(cards);
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
@@ -39,13 +40,40 @@ export default function Home({ type }) {
     const params = new URLSearchParams(location.search);
     const page = parseInt(params.get("page")) || 1;
     const searchQuery = params.get("search");
+    const filterQuery = params.get("filter");
     isSearch(false);
-
+    setIsFilter(false);
     setCurrentPage(page);
 
     const fetchMovies = async () => {
       try {
-        if (searchQuery && type === "home") {
+        if (filterQuery && type === "home") {
+          const decodedFilter = decodeURIComponent(filterQuery);
+          const filterParams = new URLSearchParams(decodedFilter);
+          const type = filterParams.get("type");
+          const sortOrder = filterParams.get("sortOrder");
+          const genres = filterParams.get("genres")
+            ? filterParams.get("genres").split(",")
+            : [];
+          const year = filterParams.get("year");
+          const language = filterParams.get("language");
+          const page = filterParams.get("page");
+          const data = {
+            year: year,
+            language: language,
+            page: page || 1,
+            genres: genres.join(","),
+            sortOrder: sortOrder,
+            type: type,
+          };
+          let response = await axios.get(
+            "http://localhost:3000/api/movies/filter",
+            { params: data }
+          );
+          console.log(response.data);
+          setCards(response.data.results);
+          setTotalPages(response.data.total_pages);
+        } else if (searchQuery && type === "home") {
           isSearch(true);
           let response = await axios.get(
             "http://localhost:3000/api/movies/search/movie",

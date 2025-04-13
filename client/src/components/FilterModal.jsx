@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/modal.css";
+import { useNavigate } from "react-router-dom";
 
 const FilterModal = ({ onClose, setFilter }) => {
   const [movieGenres, setMovieGenres] = useState([]);
@@ -9,6 +10,8 @@ const FilterModal = ({ onClose, setFilter }) => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedYear, setSelectedYear] = useState("");
   const [genres, setGenres] = useState([]);
+  const [language, setLanguage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -35,7 +38,21 @@ const FilterModal = ({ onClose, setFilter }) => {
       sortOrder,
       year: selectedYear,
       genres,
+      language,
     });
+    const filterParams = new URLSearchParams({
+      // or use currentPage if you want to persist the page number
+      type: dataType,
+      sortOrder,
+      genres: genres.join(","), // Convert genres array to comma-separated string
+    });
+    if (selectedYear) {
+      filterParams.append("year", selectedYear);
+    }
+    if (language) {
+      filterParams.append("language", language);
+    }
+    navigate(`?filter=${encodeURIComponent(filterParams.toString())}&page=1`);
     onClose();
   };
 
@@ -55,42 +72,48 @@ const FilterModal = ({ onClose, setFilter }) => {
         <button className="close-btn" onClick={onClose}>
           &times;
         </button>
-
         <div className="filter-modal-body">
-
-          <div className="filter-section">
-            <label>Type:</label>
-            <div className="toggle-group">
-              <button
-                className={`toggle-btn ${dataType === "movie" ? "active" : ""}`}
-                onClick={() => setDataType("movie")}
-              >
-                Movie
-              </button>
-              <button
-                className={`toggle-btn ${dataType === "tv" ? "active" : ""}`}
-                onClick={() => setDataType("tv")}
-              >
-                TV
-              </button>
+          <div className="filter-row">
+            <div className="filter-section half-width">
+              <label>Type:</label>
+              <div className="toggle-group">
+                <button
+                  className={`toggle-btn ${
+                    dataType === "movie" ? "active" : ""
+                  }`}
+                  onClick={() => setDataType("movie")}
+                >
+                  Movie
+                </button>
+                <button
+                  className={`toggle-btn ${dataType === "tv" ? "active" : ""}`}
+                  onClick={() => setDataType("tv")}
+                >
+                  TV
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="filter-section">
-            <label>Sort By:</label>
-            <div className="toggle-group">
-              <button
-                className={`toggle-btn ${sortOrder === "desc" ? "active" : ""}`}
-                onClick={() => setSortOrder("desc")}
-              >
-                Desc
-              </button>
-              <button
-                className={`toggle-btn ${sortOrder === "asc" ? "active" : ""}`}
-                onClick={() => setSortOrder("asc")}
-              >
-                Asc
-              </button>
+            <div className="filter-section half-width">
+              <label>Sort By Popularity:</label>
+              <div className="toggle-group">
+                <button
+                  className={`toggle-btn ${
+                    sortOrder === "desc" ? "active" : ""
+                  }`}
+                  onClick={() => setSortOrder("desc")}
+                >
+                  Desc
+                </button>
+                <button
+                  className={`toggle-btn ${
+                    sortOrder === "asc" ? "active" : ""
+                  }`}
+                  onClick={() => setSortOrder("asc")}
+                >
+                  Asc
+                </button>
+              </div>
             </div>
           </div>
 
@@ -120,6 +143,24 @@ const FilterModal = ({ onClose, setFilter }) => {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="filter-section">
+            <label>Select Language:</label>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="auth-input"
+            >
+              <option value="">All</option>
+              <option value="en">English</option>
+              <option value="ar">Arabic</option>
+              <option value="fr">French</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="hi">Hindi</option>
+              <option value="de">German</option>
+            </select>
           </div>
 
           <button className="apply-btn" onClick={handleFilterApply}>
