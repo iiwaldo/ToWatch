@@ -241,7 +241,7 @@ export default function Home({ type }) {
               ))
             )}
           </div>
-          {!actorFilter && (
+          {!actorFilter && !search && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

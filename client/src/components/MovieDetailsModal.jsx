@@ -19,7 +19,9 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const [saved, isSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [originalIndex, setOriginalIndex] = useState(null);
-  const [datatype,setDataType] = useState(card.type);
+  const [datatype, setDataType] = useState(
+    card.release_date ? "movie" : "show"
+  );
   const [cast, setCast] = useState([]);
   const imageUrl = card.poster_path
     ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
@@ -53,6 +55,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     }
   }, [card.trailerId]);
   useEffect(() => {
+    console.log(card);
     if (type !== "home") {
       if (type === "watch-later") {
         isSaved(true);
@@ -60,7 +63,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       if (type === "watched") {
         isWatched(true);
       }
-      console.log(card.id)
+      console.log(card.id);
       setDataType(card.type);
       console.log(datatype);
       fetchCast();
@@ -251,6 +254,8 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
 
         <div className="modal-body">
           <div className="movie-image">
+          <div className="datatype-label">{datatype}</div>
+
             <img
               src={imageUrl}
               alt={card.original_title || card.original_name}
@@ -304,7 +309,12 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                 <h3>Cast</h3>
                 <div className="cast-list">
                   {cast.map((actor) => (
-                    <ActorCard key={actor.id} type={type} actor={actor} onClose={onClose} />
+                    <ActorCard
+                      key={actor.id}
+                      type={type}
+                      actor={actor}
+                      onClose={onClose}
+                    />
                   ))}
                 </div>
               </div>

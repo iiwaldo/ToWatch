@@ -135,6 +135,8 @@ async function getFilter(req, res) {
 async function getCast(req, res) {
   try {
     const { movieID, datatype } = req.query;
+    console.log(movieID);
+    console.log(datatype);
     const url =
       datatype === "movie"
         ? `${BASE_URL}/movie/${movieID}/credits`
