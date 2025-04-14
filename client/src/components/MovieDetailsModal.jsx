@@ -304,7 +304,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                 <h3>Cast</h3>
                 <div className="cast-list">
                   {cast.map((actor) => (
-                    <ActorCard key={actor.id} actor={actor} onClose={onClose} />
+                    <ActorCard key={actor.id} type={type} actor={actor} onClose={onClose} />
                   ))}
                 </div>
               </div>
