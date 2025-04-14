@@ -14,6 +14,7 @@ async function findOrCreateMovie(card, trailerId) {
       vote_average: card.vote_average,
       backdrop_path: card.backdrop_path,
       trailerId: trailerId,
+      type: card.release_date ? "movie" : "show",
     });
     await movie.save();
   }
@@ -148,7 +149,7 @@ async function getStatus(req, res) {
     const user = await User.findOne({ email: userEmail });
     const movie = await Movie.findOne({ id: movieID });
     if (!movie) {
-      res.status(200).json({ isSaved: isSaved, isWatched: isWatched });
+      return res.status(200).json({ isSaved: isSaved, isWatched: isWatched });
     }
     const movieObjectId = movie._id.toString();
     isSaved = user.moviesSaved.some(

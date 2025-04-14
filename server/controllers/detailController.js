@@ -62,7 +62,10 @@ async function getSearchedTv(req, res) {
 }
 async function getTrailer(req, res) {
   const { original_title, original_language, release_date, type } = req.query;
-  const year = release_date.split("-")[0];
+  let year = null;
+  if (release_date) {
+    year = release_date.split("-")[0];
+  }
   let query = "";
   if (original_language === "ar") {
     if (type === "movie") {
@@ -141,7 +144,10 @@ async function getCast(req, res) {
     });
     res.status(200).json(response.data.cast);
   } catch (error) {
-    res.status(500).json("Error getting cast");
+    console.log(error.message);
+    return res
+      .status(500)
+      .json({ message: "Error getting cast", error: error.message });
   }
 }
 async function getCombinedCredits(req, res) {

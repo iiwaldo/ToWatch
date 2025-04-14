@@ -38,6 +38,9 @@ const movieSchema = new mongoose.Schema(
     trailerId: {
       type: String,
     },
+    type: {
+      type: String,
+    },
   },
   { timestamps: true }
 ); // Adds createdAt and updatedAt fields automatically

@@ -19,7 +19,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const [saved, isSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [originalIndex, setOriginalIndex] = useState(null);
-  const datatype = card.original_title ? "movie" : "show";
+  const [datatype,setDataType] = useState(card.type);
   const [cast, setCast] = useState([]);
   const imageUrl = card.poster_path
     ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
@@ -47,18 +47,23 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     } catch (error) {}
   };
   useEffect(() => {
-    if (type !== "home") {
+    if (card.trailerId) {
       setTrailerId(card.trailerId);
-      if (trailerId) {
-        setLoading(false);
-      }
+      setLoading(false);
+    }
+  }, [card.trailerId]);
+  useEffect(() => {
+    if (type !== "home") {
       if (type === "watch-later") {
         isSaved(true);
       }
       if (type === "watched") {
         isWatched(true);
       }
-      console.log("fetch trailer failed", card);
+      console.log(card.id)
+      setDataType(card.type);
+      console.log(datatype);
+      fetchCast();
       return;
     }
     const checkStatus = async () => {
@@ -96,6 +101,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     };
 
     if (id) {
+      console.log("iddddd");
       fetchCast();
       fetchTrailer();
       checkStatus();
@@ -107,7 +113,6 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       card,
       trailerId,
     };
-
     if (!saved) {
       try {
         const response = await axios.post(
@@ -116,8 +121,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
         );
         isSaved(true);
         if (type === "watch-later" && originalIndex !== null) {
-          setMovies((prevCards) => {
-            console.log("card id after adding = ", card.id);
+          setCards((prevCards) => {
             const updated = [...prevCards];
             updated.splice(originalIndex, 0, card);
             return updated;
@@ -125,7 +129,8 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
           setOriginalIndex(null); // Reset after reinserting
         }
       } catch (error) {
-        console.log("Error adding to watched");
+        console.log("Error adding to watch later");
+        isSaved(false);
       }
     } else {
       try {
@@ -137,18 +142,18 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
         );
         isSaved(false);
         if (type === "watch-later") {
-          setMovies((prevCards) => {
-            console.log("card id before removing = ", card.id);
-            const index = prevCards.findIndex((card) => card.id === card.id);
+          setCards((prevCards) => {
+            const index = prevCards.findIndex((c) => c.id === card.id);
             if (index !== -1) {
               setOriginalIndex(index); // store index before removal
-              return prevCards.filter((card) => card.id !== card.id);
+              return prevCards.filter((c) => c.id !== card.id);
             }
             return prevCards;
           });
         }
       } catch (error) {
-        console.log("Error removing from watch later");
+        console.log("Error removing from watch later", error);
+        isSaved(true);
       }
     }
   };
@@ -168,7 +173,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
         );
         isWatched(true);
         if (type === "watched" && originalIndex !== null) {
-          setMovies((prevCards) => {
+          setCards((prevCards) => {
             console.log("card id after adding = ", card.id);
             const updated = [...prevCards];
             updated.splice(originalIndex, 0, card);
@@ -191,10 +196,10 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
         if (type === "watched") {
           setCards((prevCards) => {
             console.log("movie id before removing = ", card.id);
-            const index = prevCards.findIndex((card) => card.id === card.id);
+            const index = prevCards.findIndex((c) => c.id === card.id);
             if (index !== -1) {
               setOriginalIndex(index); // store index before removal
-              return prevCards.filter((card) => card.id !== card.id);
+              return prevCards.filter((c) => c.id !== card.id);
             }
             return prevCards;
           });
