@@ -9,20 +9,24 @@ import {
   FaBookmark,
 } from "react-icons/fa"; // Import both filled and outlined icons
 import ActorCard from "./ActorCard";
+import useFetchDetails from "../hooks/useFetchDetails";
 
 const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
-  const id = card.id;
-  const [trailerId, setTrailerId] = useState(card.trailerId || null);
-  const [showTrailer, setShowTrailer] = useState(false);
   const { user } = useAuth();
-  const [watched, isWatched] = useState(false);
-  const [saved, isSaved] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [originalIndex, setOriginalIndex] = useState(null);
-  const [datatype, setDataType] = useState(
-    card.release_date ? "movie" : "show"
-  );
-  const [cast, setCast] = useState([]);
+  const [showTrailer, setShowTrailer] = useState(false);
+  const {
+    trailerId,
+    isWatched,
+    isSaved,
+    setIsSaved,
+    setIsWatched,
+    cast,
+    numberOfSeasons,
+    seasonsArr,
+    loading,
+  } = useFetchDetails(card, type);
+  const dataType = card.type || (card.release_date ? "movie" : "show");
   const imageUrl = card.poster_path
     ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
     : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg";
@@ -35,186 +39,113 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     const year = date.getFullYear();
     formattedDate = `${day}/${month}/${year}`;
   }
-
-  const fetchCast = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/api/details/cast",
-        {
-          params: { movieID: card.id, datatype: datatype },
-        }
-      );
-      console.log(response.data[0]);
-      setCast(response.data);
-    } catch (error) {}
-  };
-  useEffect(() => {
-    if (card.trailerId) {
-      setTrailerId(card.trailerId);
-      setLoading(false);
-    }
-  }, [card.trailerId]);
-  useEffect(() => {
-    console.log(card);
-    if (type !== "home") {
-      if (type === "watch-later") {
-        isSaved(true);
-      }
-      if (type === "watched") {
-        isWatched(true);
-      }
-      console.log(card.id);
-      setDataType(card.type);
-      console.log(datatype);
-      fetchCast();
-      return;
-    }
-    const checkStatus = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/user/status`,
-          { params: { movieID: card.id, userEmail: user.email } }
-        );
-        isWatched(response.data.isWatched);
-        isSaved(response.data.isSaved);
-      } catch (error) {
-        console.log("error getting status");
-      }
-    };
-    const fetchTrailer = async () => {
-      console.log(card.original_title);
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/details/trailer",
-          {
-            params: {
-              original_title: card.original_title || card.original_name,
-              original_language: card.original_language,
-              release_date: card.release_date || card.first_air_date || null,
-              type: datatype,
-            },
-          }
-        );
-        console.log(response.data);
-        setTrailerId(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching trailer", error);
-      }
-    };
-
-    if (id) {
-      console.log("iddddd");
-      fetchCast();
-      fetchTrailer();
-      checkStatus();
-    }
-  }, [id, type]);
-  const handleWatchLater = async () => {
+  const checkStatus = async (statusType) => {
     const data = {
       userEmail: user.email,
       card,
       trailerId,
     };
-    if (!saved) {
-      try {
-        const response = await axios.post(
-          `http://localhost:3000/api/user/watch-later`,
-          data
-        );
-        isSaved(true);
-        if (type === "watch-later" && originalIndex !== null) {
-          setCards((prevCards) => {
-            const updated = [...prevCards];
-            updated.splice(originalIndex, 0, card);
-            return updated;
-          });
-          setOriginalIndex(null); // Reset after reinserting
-        }
-      } catch (error) {
-        console.log("Error adding to watch later");
-        isSaved(false);
-      }
-    } else {
-      try {
-        const response = await axios.delete(
-          `http://localhost:3000/api/user/watch-later`,
-          {
-            data,
+    if (statusType === "watch-later") {
+      if (!isSaved) {
+        try {
+          const response = await axios.post(
+            `http://localhost:3000/api/user/watch-later`,
+            data
+          );
+          setIsSaved(true);
+          if (type === "watch-later" && originalIndex !== null) {
+            setCards((prevCards) => {
+              const updated = [...prevCards];
+              updated.splice(originalIndex, 0, card);
+              return updated;
+            });
+            setOriginalIndex(null); // Reset after reinserting
           }
-        );
-        isSaved(false);
-        if (type === "watch-later") {
-          setCards((prevCards) => {
-            const index = prevCards.findIndex((c) => c.id === card.id);
-            if (index !== -1) {
-              setOriginalIndex(index); // store index before removal
-              return prevCards.filter((c) => c.id !== card.id);
-            }
-            return prevCards;
-          });
+        } catch (error) {
+          console.log("Error adding to watch later");
+          setIsSaved(false);
         }
-      } catch (error) {
-        console.log("Error removing from watch later", error);
-        isSaved(true);
+      }
+      //else
+      else {
+        try {
+          const response = await axios.delete(
+            `http://localhost:3000/api/user/watch-later`,
+            {
+              data,
+            }
+          );
+          setIsSaved(false);
+          if (type === "watch-later") {
+            setCards((prevCards) => {
+              const index = prevCards.findIndex((c) => c.id === card.id);
+              if (index !== -1) {
+                setOriginalIndex(index); // store index before removal
+                return prevCards.filter((c) => c.id !== card.id);
+              }
+              return prevCards;
+            });
+          }
+        } catch (error) {
+          console.log("Error removing from watch later", error);
+          setIsSaved(true);
+        }
+      }
+    } else if (statusType === "watched") {
+      if (!isWatched) {
+        try {
+          const response = await axios.post(
+            `http://localhost:3000/api/user/watched`,
+            data
+          );
+          setIsWatched(true);
+          if (type === "watched" && originalIndex !== null) {
+            setCards((prevCards) => {
+              const updated = [...prevCards];
+              updated.splice(originalIndex, 0, card);
+              return updated;
+            });
+            setOriginalIndex(null);
+          }
+        } catch (error) {
+          console.log("Error adding to watched");
+        }
+      } else {
+        try {
+          const response = await axios.delete(
+            `http://localhost:3000/api/user/watched`,
+            {
+              data,
+            }
+          );
+          setIsWatched(false);
+          if (type === "watched") {
+            setCards((prevCards) => {
+              console.log("movie id before removing = ", card.id);
+              const index = prevCards.findIndex((c) => c.id === card.id);
+              if (index !== -1) {
+                setOriginalIndex(index); // store index before removal
+                return prevCards.filter((c) => c.id !== card.id);
+              }
+              return prevCards;
+            });
+          }
+        } catch (error) {
+          console.log("Error removing from watched");
+        }
       }
     }
+  };
+  const handleWatchLater = async () => {
+    checkStatus("watch-later");
   };
 
   const handleWatched = async () => {
-    const data = {
-      userEmail: user.email,
-      card,
-      trailerId,
-    };
-
-    if (!watched) {
-      try {
-        const response = await axios.post(
-          `http://localhost:3000/api/user/watched`,
-          data
-        );
-        isWatched(true);
-        if (type === "watched" && originalIndex !== null) {
-          setCards((prevCards) => {
-            console.log("card id after adding = ", card.id);
-            const updated = [...prevCards];
-            updated.splice(originalIndex, 0, card);
-            return updated;
-          });
-          setOriginalIndex(null); // Reset after reinserting
-        }
-      } catch (error) {
-        console.log("Error adding to watched");
-      }
-    } else {
-      try {
-        const response = await axios.delete(
-          `http://localhost:3000/api/user/watched`,
-          {
-            data,
-          }
-        );
-        isWatched(false);
-        if (type === "watched") {
-          setCards((prevCards) => {
-            console.log("movie id before removing = ", card.id);
-            const index = prevCards.findIndex((c) => c.id === card.id);
-            if (index !== -1) {
-              setOriginalIndex(index); // store index before removal
-              return prevCards.filter((c) => c.id !== card.id);
-            }
-            return prevCards;
-          });
-        }
-      } catch (error) {
-        console.log("Error removing from watched");
-      }
-    }
+    checkStatus("watched");
   };
 
   const renderWatchLaterButton = () => {
-    if (saved) {
+    if (isSaved) {
       return (
         <button onClick={handleWatchLater} className="icon-btn active">
           <FaBookmark size={24} />
@@ -230,7 +161,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   };
 
   const renderWatchedButton = () => {
-    if (watched) {
+    if (isWatched) {
       return (
         <button onClick={handleWatched} className="icon-btn active">
           <FaCheckCircle size={24} />
@@ -254,7 +185,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
 
         <div className="modal-body">
           <div className="movie-image">
-          <div className="datatype-label">{datatype}</div>
+            <div className="datatype-label">{dataType}</div>
 
             <img
               src={imageUrl}

@@ -1,5 +1,5 @@
 import axios from "axios";
-import express from "express";
+import express, { response } from "express";
 import dotenv from "dotenv"; // Import dotenv
 dotenv.config();
 
@@ -164,6 +164,19 @@ async function getCombinedCredits(req, res) {
     res.status(500).json("Error getting combined credits");
   }
 }
+async function getTvDetails(req, res) {
+  const { tvID } = req.query;
+  try {
+    const response = await axios.get(`${BASE_URL}/tv/${tvID}`, {
+      params: { api_key: TMDB_API_KEY },
+    });
+    const numberOfSeasons = response.data.number_of_seasons;
+    const seasonsArr = response.data.seasons;
+    res.status(200).json({numberOfSeasons:numberOfSeasons,seasonsArr:seasonsArr});
+  } catch (error) {
+    res.status(500).json("error getting Show Details");
+  }
+}
 export default {
   getPopularMovies,
   getSearchedMovie,
@@ -174,4 +187,5 @@ export default {
   getFilter,
   getCast,
   getCombinedCredits,
+  getTvDetails
 };
