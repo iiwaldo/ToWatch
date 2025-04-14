@@ -19,8 +19,8 @@ const FilterModal = ({ onClose, setGenreNames }) => {
       try {
         const endpoint =
           dataType === "movie"
-            ? "http://localhost:3000/api/movies/movie-genres"
-            : "http://localhost:3000/api/movies/tv-genres";
+            ? "http://localhost:3000/api/details/movie-genres"
+            : "http://localhost:3000/api/details/tv-genres";
         const response = await axios.get(endpoint);
         dataType === "movie"
           ? setMovieGenres(response.data)

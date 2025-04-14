@@ -4,8 +4,10 @@ import "../styles/auth.css";
 import InputField from "../components/InputField"; // Import the reusable InputField
 import Button from "../components/Button";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
+  const {login} = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,7 +17,7 @@ const SignUp = () => {
     e.preventDefault();
     // Handle the sign-up logic here (e.g., send the data to the backend)
     if (password !== confirmPassword) {
-      console.log("error");
+      alert("Passwords dont match");
     }
     console.log("Signing up with", email, password);
     try {
@@ -26,11 +28,9 @@ const SignUp = () => {
           password,
         }
       );
-      console.log("signed up");
+      login(email,response.data.token);
       navigate("/");
     } catch (error) {
-      console.log("error creating user");
-      console.error("Signup error:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Signup failed!");
     }
   };

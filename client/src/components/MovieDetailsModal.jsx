@@ -37,7 +37,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const fetchCast = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/movies/cast",
+        "http://localhost:3000/api/details/cast",
         {
           params: { movieID: card.id, datatype: datatype },
         }
@@ -64,7 +64,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     const checkStatus = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/user/movie`,
+          `http://localhost:3000/api/user/status`,
           { params: { movieID: card.id, userEmail: user.email } }
         );
         isWatched(response.data.isWatched);
@@ -77,7 +77,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       console.log(card.original_title);
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/movies/trailer",
+          "http://localhost:3000/api/details/trailer",
           {
             params: {
               original_title: card.original_title || card.original_name,

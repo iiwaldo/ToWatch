@@ -66,7 +66,7 @@ export default function Home({ type }) {
           const actorID = filterParams.get("actorID");
           if (actorID) {
             const response = await axios.get(
-              "http://localhost:3000/api/movies/combined_credits",
+              "http://localhost:3000/api/details/combined_credits",
               {
                 params: { actorID: actorID },
               }
@@ -110,7 +110,7 @@ export default function Home({ type }) {
               type: type,
             };
             let response = await axios.get(
-              "http://localhost:3000/api/movies/filter",
+              "http://localhost:3000/api/details/filter",
               { params: data }
             );
             console.log(response.data);
@@ -121,7 +121,7 @@ export default function Home({ type }) {
           setCards([]);
           isSearch(true);
           let response = await axios.get(
-            "http://localhost:3000/api/movies/search/movie",
+            "http://localhost:3000/api/details/search/movie",
             {
               params: { query: searchQuery },
             }
@@ -129,7 +129,7 @@ export default function Home({ type }) {
           let moviesArray = response.data || [];
           setTitle(""); // No title when searching
           response = await axios.get(
-            "http://localhost:3000/api/movies/search/tv",
+            "http://localhost:3000/api/details/search/tv",
             {
               params: { query: searchQuery },
             }
@@ -140,7 +140,7 @@ export default function Home({ type }) {
           setCards(combined);
         } else if (!searchQuery && type === "home") {
           const response = await axios.get(
-            "http://localhost:3000/api/movies/popular",
+            "http://localhost:3000/api/details/popular",
             {
               params: { page, limit: 20 },
             }

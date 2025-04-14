@@ -1,17 +1,14 @@
-import express from "express";
 import axios from "axios";
+import express from "express";
 import dotenv from "dotenv"; // Import dotenv
 dotenv.config();
 
-const router = express.Router();
 const TMDB_API_KEY = process.env.TMBD_API_KEY;
-const GOOGLE_API_KEY = process.env.GOOGLE_CLOUD_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 const PIPE_URL = "https://pipedapi.adminforge.de/search";
 
-router.get("/popular", async (req, res) => {
+async function getPopularMovies(req, res) {
   const page = req.query.page;
-  const limit = req.query.limit || 10;
   const language = "en-US";
   try {
     const response = await axios.get(`${BASE_URL}/movie/popular`, {
@@ -21,7 +18,7 @@ router.get("/popular", async (req, res) => {
         language,
       },
     });
-    const movies = response.data.results.slice(0, limit);
+    const movies = response.data.results;
     const totalPages = response.data.total_pages;
     const totalResults = response.data.total_results;
     res.json({
@@ -32,30 +29,25 @@ router.get("/popular", async (req, res) => {
     });
   } catch (error) {
     //console.error("Failed to fetch movies from TMDB:", error.message);
-    //res.status(500).json({ error: "Failed to fetch movies" });
+    res.status(500).json({ error: "Failed to fetch  popular movies" });
   }
-});
-router.get("/search/movie", async (req, res) => {
+}
+async function getSearchedMovie(req, res) {
   const { query } = req.query;
-  console.log("Searching for movies with query:", query);
-
   try {
     const response = await axios.get(`${BASE_URL}/search/movie`, {
       params: {
         api_key: TMDB_API_KEY,
-        query: query, // query from the user's search input
+        query: query,
       },
     });
-    res.json(response.data.results); // Send the search results back to the client
+    res.json(response.data.results);
   } catch (error) {
-    console.log("Error searching for movies:");
     res.status(500).json({ error: "Failed to fetch searched movies" });
   }
-});
-router.get("/search/tv", async (req, res) => {
+}
+async function getSearchedTv(req, res) {
   const { query } = req.query;
-  console.log("Searching for tv-shows with query:", query);
-
   try {
     const response = await axios.get(`${BASE_URL}/search/tv`, {
       params: {
@@ -63,18 +55,13 @@ router.get("/search/tv", async (req, res) => {
         query: query,
       },
     });
-    console.log(response.data.results);
-    res.json(response.data.results); // Send the search results back to the client
+    res.json(response.data.results);
   } catch (error) {
-    console.log("Error searching for movies:");
     res.status(500).json({ error: "Failed to fetch searched tv shows" });
   }
-});
-router.get("/trailer", async (req, res) => {
+}
+async function getTrailer(req, res) {
   const { original_title, original_language, release_date, type } = req.query;
-  console.log(original_language);
-  console.log(original_title);
-  console.log(release_date);
   const year = release_date.split("-")[0];
   let query = "";
   if (original_language === "ar") {
@@ -86,46 +73,42 @@ router.get("/trailer", async (req, res) => {
   } else {
     query = `${original_title} ${year} trailer`;
   }
-
   try {
     const response = await axios.get(`${PIPE_URL}`, {
       params: {
-        q: query, // your search string
+        q: query,
         filter: "videos",
       },
     });
     const trailerId = response.data.items[0]?.url.split("v=")[1];
     if (trailerId) {
-      console.log(trailerId);
       res.status(200).json(trailerId);
     }
   } catch (error) {
-    console.log("Error getting trailer");
+    res.status(500).json("Error getting trailer");
   }
-});
-
-router.get("/movie-genres", async (req, res) => {
+}
+async function getMovieGenres(req, res) {
   try {
     const response = await axios.get(`${BASE_URL}/genre/movie/list`, {
       params: { api_key: TMDB_API_KEY },
     });
     res.status(200).json(response.data.genres);
   } catch (error) {
-    console.log("error getting movie genres");
+    res.status(500).json("Error getting movie genres");
   }
-});
-
-router.get("/tv-genres", async (req, res) => {
+}
+async function getTvGenres(req, res) {
   try {
     const response = await axios.get(`${BASE_URL}/genre/tv/list`, {
       params: { api_key: TMDB_API_KEY },
     });
     res.status(200).json(response.data.genres);
   } catch (error) {
-    console.log("error getting movie genres");
+    res.status(500).json("Error getting TV genres");
   }
-});
-router.get("/filter", async (req, res) => {
+}
+async function getFilter(req, res) {
   try {
     const { type, sortOrder, year, genres, language, page } = req.query;
     const dateType =
@@ -141,15 +124,12 @@ router.get("/filter", async (req, res) => {
         [dateType]: year,
       },
     });
-    console.log(page);
-    console.log(language);
-    console.log(response.data.total_pages);
     res.status(200).json(response.data);
   } catch (error) {
-    console.log("error filter", error);
+    res.status(500).json("Error filtering");
   }
-});
-router.get("/cast", async (req, res) => {
+}
+async function getCast(req, res) {
   try {
     const { movieID, datatype } = req.query;
     const url =
@@ -159,24 +139,31 @@ router.get("/cast", async (req, res) => {
     const response = await axios.get(url, {
       params: { api_key: TMDB_API_KEY },
     });
-    console.log(response.data);
     res.status(200).json(response.data.cast);
   } catch (error) {
-    console.log("Error getting cast", error);
+    res.status(500).json("Error getting cast");
   }
-});
-router.get("/combined_credits", async (req, res) => {
+}
+async function getCombinedCredits(req, res) {
   try {
     const { actorID } = req.query;
     const url = `${BASE_URL}/person/${actorID}/combined_credits`;
     const response = await axios.get(url, {
       params: { api_key: TMDB_API_KEY },
     });
-    console.log(response.data);
     res.status(200).json(response.data.cast);
   } catch (error) {
-    console.log("Error getting cast", error);
+    res.status(500).json("Error getting combined credits");
   }
-});
-
-export default router;
+}
+export default {
+  getPopularMovies,
+  getSearchedMovie,
+  getSearchedTv,
+  getTrailer,
+  getMovieGenres,
+  getTvGenres,
+  getFilter,
+  getCast,
+  getCombinedCredits,
+};
