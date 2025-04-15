@@ -1,3 +1,4 @@
+/* Home container */
 .home-container {
   padding-top: 250px; /* Push below fixed navbar */
   padding-left: 20px;
@@ -6,16 +7,29 @@
   margin: 0 auto;
   z-index: 0;
 }
+
+/* Optional height test */
 .con {
   height: 1000px;
 }
+
+/* Header */
 .home-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  padding: 0 10px;
 }
 
+.home-title {
+  font-size: 2rem;
+  color: #00e5ff;
+  text-align: left;
+}
+
+/* Filter button */
 .filter-button {
   background-color: #00bcd4;
   color: white;
@@ -30,9 +44,8 @@
 .filter-button:hover {
   background-color: #00e5ff;
 }
-.home-title {
-  text-align: center;
-}
+
+/* Movie cards layout */
 .movie-cards-container {
   display: flex;
   flex-wrap: wrap;
@@ -46,11 +59,11 @@
   margin: 10px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #1e1e1e;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
 }
 
-/* Movie card hover effect */
+/* Movie card hover effect without fading */
 .movie-card:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -58,7 +71,7 @@
   animation: glow 1.5s infinite alternate;
 }
 
-/* Glow animation for blue border */
+/* Glow animation */
 @keyframes glow {
   0% {
     box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3);
@@ -83,13 +96,17 @@
   color: #fff;
   background-color: #333;
 }
+.movie-card:hover .movie-title {
+  color: #00e5ff;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+}
 
-/* Pagination styling */
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 30px;
   padding-bottom: 20px;
 }
 
@@ -113,44 +130,45 @@
   background-color: #555;
   cursor: not-allowed;
 }
-/* Pagination button active state */
+
 .pagination-btn.active {
-  background-color: #00e5ff; /* Blue background for the active page */
+  background-color: #00e5ff;
   color: white;
 }
 
+/* Dropdown / Filter Modal */
 .dropdown-menu {
   position: absolute;
   top: 50px;
   right: 0;
   background-color: #1e1e1e;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  width: 300px; /* Wider than default */
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
-  z-index: 10;
+  padding: 10px 0;
+  z-index: 1000;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .dropdown-menu button {
   background: none;
   color: white;
   border: none;
-  padding: 12px;
+  padding: 14px 24px;
   font-size: 1rem;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.3s, padding 0.2s;
-  padding-left: 20px;
+  transition: background-color 0.3s ease, padding-left 0.2s ease;
 }
 
 .dropdown-menu button:hover {
   background-color: #00bcd4;
-  padding-left: 24px;
+  padding-left: 28px;
 }
 
 .dropdown-menu button:focus {
   outline: none;
 }
-

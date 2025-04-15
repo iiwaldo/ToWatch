@@ -41,10 +41,6 @@ const useFetchDetails = (card, type) => {
     original_title = card.original_title || card.original_name,
     release_date = card.release_date || card.first_air_date
   ) => {
-    if (card.trailerId) {
-      return;
-    }
-    console
     try {
       const response = await axios.get(
         "http://localhost:3000/api/details/trailer",

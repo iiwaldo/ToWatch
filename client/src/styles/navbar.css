@@ -1,10 +1,11 @@
+/* 🔥 Ultra Dark & Futuristic Navbar Theme */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, #0d0d0d, #1a1a1a);
-  color: white;
+  background: linear-gradient(90deg, #020202, #1a1a1a);
+  color: #e0f7fa;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -12,27 +13,38 @@
   z-index: 1000; /* Ensure navbar stays on top */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+  animation: gradientAnimation 30s ease-in-out infinite; /* Animated gradient background */
 }
 
-
-.navbar-section {
-  display: flex;
-  align-items: center;
+@keyframes gradientAnimation {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
 }
 
+/* 🔶 Logo Styling */
 .logo a {
   font-size: 2rem;
   font-weight: 700;
   color: #00e5ff;
   text-decoration: none;
   letter-spacing: 1px;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .logo a:hover {
   color: #ffffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.3), 0 0 16px rgba(0, 255, 255, 0.5); /* Neon glow effect */
 }
 
+/* 🔍 Search Bar Styling */
 .search {
   flex: 1;
   display: flex;
@@ -65,31 +77,35 @@
   box-shadow: 0 0 8px #00e5ff, 0 0 16px #00e5ff;
 }
 
+/* Gradient Border Animation */
 @keyframes border-glow {
   0% {
-    border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
+      border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
   }
   50% {
-    border-image-source: linear-gradient(270deg, #00e5ff, #00bcd4, #00e5ff);
+      border-image-source: linear-gradient(270deg, #00e5ff, #00bcd4, #00e5ff);
   }
   100% {
-    border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
+      border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
   }
 }
 
+/* 🔗 Links Styling */
 .links a {
   margin-left: 24px;
   color: #f0f0f0;
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .links a:hover {
   color: #00e5ff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4), 0 0 16px rgba(0, 255, 255, 0.6);
 }
-/* Add these styles to your navbar.css file */
+
+/* 🔥 Profile Dropdown */
 .profile-dropdown {
   position: relative;
   display: inline-block;
@@ -104,13 +120,15 @@
   justify-content: center;
   padding: 10px;
   border-radius: 50%;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .profile-icon:hover {
   background-color: rgba(0, 188, 212, 0.1); /* Light hover effect */
+  transform: scale(1.1); /* Slight scale effect */
 }
 
+/* 🛠 Dropdown Menu Styling */
 .dropdown-menu {
   position: absolute;
   top: 40px; /* Adjust to fit below the icon */
@@ -122,8 +140,17 @@
   display: flex;
   flex-direction: column;
   padding: 8px 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
+.profile-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 🧨 Dropdown Button Styling */
 .dropdown-menu button {
   background: none;
   color: white;
@@ -145,14 +172,24 @@
   outline: none;
 }
 
-/* Optional: Adding a smooth transition for the dropdown appearance */
-.profile-dropdown .dropdown-menu {
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+/* 🖤 Scrollbar Style */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-.profile-dropdown:hover .dropdown-menu {
-  opacity: 1;
-  transform: translateY(0);
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 255, 255, 0.6);
+  border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
 }

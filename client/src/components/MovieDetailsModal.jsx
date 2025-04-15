@@ -181,12 +181,10 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const [date, setDate] = useState(
     formatDate(card.release_date || card.first_air_date)
   );
-  const filteredSeasons = useMemo(() =>
-    seasonsArr.filter(
-      (s) =>
-        s.name.toLowerCase() !== "specials"
-    )
-  ,[seasonsArr]);
+  const filteredSeasons = useMemo(
+    () => seasonsArr.filter((s) => s.name.toLowerCase() !== "specials"),
+    [seasonsArr]
+  );
   useEffect(() => {
     if (seasonsArr.length > 0) {
       setModalLoading(true);
@@ -214,10 +212,11 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
 
   const handleNextSeason = () => {
     if (seasonIndex < filteredSeasons.length - 1) {
-      const newIndex = seasonIndex+1
+      const newIndex = seasonIndex + 1;
       const baseTitle = card.original_title || card.original_name;
       const newTitle = `${baseTitle} ${newIndex + 1}`;
       const newSeason = filteredSeasons[newIndex];
+      console.log(filteredSeasons);
       setSeasonIndex(newIndex);
       setTitle(newTitle);
       setDate(formatDate(newSeason.air_date));
@@ -234,7 +233,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
 
   const handlePrevSeason = () => {
     if (seasonIndex > 0) {
-      const newIndex = seasonIndex-1;
+      const newIndex = seasonIndex - 1;
       const baseTitle = card.original_title || card.original_name;
       const newTitle =
         newIndex === 0 ? baseTitle : `${baseTitle} ${newIndex + 1}`;
@@ -271,31 +270,33 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
             {/* Watch Later and Watched icons */}
             {user && (
               <div className="button-group">
-                {renderWatchLaterButton()}
-                {renderWatchedButton()}
-              </div>
-            )}
+                {/* Previous Season */}
+                {dataType === "show" && seasonsArr.length > 1 && (
+                  <button
+                    onClick={handlePrevSeason}
+                    className="icon-btn"
+                    disabled={seasonIndex === 0}
+                  >
+                    <FaChevronLeft />
+                  </button>
+                )}
 
-            {/* Move season navigation here */}
-            {dataType === "show" && seasonsArr.length > 1 && (
-              <div className="season-nav-icons">
-                <button
-                  onClick={handlePrevSeason}
-                  className="season-icon-btn"
-                  disabled={seasonIndex === 0}
-                  title="Previous Season"
-                >
-                  <FaChevronLeft />
-                </button>
-                <span className="season-label"></span>
-                <button
-                  onClick={handleNextSeason}
-                  className="season-icon-btn"
-                  disabled={seasonIndex === seasonsArr.length - 1}
-                  title="Next Season"
-                >
-                  <FaChevronRight />
-                </button>
+                {/* Watch Later */}
+                {renderWatchLaterButton()}
+
+                {/* Watched */}
+                {renderWatchedButton()}
+
+                {/* Next Season */}
+                {dataType === "show" && seasonsArr.length > 1 && (
+                  <button
+                    onClick={handleNextSeason}
+                    className="icon-btn"
+                    disabled={seasonIndex === filteredSeasons.length-1}
+                  >
+                    <FaChevronRight />
+                  </button>
+                )}
               </div>
             )}
           </div>
