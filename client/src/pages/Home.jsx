@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import { useAuth } from "../context/AuthContext";
@@ -9,6 +9,7 @@ import Pagination from "../components/Pagination";
 import FilterModal from "../components/FilterModal";
 import "../styles/moviecard.css";
 export default function Home({ type }) {
+  console.log("im re-rendered from Home");
   const { user } = useAuth();
   const [cards, setCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +26,6 @@ export default function Home({ type }) {
   const [showDropMenu, setShowDropMenu] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc"); //new first
   const [actorArr, setActorArr] = useState([]);
-  console.log(cards);
 
   const toggleSortMenu = () => {
     setShowDropMenu((prev) => !prev);
@@ -35,10 +35,10 @@ export default function Home({ type }) {
     setSortOrder(order);
     setShowDropMenu(false); // Close dropdown after selection
   };
-  const handleCardClick = (card) => {
+  const handleCardClick = useCallback((card) => {
     setSelectedCard(card);
     setShowModal(true);
-  };
+  }, []);
 
   const closeModal = () => {
     setShowModal(false);
@@ -136,6 +136,9 @@ export default function Home({ type }) {
           );
           let showsArray = response.data || [];
           let combined = [...moviesArray, ...showsArray];
+          console.log(combined);
+          combined.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+          console.log(combined);
           setTotalPages(combined.length);
           setCards(combined);
         } else if (!searchQuery && type === "home") {

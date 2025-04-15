@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import { useAuth } from "../context/AuthContext";
-import { useState, useCallback } from "react";
+import React , { useState, useCallback } from "react";
 import { FaUserCircle } from "react-icons/fa"; // Add a user profile icon from react-icons
 
-export default function Navbar() {
+function Navbar() {
+  console.log("im re-rendered from NavBar");
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,3 +95,4 @@ export default function Navbar() {
     </nav>
   );
 }
+export default React.memo(Navbar);

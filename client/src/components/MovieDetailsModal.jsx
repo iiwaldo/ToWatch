@@ -14,6 +14,7 @@ import ActorCard from "./ActorCard";
 import useFetchDetails from "../hooks/useFetchDetails";
 
 const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
+  console.log("im re-rendered from movieDetails");
   const { user } = useAuth();
   const [originalIndex, setOriginalIndex] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -29,6 +30,8 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     loading,
     fetchTrailer,
   } = useFetchDetails(card, type);
+
+  const stableCast = useMemo(() => cast, [cast[0]?.id && cast[1]?.id]);
   const dataType = card.type || (card.release_date ? "movie" : "show");
 
   const formatDate = (date) => {
@@ -187,13 +190,18 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   );
   useEffect(() => {
     if (seasonsArr.length > 0) {
+      if (seasonsArr.length === 1) {
+        setModalLoading(true);
+        return;
+      }
       setModalLoading(true);
       setTitle(card.original_title || card.original_name);
       setDate(formatDate(filteredSeasons[0].air_date));
+      const tempImage = imageUrl;
       setImageUrl(
         filteredSeasons[0].poster_path
           ? `https://image.tmdb.org/t/p/w500${filteredSeasons[0].poster_path}`
-          : imageUrl
+          : tempImage
       );
       setOverview(filteredSeasons[0].overview || overview);
     }
@@ -216,14 +224,14 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       const baseTitle = card.original_title || card.original_name;
       const newTitle = `${baseTitle} ${newIndex + 1}`;
       const newSeason = filteredSeasons[newIndex];
-      console.log(filteredSeasons);
       setSeasonIndex(newIndex);
       setTitle(newTitle);
       setDate(formatDate(newSeason.air_date));
+      const tempImage = imageUrl;
       setImageUrl(
         newSeason.poster_path
           ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
-          : imageUrl
+          : tempImage
       );
       setOverview(newSeason.overview);
       setShowTrailer(false);
@@ -243,6 +251,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       setSeasonIndex(newIndex);
       setTitle(newTitle);
       setDate(formatDate(newSeason.air_date));
+      const tempImage = imageUrl;
       setImageUrl(
         newSeason.poster_path
           ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
@@ -292,7 +301,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                   <button
                     onClick={handleNextSeason}
                     className="icon-btn"
-                    disabled={seasonIndex === filteredSeasons.length-1}
+                    disabled={seasonIndex === filteredSeasons.length - 1}
                   >
                     <FaChevronRight />
                   </button>
@@ -340,7 +349,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
               <div className="cast-section">
                 <h3>Cast</h3>
                 <div className="cast-list">
-                  {cast.map((actor) => (
+                  {stableCast.map((actor) => (
                     <ActorCard
                       key={actor.id}
                       type={type}

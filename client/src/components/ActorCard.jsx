@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ActorCard = ({ actor, onClose, type }) => {
+  console.log("im re-rendered Actor-card");
   const navigate = useNavigate();
   const imageURL = actor.profile_path
     ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
@@ -35,4 +36,4 @@ const ActorCard = ({ actor, onClose, type }) => {
   );
 };
 
-export default ActorCard;
+export default React.memo(ActorCard);

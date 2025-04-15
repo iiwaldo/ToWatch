@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp"; // Path to your signup component
 import Home from "./pages/Home"; // Path to your signup component
 import "../index.css";
 import ScrollToTop from "./components/ScrollToTop";
+import NavBar from "./components/NavBar";
 
 function App() {
   return (

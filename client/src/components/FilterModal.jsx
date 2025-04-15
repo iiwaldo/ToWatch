@@ -4,6 +4,7 @@ import "../styles/modal.css";
 import { useNavigate } from "react-router-dom";
 
 const FilterModal = ({ onClose, setGenreNames }) => {
+  console.log("im re-rendered from FilterModal");
   const [movieGenres, setMovieGenres] = useState([]);
   const [tvGenres, setTvGenres] = useState([]);
   const [dataType, setDataType] = useState("movie");
