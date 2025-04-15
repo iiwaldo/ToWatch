@@ -189,11 +189,11 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     [seasonsArr]
   );
   useEffect(() => {
+    if (seasonsArr.length === 1 || !seasonsArr.length) {
+      setModalLoading(true);
+      return;
+    }
     if (seasonsArr.length > 0) {
-      if (seasonsArr.length === 1) {
-        setModalLoading(true);
-        return;
-      }
       setModalLoading(true);
       setTitle(card.original_title || card.original_name);
       setDate(formatDate(filteredSeasons[0].air_date));

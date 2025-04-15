@@ -8,7 +8,7 @@ import MovieDetailsModal from "../components/MovieDetailsModal";
 import Pagination from "../components/Pagination";
 import FilterModal from "../components/FilterModal";
 import "../styles/moviecard.css";
-import { FaSortUp, FaSortDown } from 'react-icons/fa'; // Import icons for sorting
+import { FaSortUp, FaSortDown } from "react-icons/fa"; // Import icons for sorting
 
 export default function Home({ type }) {
   const { user } = useAuth();
