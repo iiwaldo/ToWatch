@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/modal.css";
 import { useAuth } from "../context/AuthContext";
@@ -7,6 +7,8 @@ import {
   FaCheckCircle,
   FaRegCheckCircle,
   FaBookmark,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa"; // Import both filled and outlined icons
 import ActorCard from "./ActorCard";
 import useFetchDetails from "../hooks/useFetchDetails";
@@ -25,20 +27,21 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     numberOfSeasons,
     seasonsArr,
     loading,
+    fetchTrailer,
   } = useFetchDetails(card, type);
   const dataType = card.type || (card.release_date ? "movie" : "show");
-  const imageUrl = card.poster_path
-    ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
-    : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg";
-  let date = card.release_date || card.first_air_date;
-  let formattedDate = null;
-  if (date) {
+
+  const formatDate = (date) => {
+    if (!date) {
+      return;
+    }
     date = new Date(date);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const year = date.getFullYear();
-    formattedDate = `${day}/${month}/${year}`;
-  }
+    let formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  };
   const checkStatus = async (statusType) => {
     const data = {
       userEmail: user.email,
@@ -175,8 +178,84 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       );
     }
   };
+  const [date, setDate] = useState(
+    formatDate(card.release_date || card.first_air_date)
+  );
+  const filteredSeasons = useMemo(() =>
+    seasonsArr.filter(
+      (s) =>
+        s.name.toLowerCase() !== "specials"
+    )
+  ,[seasonsArr]);
+  useEffect(() => {
+    if (seasonsArr.length > 0) {
+      setModalLoading(true);
+      setTitle(card.original_title || card.original_name);
+      setDate(formatDate(filteredSeasons[0].air_date));
+      setImageUrl(
+        filteredSeasons[0].poster_path
+          ? `https://image.tmdb.org/t/p/w500${filteredSeasons[0].poster_path}`
+          : imageUrl
+      );
+      setOverview(filteredSeasons[0].overview || overview);
+    }
+  }, [seasonsArr]);
+  const [modalLoading, setModalLoading] = useState(
+    dataType === "show" ? false : true
+  );
+  const [overview, setOverview] = useState(card.overview);
+  const [title, setTitle] = useState(card.original_title || card.original_name);
+  const [seasonIndex, setSeasonIndex] = useState(0);
+  const [imageUrl, setImageUrl] = useState(
+    card.poster_path
+      ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
+      : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg"
+  );
 
-  return (
+  const handleNextSeason = () => {
+    if (seasonIndex < filteredSeasons.length - 1) {
+      const newIndex = seasonIndex+1
+      const baseTitle = card.original_title || card.original_name;
+      const newTitle = `${baseTitle} ${newIndex + 1}`;
+      const newSeason = filteredSeasons[newIndex];
+      setSeasonIndex(newIndex);
+      setTitle(newTitle);
+      setDate(formatDate(newSeason.air_date));
+      setImageUrl(
+        newSeason.poster_path
+          ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
+          : imageUrl
+      );
+      setOverview(newSeason.overview);
+      setShowTrailer(false);
+      fetchTrailer(newTitle, newSeason.air_date);
+    }
+  };
+
+  const handlePrevSeason = () => {
+    if (seasonIndex > 0) {
+      const newIndex = seasonIndex-1;
+      const baseTitle = card.original_title || card.original_name;
+      const newTitle =
+        newIndex === 0 ? baseTitle : `${baseTitle} ${newIndex + 1}`;
+      const newSeason = filteredSeasons[newIndex];
+
+      setShowTrailer(false);
+      setSeasonIndex(newIndex);
+      setTitle(newTitle);
+      setDate(formatDate(newSeason.air_date));
+      setImageUrl(
+        newSeason.poster_path
+          ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
+          : imageUrl
+      );
+      setOverview(newSeason.overview);
+
+      fetchTrailer(newTitle, newSeason.air_date); // ✅ using correct title
+    }
+  };
+
+  return modalLoading ? (
     <div className="movie-details-modal">
       <div className="modal-content animated-glow">
         <button className="close-btn" onClick={onClose}>
@@ -187,11 +266,8 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
           <div className="movie-image">
             <div className="datatype-label">{dataType}</div>
 
-            <img
-              src={imageUrl}
-              alt={card.original_title || card.original_name}
-              className="movie-poster"
-            />
+            <img src={imageUrl} alt={title} className="movie-poster" />
+
             {/* Watch Later and Watched icons */}
             {user && (
               <div className="button-group">
@@ -199,13 +275,36 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                 {renderWatchedButton()}
               </div>
             )}
+
+            {/* Move season navigation here */}
+            {dataType === "show" && seasonsArr.length > 1 && (
+              <div className="season-nav-icons">
+                <button
+                  onClick={handlePrevSeason}
+                  className="season-icon-btn"
+                  disabled={seasonIndex === 0}
+                  title="Previous Season"
+                >
+                  <FaChevronLeft />
+                </button>
+                <span className="season-label"></span>
+                <button
+                  onClick={handleNextSeason}
+                  className="season-icon-btn"
+                  disabled={seasonIndex === seasonsArr.length - 1}
+                  title="Next Season"
+                >
+                  <FaChevronRight />
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="movie-description">
-            <h1>{card.original_title || card.original_name}</h1>
-            <p>{card.overview}</p>
+            <h1>{title}</h1>
+            <p>{overview}</p>
             <p>
-              <strong>Release Date:</strong> {formattedDate}
+              <strong>Release Date:</strong> {date}
             </p>
             <p>
               <strong>Rating:</strong> {card.vote_average}
@@ -234,6 +333,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                 ></iframe>
               </div>
             )}
+
             {/* Add the cast section */}
             {cast.length > 0 && (
               <div className="cast-section">
@@ -253,6 +353,10 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
           </div>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="spinner-container">
+      <div className="spinner"></div>
     </div>
   );
 };

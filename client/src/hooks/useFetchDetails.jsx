@@ -37,18 +37,22 @@ const useFetchDetails = (card, type) => {
       setCast(response.data);
     } catch (error) {}
   };
-  const fetchTrailer = async () => {
+  const fetchTrailer = async (
+    original_title = card.original_title || card.original_name,
+    release_date = card.release_date || card.first_air_date
+  ) => {
     if (card.trailerId) {
       return;
     }
+    console
     try {
       const response = await axios.get(
         "http://localhost:3000/api/details/trailer",
         {
           params: {
-            original_title: card.original_title || card.original_name,
+            original_title: original_title,
             original_language: card.original_language,
-            release_date: card.release_date || card.first_air_date || null,
+            release_date: release_date || null,
             type: card.release_date ? "movie" : "show",
           },
         }
@@ -99,6 +103,7 @@ const useFetchDetails = (card, type) => {
     numberOfSeasons,
     seasonsArr,
     loading,
+    fetchTrailer,
   };
 };
 

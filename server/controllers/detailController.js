@@ -83,6 +83,7 @@ async function getTrailer(req, res) {
         filter: "videos",
       },
     });
+    console.log(query);
     const trailerId = response.data.items[0]?.url.split("v=")[1];
     if (trailerId) {
       res.status(200).json(trailerId);
