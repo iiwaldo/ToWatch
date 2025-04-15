@@ -99,18 +99,18 @@ input:focus, textarea:focus {
 
 /* 🖤 Scrollbar Style */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;  /* Slightly thin scrollbar */
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 255, 255, 0.6);
     border-radius: 10px;
     border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 255, 255, 0.6);
+    background-color: rgba(0, 255, 255, 0.8);
     border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
 }
 
@@ -131,4 +131,51 @@ a {
 a:hover {
     color: #fff;
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+/* Fix for Close Button */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 1.8rem;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-radius 0.3s ease;
+    z-index: 10;
+    padding: 6px 10px;  /* Slight padding */
+    border-radius: 50%;  /* Make it circular */
+}
+
+.close-btn:hover {
+    background-color: #00bcd4;
+    border-radius: 50%; /* Ensure circular shape on hover */
+}
+
+/* Optional: Modal Scroll Fix */
+.movie-description {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: #00bcd4 #111;  /* Scrollbar color */
+}
+
+.movie-description::-webkit-scrollbar {
+    width: 6px;
+}
+
+.movie-description::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 255, 255, 0.6);
+    border-radius: 10px;
+    border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
+}
+
+.movie-description::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 255, 255, 0.8);
+    border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
+}
+
+.movie-description::-webkit-scrollbar-track {
+    background: transparent;
 }

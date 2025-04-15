@@ -8,8 +8,9 @@ import MovieDetailsModal from "../components/MovieDetailsModal";
 import Pagination from "../components/Pagination";
 import FilterModal from "../components/FilterModal";
 import "../styles/moviecard.css";
+import { FaSortUp, FaSortDown } from 'react-icons/fa'; // Import icons for sorting
+
 export default function Home({ type }) {
-  console.log("im re-rendered from Home");
   const { user } = useAuth();
   const [cards, setCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,18 +24,14 @@ export default function Home({ type }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [actorFilter, setActorFilter] = useState(false);
-  const [showDropMenu, setShowDropMenu] = useState(false);
-  const [sortOrder, setSortOrder] = useState("desc"); //new first
+  const [sortOrder, setSortOrder] = useState("desc"); // Newest first by default
   const [actorArr, setActorArr] = useState([]);
 
-  const toggleSortMenu = () => {
-    setShowDropMenu((prev) => !prev);
+  const toggleSortOrder = () => {
+    // Toggle between 'desc' and 'asc'
+    setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
   };
 
-  const handleSortChange = (order) => {
-    setSortOrder(order);
-    setShowDropMenu(false); // Close dropdown after selection
-  };
   const handleCardClick = useCallback((card) => {
     setSelectedCard(card);
     setShowModal(true);
@@ -83,7 +80,6 @@ export default function Home({ type }) {
               const dateB = new Date(b.release_date || b.first_air_date || 0);
               return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
             });
-            console.log(credits);
             setCards(sortedCredits);
             setTitle(actorName);
           } else {
@@ -113,7 +109,6 @@ export default function Home({ type }) {
               "http://localhost:3000/api/details/filter",
               { params: data }
             );
-            console.log(response.data);
             setCards(response.data.results);
             setTotalPages(response.data.total_pages);
           }
@@ -136,9 +131,7 @@ export default function Home({ type }) {
           );
           let showsArray = response.data || [];
           let combined = [...moviesArray, ...showsArray];
-          console.log(combined);
           combined.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-          console.log(combined);
           setTotalPages(combined.length);
           setCards(combined);
         } else if (!searchQuery && type === "home") {
@@ -181,7 +174,7 @@ export default function Home({ type }) {
       }
     };
     fetchMovies();
-  }, [location.search, type, user]);
+  }, [location.search, type, user, sortOrder]);
 
   const goToPage = (page) => {
     const params = new URLSearchParams(location.search);
@@ -195,6 +188,7 @@ export default function Home({ type }) {
       navigate(`?page=${page}`);
     }
   };
+
   const onFilterClick = () => {
     setIsFilter((prev) => !prev);
     setShowModal(true);
@@ -212,21 +206,12 @@ export default function Home({ type }) {
                 Filter
               </button>
             )}
+            {/* Sort order icons */}
             {actorFilter && (
-              <div style={{ position: "relative" }}>
-                <button className="filter-button" onClick={toggleSortMenu}>
-                  Sort By
+              <div className="sort-icons-container">
+                <button onClick={toggleSortOrder} className="sort-icon-button">
+                  {sortOrder === "desc" ? <FaSortDown /> : <FaSortUp />}
                 </button>
-                {showDropMenu && (
-                  <div className="dropdown-menu">
-                    <button onClick={() => handleSortChange("desc")}>
-                      Newest First
-                    </button>
-                    <button onClick={() => handleSortChange("asc")}>
-                      Oldest First
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -244,6 +229,7 @@ export default function Home({ type }) {
               ))
             )}
           </div>
+
           {!actorFilter && !search && (
             <Pagination
               currentPage={currentPage}
@@ -260,6 +246,7 @@ export default function Home({ type }) {
               onClose={closeModal}
             />
           )}
+
           {showModal && isFilter && (
             <FilterModal onClose={closeModal} setGenreNames={setGenreNames} />
           )}

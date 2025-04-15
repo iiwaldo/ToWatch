@@ -35,7 +35,9 @@ const useFetchDetails = (card, type) => {
         }
       );
       setCast(response.data);
-    } catch (error) {}
+    } catch (error) {
+      setCast([]);
+    }
   };
   const fetchTrailer = async (
     original_title = card.original_title || card.original_name,
