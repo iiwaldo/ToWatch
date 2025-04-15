@@ -11,8 +11,8 @@
   z-index: 1000;
   overflow-y: auto;
   padding: 20px;
-  scrollbar-width: thin;
-  scrollbar-color: #333 transparent;
+  scrollbar-width: thin !important;
+  scrollbar-color: #333 transparent !important;
 }
 
 .modal-content {

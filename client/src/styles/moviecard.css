@@ -207,5 +207,6 @@
 }
 
 .sort-icon-button:hover {
-  color: #00bcd4;
+  background-color: rgba(0, 188, 212, 0.1); /* Light hover effect */
+  transform: scale(1.1); /* Slight scale effect */
 }

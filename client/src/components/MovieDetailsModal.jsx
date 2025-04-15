@@ -189,26 +189,46 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     [seasonsArr]
   );
   useEffect(() => {
-    if (seasonsArr.length === 1 || !seasonsArr.length) {
+    if (!seasonsArr.length) {
       setModalLoading(true);
       return;
     }
-    if (seasonsArr.length > 0) {
-      setModalLoading(true);
+
+    const firstSeason = filteredSeasons[0];
+
+    if (seasonsArr.length === 1) {
+      setEpisodes(firstSeason.episode_count);
       setTitle(card.original_title || card.original_name);
-      setDate(formatDate(filteredSeasons[0].air_date));
+      setDate(formatDate(firstSeason.air_date));
       const tempImage = imageUrl;
       setImageUrl(
-        filteredSeasons[0].poster_path
-          ? `https://image.tmdb.org/t/p/w500${filteredSeasons[0].poster_path}`
+        firstSeason.poster_path
+          ? `https://image.tmdb.org/t/p/w500${firstSeason.poster_path}`
           : tempImage
       );
-      setOverview(filteredSeasons[0].overview || overview);
+      setOverview(firstSeason.overview || card.overview);
+      setModalLoading(true);
+      return;
     }
+    // More than one season
+    setModalLoading(true);
+    setEpisodes(firstSeason.episode_count);
+    setTitle(card.original_title || card.original_name);
+    setDate(formatDate(firstSeason.air_date));
+    const tempImage = imageUrl;
+    setImageUrl(
+      firstSeason.poster_path
+        ? `https://image.tmdb.org/t/p/w500${firstSeason.poster_path}`
+        : tempImage
+    );
+    setOverview(firstSeason.overview || card.overview);
   }, [seasonsArr]);
+
   const [modalLoading, setModalLoading] = useState(
     dataType === "show" ? false : true
   );
+
+  const [episodes, setEpisodes] = useState(null);
   const [overview, setOverview] = useState(card.overview);
   const [title, setTitle] = useState(card.original_title || card.original_name);
   const [seasonIndex, setSeasonIndex] = useState(0);
@@ -233,7 +253,8 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
           ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
           : tempImage
       );
-      setOverview(newSeason.overview);
+      setEpisodes(newSeason.episode_count);
+      setOverview(newSeason.overview !== "" ? newSeason.overview : overview);
       setShowTrailer(false);
       fetchTrailer(newTitle, newSeason.air_date);
     }
@@ -246,10 +267,10 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       const newTitle =
         newIndex === 0 ? baseTitle : `${baseTitle} ${newIndex + 1}`;
       const newSeason = filteredSeasons[newIndex];
-
       setShowTrailer(false);
       setSeasonIndex(newIndex);
       setTitle(newTitle);
+      setEpisodes(newSeason.episode_count);
       setDate(formatDate(newSeason.air_date));
       const tempImage = imageUrl;
       setImageUrl(
@@ -257,7 +278,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
           ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
           : imageUrl
       );
-      setOverview(newSeason.overview);
+      setOverview(newSeason.overview !== "" ? newSeason.overview : overview);
 
       fetchTrailer(newTitle, newSeason.air_date); // ✅ using correct title
     }
@@ -316,6 +337,14 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
             <p>
               <strong>Release Date:</strong> {date}
             </p>
+
+            {/* Show episode count if it's a show and episode data is available */}
+            {dataType === "show" && episodes !== null && (
+              <p>
+                <strong>Episodes:</strong> {episodes}
+              </p>
+            )}
+
             <p>
               <strong>Rating:</strong> {card.vote_average}
             </p>
@@ -345,7 +374,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
             )}
 
             {/* Add the cast section */}
-            {cast.length > 0 && (
+            {stableCast.length > 0 && (
               <div className="cast-section">
                 <h3>Cast</h3>
                 <div className="cast-list">
