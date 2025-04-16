@@ -11,6 +11,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  console.log(isAuthenticated);
   const verifyTokenWithBackend = async (token) => {
     try {
       console.log("checking with backend..");

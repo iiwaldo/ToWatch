@@ -14,6 +14,11 @@
   scrollbar-width: thin !important;
   scrollbar-color: #333 transparent !important;
 }
+.icon-btn.active {
+  background-color: #00e5ff; /* or whatever color you want when active */
+  color: black;
+  border-color: #00e5ff;
+}
 
 .modal-content {
   display: flex;

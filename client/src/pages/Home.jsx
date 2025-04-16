@@ -58,29 +58,98 @@ export default function Home({ type }) {
   };
 
   const languageMap = {
-    af: "Afrikaans", am: "Amharic", ar: "Arabic", az: "Azerbaijani",
-    be: "Belarusian", bg: "Bulgarian", bn: "Bengali", bs: "Bosnian",
-    ca: "Catalan", cs: "Czech", cy: "Welsh", da: "Danish", de: "German",
-    el: "Greek", en: "English", eo: "Esperanto", es: "Spanish",
-    et: "Estonian", eu: "Basque", fa: "Persian", fi: "Finnish",
-    fil: "Filipino", fj: "Fijian", fr: "French", ga: "Irish",
-    gl: "Galician", gu: "Gujarati", he: "Hebrew", hi: "Hindi",
-    hr: "Croatian", ht: "Haitian Creole", hu: "Hungarian", hy: "Armenian",
-    id: "Indonesian", is: "Icelandic", it: "Italian", ja: "Japanese",
-    jv: "Javanese", ka: "Georgian", kk: "Kazakh", km: "Khmer",
-    kn: "Kannada", ko: "Korean", ku: "Kurdish", ky: "Kyrgyz",
-    lo: "Lao", lt: "Lithuanian", lv: "Latvian", mg: "Malagasy",
-    mi: "Maori", mk: "Macedonian", ml: "Malayalam", mn: "Mongolian",
-    mr: "Marathi", ms: "Malay", mt: "Maltese", my: "Burmese",
-    ne: "Nepali", nl: "Dutch", no: "Norwegian", pa: "Punjabi",
-    pl: "Polish", ps: "Pashto", pt: "Portuguese", ro: "Romanian",
-    ru: "Russian", rw: "Kinyarwanda", si: "Sinhala", sk: "Slovak",
-    sl: "Slovenian", so: "Somali", sq: "Albanian", sr: "Serbian",
-    su: "Sundanese", sv: "Swedish", sw: "Swahili", ta: "Tamil",
-    te: "Telugu", tg: "Tajik", th: "Thai", tk: "Turkmen",
-    tl: "Tagalog", tr: "Turkish", tt: "Tatar", uk: "Ukrainian",
-    ur: "Urdu", uz: "Uzbek", vi: "Vietnamese", xh: "Xhosa",
-    yi: "Yiddish", zh: "Chinese", zu: "Zulu",
+    af: "Afrikaans",
+    am: "Amharic",
+    ar: "Arabic",
+    az: "Azerbaijani",
+    be: "Belarusian",
+    bg: "Bulgarian",
+    bn: "Bengali",
+    bs: "Bosnian",
+    ca: "Catalan",
+    cs: "Czech",
+    cy: "Welsh",
+    da: "Danish",
+    de: "German",
+    el: "Greek",
+    en: "English",
+    eo: "Esperanto",
+    es: "Spanish",
+    et: "Estonian",
+    eu: "Basque",
+    fa: "Persian",
+    fi: "Finnish",
+    fil: "Filipino",
+    fj: "Fijian",
+    fr: "French",
+    ga: "Irish",
+    gl: "Galician",
+    gu: "Gujarati",
+    he: "Hebrew",
+    hi: "Hindi",
+    hr: "Croatian",
+    ht: "Haitian Creole",
+    hu: "Hungarian",
+    hy: "Armenian",
+    id: "Indonesian",
+    is: "Icelandic",
+    it: "Italian",
+    ja: "Japanese",
+    jv: "Javanese",
+    ka: "Georgian",
+    kk: "Kazakh",
+    km: "Khmer",
+    kn: "Kannada",
+    ko: "Korean",
+    ku: "Kurdish",
+    ky: "Kyrgyz",
+    lo: "Lao",
+    lt: "Lithuanian",
+    lv: "Latvian",
+    mg: "Malagasy",
+    mi: "Maori",
+    mk: "Macedonian",
+    ml: "Malayalam",
+    mn: "Mongolian",
+    mr: "Marathi",
+    ms: "Malay",
+    mt: "Maltese",
+    my: "Burmese",
+    ne: "Nepali",
+    nl: "Dutch",
+    no: "Norwegian",
+    pa: "Punjabi",
+    pl: "Polish",
+    ps: "Pashto",
+    pt: "Portuguese",
+    ro: "Romanian",
+    ru: "Russian",
+    rw: "Kinyarwanda",
+    si: "Sinhala",
+    sk: "Slovak",
+    sl: "Slovenian",
+    so: "Somali",
+    sq: "Albanian",
+    sr: "Serbian",
+    su: "Sundanese",
+    sv: "Swedish",
+    sw: "Swahili",
+    ta: "Tamil",
+    te: "Telugu",
+    tg: "Tajik",
+    th: "Thai",
+    tk: "Turkmen",
+    tl: "Tagalog",
+    tr: "Turkish",
+    tt: "Tatar",
+    uk: "Ukrainian",
+    ur: "Urdu",
+    uz: "Uzbek",
+    vi: "Vietnamese",
+    xh: "Xhosa",
+    yi: "Yiddish",
+    zh: "Chinese",
+    zu: "Zulu",
   };
 
   const toggleSortOrder = () => {
@@ -144,7 +213,9 @@ export default function Home({ type }) {
             );
 
             const credits = response.data || [];
-            const uniqueCredits = Array.from(new Map(credits.map(item => [item.id, item])).values());
+            const uniqueCredits = Array.from(
+              new Map(credits.map((item) => [item.id, item])).values()
+            );
             const sortedCredits = uniqueCredits.sort((a, b) => {
               const dateA = new Date(a.release_date || a.first_air_date || 0);
               const dateB = new Date(b.release_date || b.first_air_date || 0);
@@ -163,36 +234,49 @@ export default function Home({ type }) {
             const langName = languageMap[language] || "English";
 
             setGenreNames(genres);
-            const genreText = genres.map(id => genreMap[id] || id).join(" - ");
-            const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
-            setTitle(`${langName} ${year || ""} ${genreText} ${capitalizedType}'s`);
+            const genreText = genres
+              .map((id) => genreMap[id] || id)
+              .join(" - ");
+            const capitalizedType =
+              type.charAt(0).toUpperCase() + type.slice(1);
+            setTitle(
+              `${langName} ${year || ""} ${genreText} ${capitalizedType}'s`
+            );
 
-            const response = await axios.get("http://localhost:3000/api/details/filter", {
-              params: {
-                year,
-                language,
-                page,
-                genres: genres.join(","),
-                sortOrder,
-                type,
-              },
-            });
+            const response = await axios.get(
+              "http://localhost:3000/api/details/filter",
+              {
+                params: {
+                  year,
+                  language,
+                  page,
+                  genres: genres.join(","),
+                  sortOrder,
+                  type,
+                },
+              }
+            );
 
             setCards(response.data.results || []);
             setTotalPages(response.data.total_pages || 1);
           }
-
         } else if (searchQuery && type === "home") {
           setSearch(true);
           setCards([]);
 
-          const movieRes = await axios.get("http://localhost:3000/api/details/search/movie", {
-            params: { query: searchQuery },
-          });
+          const movieRes = await axios.get(
+            "http://localhost:3000/api/details/search/movie",
+            {
+              params: { query: searchQuery },
+            }
+          );
 
-          const tvRes = await axios.get("http://localhost:3000/api/details/search/tv", {
-            params: { query: searchQuery },
-          });
+          const tvRes = await axios.get(
+            "http://localhost:3000/api/details/search/tv",
+            {
+              params: { query: searchQuery },
+            }
+          );
 
           const combined = [
             ...(movieRes.data || []),
@@ -202,28 +286,34 @@ export default function Home({ type }) {
           setCards(combined);
           setTotalPages(1); // Disable pagination for search
           setTitle(`Search Results for "${searchQuery}"`);
-
         } else if (type === "home") {
-          const response = await axios.get("http://localhost:3000/api/details/popular", {
-            params: { page, limit: 20 },
-          });
+          const response = await axios.get(
+            "http://localhost:3000/api/details/popular",
+            {
+              params: { page, limit: 20 },
+            }
+          );
           const data = response.data;
           setCards(data.movies || []);
           setTotalPages(data.totalPages || 1);
           setTitle("Popular Movies");
-
         } else if (type === "watch-later" && user) {
-          const response = await axios.get("http://localhost:3000/api/user/watch-later", {
-            params: { userEmail: user.email, page, limit: 20 },
-          });
+          const response = await axios.get(
+            "http://localhost:3000/api/user/watch-later",
+            {
+              params: { userEmail: user.email, page, limit: 20 },
+            }
+          );
           setTitle("Watch Later");
           setCards(response.data.movies || []);
           setTotalPages(response.data.totalPages || 1);
-
         } else if (type === "watched" && user) {
-          const response = await axios.get("http://localhost:3000/api/user/watched", {
-            params: { userEmail: user.email, page, limit: 20 },
-          });
+          const response = await axios.get(
+            "http://localhost:3000/api/user/watched",
+            {
+              params: { userEmail: user.email, page, limit: 20 },
+            }
+          );
           setTitle("My Watched Movies");
           setCards(response.data.movies || []);
           setTotalPages(response.data.totalPages || 1);
