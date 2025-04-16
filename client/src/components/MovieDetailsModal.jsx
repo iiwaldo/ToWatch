@@ -198,15 +198,6 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
 
     if (seasonsArr.length === 1) {
       setEpisodes(firstSeason.episode_count);
-      setTitle(card.original_title || card.original_name);
-      setDate(formatDate(firstSeason.air_date));
-      const tempImage = imageUrl;
-      setImageUrl(
-        firstSeason.poster_path
-          ? `https://image.tmdb.org/t/p/w500${firstSeason.poster_path}`
-          : tempImage
-      );
-      setOverview(firstSeason.overview || card.overview);
       setModalLoading(true);
       return;
     }
