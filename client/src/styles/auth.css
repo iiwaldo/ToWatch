@@ -97,3 +97,10 @@
     text-decoration: underline;
     color: #008c9e; /* Darker cyan-blue on hover */
 }
+/* Error message styling */
+.auth-error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+  }

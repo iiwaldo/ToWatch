@@ -1,24 +1,22 @@
 import { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 import InputField from "../components/InputField"; // Import InputField
 import Button from "../components/Button";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
-
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");  // New state for error message
   const navigate = useNavigate();
-  const {login,isAuthenticated} = useAuth();
-  
+  const { login, isAuthenticated } = useAuth();
 
   const handleLogin = async (e) => {
-    console.log(isAuthenticated);
     e.preventDefault();
     console.log("Logging in with", { email, password });
-    // Implement login logic here (e.g., call API to authenticate)
+
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/login",
@@ -28,15 +26,16 @@ export default function Login() {
         }
       );
       if (response.status === 200) {
-        alert("success");
-        login(response.data.token,response.data.user)
+        alert("Login successful!");
+        login(response.data.token, response.data.user);
         navigate("/home");
       }
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        // Set generic error message
+        setError("Invalid email or password. Please try again.");
       }
-      console.log("error pass");
+      console.log("Login failed:", error);
     }
   };
 
@@ -59,6 +58,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          {error && <p className="auth-error">{error}</p>} {/* Display error message */}
           <Button label="Login" type="submit" />
         </form>
         <p className="auth-link">
