@@ -42,7 +42,7 @@ export default function Login() {
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h2 className="auth-title">MovieStack &#127871;</h2>
+        <h2 className="auth-title">ToWatch &#127871;</h2>
         <form onSubmit={handleLogin}>
           <InputField
             label="Email"
