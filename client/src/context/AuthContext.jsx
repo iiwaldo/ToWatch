@@ -8,13 +8,13 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  console.log(isAuthenticated);
+  const [loading, setLoading] = useState(true); // ← NEW
+
   const verifyTokenWithBackend = async (token) => {
     try {
-      console.log("checking with backend..");
       const response = await axios.post(
         "http://localhost:3000/api/auth/verify-token",
         { token }
@@ -24,50 +24,46 @@ export function AuthProvider({ children }) {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         setUser(storedUser);
       } else {
-        // If the backend returns an error (e.g., invalid token), log out
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
         setIsAuthenticated(false);
         setUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
       }
-    } catch (error) {
-      console.error("Error verifying token with backend:", error);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    } finally {
+      setLoading(false); // ← DONE CHECKING
     }
   };
+
   useEffect(() => {
-    console.log("use effect is running");
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        console.log("Checking token...");
         const decoded = jwtDecode(token);
-        console.log("Decoded token:", decoded); // Log the decoded token
-
-        // Check for token expiry
         if (decoded.exp < Date.now() / 1000) {
-          //token expired
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           setIsAuthenticated(false);
           setUser(null);
-          console.log("Token expired, logging out.");
+          setLoading(false);
         } else {
-          //check with backend
           verifyTokenWithBackend(token);
         }
-      } catch (error) {
-        console.error("Error decoding token:", error);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+      } catch (err) {
         setIsAuthenticated(false);
         setUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
   const login = (token, user) => {
     localStorage.setItem("token", token);
@@ -84,8 +80,8 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, user }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, user, loading }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};

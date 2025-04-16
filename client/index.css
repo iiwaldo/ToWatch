@@ -1,181 +1,190 @@
-/* 🔥 Ultra Dark & Futuristic Global Theme */
+/* 💠 Particle Canvas */
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 1;
+  filter: blur(0.6px);
+  background: transparent !important;
+}
+
+/* 🔥 Ultra Dark Background */
 body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #000;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #e0f7fa;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
 
-    /* Enhanced deep animated gradient */
-    background: linear-gradient(135deg, #020202, #0a0a0a, #111, #1c1c1c, #020202);
-    background-size: 1000% 1000%;
-    animation: gradientAnimation 40s ease-in-out infinite;
-
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #e0f7fa;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
-
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    transition: all 0.3s ease-in-out;
+  /* remove these lines 👇 */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 🔄 Sexy animated background */
 @keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* 💎 Glassy Neon Glow Box */
 .glow-box {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 2.5rem 3rem;
-    box-shadow:
-        0 0 40px rgba(0, 229, 255, 0.1),
-        0 0 80px rgba(0, 229, 255, 0.08),
-        inset 0 0 12px rgba(0, 255, 255, 0.05);
-    backdrop-filter: blur(22px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.4s ease;
-    animation: floatPulse 8s ease-in-out infinite, glowAnimation 5s ease-in-out infinite;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.1), 0 0 80px rgba(0, 229, 255, 0.08),
+    inset 0 0 12px rgba(0, 255, 255, 0.05);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.4s ease;
+  animation: floatPulse 8s ease-in-out infinite,
+    glowAnimation 5s ease-in-out infinite;
 }
 
 /* 🧊 Hover: More glow and scale */
 .glow-box:hover {
-    transform: scale(1.05);
-    box-shadow:
-        0 0 60px rgba(0, 255, 255, 0.18),
-        0 0 120px rgba(0, 255, 255, 0.15),
-        inset 0 0 30px rgba(0, 255, 255, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 0 60px rgba(0, 255, 255, 0.18),
+    0 0 120px rgba(0, 255, 255, 0.15), inset 0 0 30px rgba(0, 255, 255, 0.1);
 }
 
 /* 💫 Floating pulse animation */
 @keyframes floatPulse {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* ✨ Neon glow text animation */
 @keyframes glowAnimation {
-    0%, 100% {
-        text-shadow: 0 0 8px rgba(0, 255, 255, 0.2), 0 0 16px rgba(0, 255, 255, 0.3), 0 0 32px rgba(0, 255, 255, 0.4);
-    }
-    50% {
-        text-shadow: 0 0 12px rgba(0, 255, 255, 0.3), 0 0 24px rgba(0, 255, 255, 0.5), 0 0 48px rgba(0, 255, 255, 0.6);
-    }
+  0%,
+  100% {
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.2), 0 0 16px rgba(0, 255, 255, 0.3),
+      0 0 32px rgba(0, 255, 255, 0.4);
+  }
+  50% {
+    text-shadow: 0 0 12px rgba(0, 255, 255, 0.3),
+      0 0 24px rgba(0, 255, 255, 0.5), 0 0 48px rgba(0, 255, 255, 0.6);
+  }
 }
-
 
 /* 💫 Neon Border for Input */
-input, textarea {
-    background: rgba(0, 0, 0, 0.4);
-    border: 2px solid rgba(0, 255, 255, 0.4);
-    color: #e0f7fa;
-    padding: 10px 12px;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease-in-out;
+input,
+textarea {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 255, 255, 0.4);
+  color: #e0f7fa;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
 }
 
-input:focus, textarea:focus {
-    outline: none;
-    border-color: #00e5ff;
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #00e5ff;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
 }
 
 /* 🖤 Scrollbar Style */
 ::-webkit-scrollbar {
-    width: 6px;  /* Slightly thin scrollbar */
+  width: 6px; /* Slightly thin scrollbar */
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 255, 255, 0.6);
-    border-radius: 10px;
-    border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+  background-color: rgba(0, 255, 255, 0.6);
+  border-radius: 10px;
+  border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 255, 255, 0.8);
-    border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
+  background-color: rgba(0, 255, 255, 0.8);
+  border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
 }
 
 /* 🖤 Scrollbar track */
 ::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
+  background: transparent;
+  border-radius: 10px;
 }
 
 /* 🎆 Animation for neon links */
 a {
-    color: #00e5ff;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease-in-out;
+  color: #00e5ff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
 }
 
 a:hover {
-    color: #fff;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
 }
 
 /* Fix for Close Button */
 .close-btn {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    font-size: 1.8rem;
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-radius 0.3s ease;
-    z-index: 10;
-    padding: 6px 10px;  /* Slight padding */
-    border-radius: 50%;  /* Make it circular */
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 1.8rem;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+  z-index: 10;
+  padding: 6px 10px; /* Slight padding */
+  border-radius: 50%; /* Make it circular */
 }
 
 .close-btn:hover {
-    background-color: #00bcd4;
-    border-radius: 50%; /* Ensure circular shape on hover */
+  background-color: #00bcd4;
+  border-radius: 50%; /* Ensure circular shape on hover */
 }
 
 /* Optional: Modal Scroll Fix */
 .movie-description {
-    overflow-y: scroll;
-    scrollbar-width: thin;
-    scrollbar-color: #00bcd4 #111;  /* Scrollbar color */
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #00bcd4 #111; /* Scrollbar color */
 }
 
 .movie-description::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .movie-description::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 255, 255, 0.6);
-    border-radius: 10px;
-    border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
+  background-color: rgba(0, 255, 255, 0.6);
+  border-radius: 10px;
+  border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
 }
 
 .movie-description::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 255, 255, 0.8);
-    border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
+  background-color: rgba(0, 255, 255, 0.8);
+  border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
 }
 
 .movie-description::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
