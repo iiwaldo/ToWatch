@@ -10,7 +10,7 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = [process.env.CLIENT_URL]; // from .env
+const allowedOrigins = [process.env.CLIENT_URL];
 
 app.use(
   cors({
@@ -21,9 +21,9 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    credentials: true, // optional: only needed if using cookies/auth
   })
 );
-
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
