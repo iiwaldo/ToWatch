@@ -46,6 +46,9 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     return formattedDate;
   };
   const checkStatus = async (statusType) => {
+    if(!user) {
+      return;
+    }
     const data = {
       userEmail: user.email,
       card,

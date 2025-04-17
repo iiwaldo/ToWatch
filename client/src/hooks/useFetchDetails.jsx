@@ -13,6 +13,9 @@ const useFetchDetails = (card, type) => {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
 
   const fetchStatus = async () => {
+    if (!user) {
+      return;
+    }
     try {
       const response = await axios.get(`${BACKEND_URL}/api/user/status`, {
         params: { movieID: card.id, userEmail: user.email },
