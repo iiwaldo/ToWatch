@@ -26,7 +26,6 @@ export default function Login() {
         }
       );
       if (response.status === 200) {
-        alert("Login successful!");
         login(response.data.token, response.data.user);
         navigate("/home");
       }
