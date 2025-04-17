@@ -10,9 +10,17 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const allowedOrigins = [process.env.CLIENT_URL]; // from .env
+
 app.use(
   cors({
-    origin: "*", // For now, you can make this '*' to test. Later, restrict it to your frontend's domain.
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 
