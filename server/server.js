@@ -10,7 +10,11 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // For now, you can make this '*' to test. Later, restrict it to your frontend's domain.
+  })
+);
 
 const connectDB = async () => {
   try {
@@ -29,7 +33,7 @@ connectDB();
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/details", detailRoutes);
-app.use("/api/user",userRoutes);
+app.use("/api/user", userRoutes);
 
 app.listen(PORT, () => {
   console.log("works");
