@@ -26,6 +26,7 @@ async function addWatchLater(req, res) {
     const { userEmail, card, trailerId } = req.body;
     let existingMovie = await findOrCreateMovie(card, trailerId);
     const user = await User.findOne({ email: userEmail });
+    console.log(user);
     if (!user.moviesSaved.includes(existingMovie._id)) {
       user.moviesSaved.push(existingMovie._id);
       await user.save();
