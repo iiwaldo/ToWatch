@@ -13,7 +13,7 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(""); // State to store error message
   const navigate = useNavigate();
-  const BACKEND_URL = process.env.REACT_APP_API_URL;
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

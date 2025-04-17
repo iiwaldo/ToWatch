@@ -14,7 +14,8 @@ import ActorCard from "./ActorCard";
 import useFetchDetails from "../hooks/useFetchDetails";
 
 const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
-  const BACKEND_URL = process.env.REACT_APP_API_URL;
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
+
   console.log("im re-rendered from movieDetails");
   console.log(card.id);
   const { user } = useAuth();

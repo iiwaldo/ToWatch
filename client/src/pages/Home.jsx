@@ -11,7 +11,7 @@ import "../styles/moviecard.css";
 import { FaSortUp, FaSortDown } from "react-icons/fa";
 
 export default function Home({ type }) {
-  const BACKEND_URL = process.env.REACT_APP_API_URL;
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
   const { user } = useAuth();
   const [cards, setCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

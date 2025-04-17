@@ -12,7 +12,8 @@ export default function Login() {
   const [error, setError] = useState(""); // New state for error message
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
-  const BACKEND_URL = process.env.REACT_APP_API_URL;
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
+
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -15,7 +15,8 @@ const FilterModal = ({ onClose, setGenreNames }) => {
   const [language, setLanguage] = useState("");
   const navigate = useNavigate();
   const [genresToSave, setGenresToSave] = useState([]);
-  const BACKEND_URL = process.env.REACT_APP_API_URL;
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     const fetchGenres = async () => {
