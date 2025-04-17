@@ -8,7 +8,7 @@ import userRoutes from "./routes/userRoutes.js";
 import cors from "cors";
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
@@ -31,6 +31,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/details", detailRoutes);
 app.use("/api/user",userRoutes);
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log("works");
 });
