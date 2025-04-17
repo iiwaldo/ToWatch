@@ -14,15 +14,16 @@ const FilterModal = ({ onClose, setGenreNames }) => {
   const [genres, setGenres] = useState([]);
   const [language, setLanguage] = useState("");
   const navigate = useNavigate();
-  const [genresToSave,setGenresToSave] = useState([]);
+  const [genresToSave, setGenresToSave] = useState([]);
+  const BACKEND_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const endpoint =
           dataType === "movie"
-            ? "http://localhost:3000/api/details/movie-genres"
-            : "http://localhost:3000/api/details/tv-genres";
+            ? `${BACKEND_URL}/api/details/movie-genres`
+            : `${BACKEND_URL}api/details/tv-genres`;
         const response = await axios.get(endpoint);
         dataType === "movie"
           ? setMovieGenres(response.data)
@@ -139,7 +140,7 @@ const FilterModal = ({ onClose, setGenreNames }) => {
                   className={`genre-btn ${
                     genres.includes(genre.id) ? "selected" : ""
                   }`}
-                  onClick={() => toggleGenre(genre.id,genre.name)}
+                  onClick={() => toggleGenre(genre.id, genre.name)}
                 >
                   {genre.name}
                 </button>

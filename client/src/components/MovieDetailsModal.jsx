@@ -14,6 +14,7 @@ import ActorCard from "./ActorCard";
 import useFetchDetails from "../hooks/useFetchDetails";
 
 const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
+  const BACKEND_URL = process.env.REACT_APP_API_URL;
   console.log("im re-rendered from movieDetails");
   console.log(card.id);
   const { user } = useAuth();
@@ -56,7 +57,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       if (!isSaved) {
         try {
           const response = await axios.post(
-            `http://localhost:3000/api/user/watch-later`,
+            `${BACKEND_URL}/api/user/watch-later`,
             data
           );
           setIsSaved(true);
@@ -77,7 +78,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       else {
         try {
           const response = await axios.delete(
-            `http://localhost:3000/api/user/watch-later`,
+            `${BACKEND_URL}/api/user/watch-later`,
             {
               data,
             }
@@ -102,7 +103,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       if (!isWatched) {
         try {
           const response = await axios.post(
-            `http://localhost:3000/api/user/watched`,
+            `${BACKEND_URL}/api/user/watched`,
             data
           );
           setIsWatched(true);
@@ -120,7 +121,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
       } else {
         try {
           const response = await axios.delete(
-            `http://localhost:3000/api/user/watched`,
+            `${BACKEND_URL}/api/user/watched`,
             {
               data,
             }

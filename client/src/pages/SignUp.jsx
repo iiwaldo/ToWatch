@@ -13,6 +13,7 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(""); // State to store error message
   const navigate = useNavigate();
+  const BACKEND_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,13 +25,10 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/signup",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${BACKEND_URL}/api/auth/signup`, {
+        email,
+        password,
+      });
       login(email, response.data.token);
       navigate("/"); // Redirect to the login page after successful signup
     } catch (error) {
@@ -71,7 +69,8 @@ const SignUp = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          {error && <p className="auth-error">{error}</p>} {/* Display error message */}
+          {error && <p className="auth-error">{error}</p>}{" "}
+          {/* Display error message */}
           <Button label="Sign Up" type="submit" />
         </form>
         <p className="auth-link">

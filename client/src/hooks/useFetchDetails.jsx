@@ -10,13 +10,13 @@ const useFetchDetails = (card, type) => {
   const [numberOfSeasons, setNumberOfSeasons] = useState(null);
   const [seasonsArr, setSeasonsArr] = useState([]);
   const [loading, setLoading] = useState(true);
+  const BACKEND_URL = process.env.REACT_APP_API_URL;
 
   const fetchStatus = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/user/status`,
-        { params: { movieID: card.id, userEmail: user.email } }
-      );
+      const response = await axios.get(`${BACKEND_URL}/api/user/status`, {
+        params: { movieID: card.id, userEmail: user.email },
+      });
       setIsWatched(response.data.isWatched);
       setIsSaved(response.data.isSaved);
     } catch (error) {
@@ -25,15 +25,12 @@ const useFetchDetails = (card, type) => {
   };
   const fetchCast = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/details/cast",
-        {
-          params: {
-            movieID: card.id,
-            datatype: card.type || (card.release_date ? "movie" : "show"),
-          },
-        }
-      );
+      const response = await axios.get(`${BACKEND_URL}/api/details/cast`, {
+        params: {
+          movieID: card.id,
+          datatype: card.type || (card.release_date ? "movie" : "show"),
+        },
+      });
       setCast(response.data);
     } catch (error) {
       setCast([]);
@@ -44,17 +41,14 @@ const useFetchDetails = (card, type) => {
     release_date = card.release_date || card.first_air_date
   ) => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/details/trailer",
-        {
-          params: {
-            original_title: original_title,
-            original_language: card.original_language,
-            release_date: release_date || null,
-            type: card.release_date ? "movie" : "show",
-          },
-        }
-      );
+      const response = await axios.get(`${BACKEND_URL}/api/details/trailer`, {
+        params: {
+          original_title: original_title,
+          original_language: card.original_language,
+          release_date: release_date || null,
+          type: card.release_date ? "movie" : "show",
+        },
+      });
       setTrailerId(response.data);
       setLoading(false);
     } catch (error) {
@@ -67,7 +61,7 @@ const useFetchDetails = (card, type) => {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:3000/api/details/tv", {
+      const response = await axios.get(`${BACKEND_URL}/api/details/tv`, {
         params: { tvID: card.id },
       });
       if (response.data.numberOfSeasons !== 0) {

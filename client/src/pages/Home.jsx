@@ -11,6 +11,7 @@ import "../styles/moviecard.css";
 import { FaSortUp, FaSortDown } from "react-icons/fa";
 
 export default function Home({ type }) {
+  const BACKEND_URL = process.env.REACT_APP_API_URL;
   const { user } = useAuth();
   const [cards, setCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -208,7 +209,7 @@ export default function Home({ type }) {
           if (actorID) {
             const actorName = filterParams.get("actorName") || "Actor";
             const response = await axios.get(
-              "http://localhost:3000/api/details/combined_credits",
+              `${BACKEND_URL}/api/details/combined_credits`,
               { params: { actorID } }
             );
 
@@ -244,7 +245,7 @@ export default function Home({ type }) {
             );
 
             const response = await axios.get(
-              "http://localhost:3000/api/details/filter",
+              `${BACKEND_URL}/api/details/filter`,
               {
                 params: {
                   year,
@@ -265,14 +266,14 @@ export default function Home({ type }) {
           setCards([]);
 
           const movieRes = await axios.get(
-            "http://localhost:3000/api/details/search/movie",
+            `${BACKEND_URL}/api/details/search/movie`,
             {
               params: { query: searchQuery },
             }
           );
 
           const tvRes = await axios.get(
-            "http://localhost:3000/api/details/search/tv",
+            `${BACKEND_URL}/api/details/search/tv`,
             {
               params: { query: searchQuery },
             }
@@ -288,7 +289,7 @@ export default function Home({ type }) {
           setTitle(`Search Results for "${searchQuery}"`);
         } else if (type === "home") {
           const response = await axios.get(
-            "http://localhost:3000/api/details/popular",
+            `${BACKEND_URL}/api/details/popular`,
             {
               params: { page, limit: 20 },
             }
@@ -299,7 +300,7 @@ export default function Home({ type }) {
           setTitle("Popular Movies");
         } else if (type === "watch-later" && user) {
           const response = await axios.get(
-            "http://localhost:3000/api/user/watch-later",
+            `${BACKEND_URL}/api/user/watch-later`,
             {
               params: { userEmail: user.email, page, limit: 20 },
             }
@@ -308,12 +309,9 @@ export default function Home({ type }) {
           setCards(response.data.movies || []);
           setTotalPages(response.data.totalPages || 1);
         } else if (type === "watched" && user) {
-          const response = await axios.get(
-            "http://localhost:3000/api/user/watched",
-            {
-              params: { userEmail: user.email, page, limit: 20 },
-            }
-          );
+          const response = await axios.get(`${BACKEND_URL}/api/user/watched`, {
+            params: { userEmail: user.email, page, limit: 20 },
+          });
           setTitle("My Watched Movies");
           setCards(response.data.movies || []);
           setTotalPages(response.data.totalPages || 1);
@@ -364,7 +362,7 @@ export default function Home({ type }) {
             )}
           </div>
 
-          {!actorFilter && !search && totalPages>1  && (
+          {!actorFilter && !search && totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
