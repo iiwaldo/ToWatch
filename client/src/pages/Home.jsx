@@ -225,6 +225,7 @@ export default function Home({ type }) {
             });
 
             setCards(sortedCredits);
+            setLoading(false);
             setTitle(actorName);
             setActorFilter(true);
           } else {
@@ -265,6 +266,7 @@ export default function Home({ type }) {
         } else if (searchQuery && type === "home") {
           setSearch(true);
           setCards([]);
+          setLoading(false);
 
           const movieRes = await axios.get(
             `${BACKEND_URL}/api/details/search/movie`,
@@ -286,6 +288,7 @@ export default function Home({ type }) {
           ].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
 
           setCards(combined);
+          setLoading(false);
           setTotalPages(1); // Disable pagination for search
           setTitle(`Search Results for "${searchQuery}"`);
         } else if (type === "home") {
@@ -297,6 +300,7 @@ export default function Home({ type }) {
           );
           const data = response.data;
           setCards(data.movies || []);
+          setLoading(false);
           setTotalPages(data.totalPages || 1);
           setTitle("Popular Movies");
         } else if (type === "watch-later" && user) {
@@ -308,6 +312,7 @@ export default function Home({ type }) {
           );
           setTitle("Watch Later");
           setCards(response.data.movies || []);
+          setLoading(false);
           setTotalPages(response.data.totalPages || 1);
         } else if (type === "watched" && user) {
           const response = await axios.get(`${BACKEND_URL}/api/user/watched`, {
@@ -315,15 +320,12 @@ export default function Home({ type }) {
           });
           setTitle("My Watched Movies");
           setCards(response.data.movies || []);
+          setLoading(false);
           setTotalPages(response.data.totalPages || 1);
         }
       } catch (error) {
         console.error("Error fetching movies:", error);
         setCards([]);
-      } finally {
-        if (cards.length > 0) {
-          setLoading(false);
-        }
       }
     };
 
