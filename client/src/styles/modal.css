@@ -345,3 +345,84 @@ button:hover {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .modal-content {
+    flex-direction: column; /* Stack the modal content vertically */
+    width: 100%; /* Make the modal content take up the full width of the screen */
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .movie-image {
+    flex: 0 0 40%;
+    max-width: 200px;
+    margin-bottom: 16px;
+  }
+
+  .movie-description {
+    flex: 1;
+    padding-left: 0; /* Remove left padding for better fit */
+    max-height: 300px; /* Limit height of description */
+  }
+
+  .button-group {
+    margin-top: 16px;
+    flex-direction: column; /* Stack the buttons vertically on smaller screens */
+  }
+
+  .icon-btn {
+    padding: 10px; /* Slightly larger padding on smaller screens */
+    font-size: 24px; /* Increase icon size for better touch interaction */
+  }
+
+  .close-btn {
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+  }
+
+  .cast-list {
+    flex-direction: column; /* Stack cast list vertically on smaller screens */
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+
+  .actor-card {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  .spinner-container {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border-width: 4px;
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 769px) {
+  .modal-content {
+    padding: 24px; /* Standard padding for larger screens */
+  }
+
+  .movie-image {
+    flex: 0 0 30%;
+    max-width: 250px;
+  }
+
+  .movie-description {
+    padding-left: 20px;
+  }
+
+  .button-group {
+    margin-top: 8px;
+  }
+}

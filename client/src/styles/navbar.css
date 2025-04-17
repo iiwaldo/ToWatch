@@ -193,3 +193,60 @@
   background: transparent;
   border-radius: 10px;
 }
+/* 📱 Mobile Styles (Responsive Design) */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 16px 24px; /* Less padding on mobile */
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logo a {
+    font-size: 1.6rem; /* Smaller logo size on mobile */
+  }
+
+  .search {
+    flex: 1;
+    padding: 0 12px; /* Smaller padding for search input */
+    justify-content: flex-start;
+  }
+
+  .search-input {
+    width: 100%;
+    max-width: 300px; /* Adjust max-width for mobile */
+    font-size: 0.9rem; /* Smaller font size on mobile */
+  }
+
+  .links a {
+    font-size: 0.9rem; /* Smaller font size on mobile */
+    margin-left: 16px; /* Reduced margin between links */
+  }
+
+  .profile-dropdown {
+    margin-top: 16px; /* Add margin for better spacing */
+  }
+
+  .dropdown-menu {
+    width: 100%; /* Full-width dropdown on mobile */
+    box-shadow: none; /* Remove shadow for a cleaner look */
+    position: static; /* Make dropdown static for mobile */
+    opacity: 1;
+    transform: none;
+  }
+
+  .dropdown-menu button {
+    padding: 10px; /* Smaller padding on mobile */
+    font-size: 0.9rem; /* Smaller font size */
+  }
+
+  /* Adjust the profile icon size */
+  .profile-icon {
+    padding: 8px; /* Reduce icon padding */
+  }
+
+  /* Improve responsiveness for links in a vertical stack */
+  .links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
