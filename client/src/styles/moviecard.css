@@ -209,80 +209,21 @@
   background-color: rgba(0, 188, 212, 0.1); /* Light hover effect */
   transform: scale(1.1); /* Slight scale effect */
 }
-/* 📱 Mobile Styles (Responsive Design) */
-@media (max-width: 768px) {
-  .home-container {
-    padding-top: 120px; /* Reduce padding for mobile */
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .home-header {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 15px;
-  }
-
-  .home-title {
-    font-size: 1.5rem; /* Smaller title on mobile */
-  }
-
-  .filter-button {
-    width: 100%; /* Full-width button on mobile */
-    margin-top: 10px;
-    padding: 12px;
-  }
-
-  .movie-cards-container {
-    flex-direction: column; /* Stack movie cards vertically */
-    gap: 10px;
-  }
-
+@media (max-width: 480px) {
   .movie-card {
-    width: 100%;
-    max-width: 300px; /* Adjust max-width for mobile */
-    margin: 10px auto;
+    max-width: 90%;
   }
 
-  .pagination {
-    flex-direction: column; /* Stack pagination buttons vertically */
-    margin-top: 20px;
-  }
-
-  .pagination-btn {
-    width: 100%; /* Full width pagination buttons */
-    margin: 5px 0;
-  }
-
-  .sort-by-container {
-    width: 100%; /* Full width sort container */
-    margin-top: 10px;
-  }
-
-  .sort-button {
-    width: 100%; /* Full width sort button */
-    padding: 12px;
-  }
-
-  .dropdown-menu {
-    width: 100%; /* Full width dropdown on mobile */
-    box-shadow: none; /* Remove box shadow for a cleaner look */
-    position: static; /* Static dropdown on mobile */
-    padding: 5px;
-  }
-
-  .dropdown-menu button {
-    padding: 12px;
+  .movie-title {
     font-size: 1rem;
   }
 
-  .sort-icons-container {
-    flex-direction: column;
-    align-items: flex-start;
+  .filter-button,
+  .sort-button {
+    font-size: 0.9rem;
   }
 
-  .sort-icon-button {
-    font-size: 1.2rem; /* Smaller icon size */
-    margin-bottom: 10px; /* Space between icons */
+  .home-title {
+    font-size: 1.3rem;
   }
 }

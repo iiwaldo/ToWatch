@@ -19,13 +19,13 @@
 
 @keyframes gradientAnimation {
   0% {
-      background-position: 0% 50%;
+    background-position: 0% 50%;
   }
   50% {
-      background-position: 100% 50%;
+    background-position: 100% 50%;
   }
   100% {
-      background-position: 0% 50%;
+    background-position: 0% 50%;
   }
 }
 
@@ -80,13 +80,13 @@
 /* Gradient Border Animation */
 @keyframes border-glow {
   0% {
-      border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
+    border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
   }
   50% {
-      border-image-source: linear-gradient(270deg, #00e5ff, #00bcd4, #00e5ff);
+    border-image-source: linear-gradient(270deg, #00e5ff, #00bcd4, #00e5ff);
   }
   100% {
-      border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
+    border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
   }
 }
 
@@ -193,60 +193,22 @@
   background: transparent;
   border-radius: 10px;
 }
-/* 📱 Mobile Styles (Responsive Design) */
 @media (max-width: 768px) {
   .navbar {
-    padding: 16px 24px; /* Less padding on mobile */
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .logo a {
-    font-size: 1.6rem; /* Smaller logo size on mobile */
+    gap: 12px;
   }
 
   .search {
-    flex: 1;
-    padding: 0 12px; /* Smaller padding for search input */
-    justify-content: flex-start;
-  }
-
-  .search-input {
     width: 100%;
-    max-width: 300px; /* Adjust max-width for mobile */
-    font-size: 0.9rem; /* Smaller font size on mobile */
+    padding: 0;
   }
 
-  .links a {
-    font-size: 0.9rem; /* Smaller font size on mobile */
-    margin-left: 16px; /* Reduced margin between links */
-  }
-
-  .profile-dropdown {
-    margin-top: 16px; /* Add margin for better spacing */
-  }
-
-  .dropdown-menu {
-    width: 100%; /* Full-width dropdown on mobile */
-    box-shadow: none; /* Remove shadow for a cleaner look */
-    position: static; /* Make dropdown static for mobile */
-    opacity: 1;
-    transform: none;
-  }
-
-  .dropdown-menu button {
-    padding: 10px; /* Smaller padding on mobile */
-    font-size: 0.9rem; /* Smaller font size */
-  }
-
-  /* Adjust the profile icon size */
-  .profile-icon {
-    padding: 8px; /* Reduce icon padding */
-  }
-
-  /* Improve responsiveness for links in a vertical stack */
   .links {
+    width: 100%;
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
   }
 }

@@ -57,7 +57,6 @@ const useFetchDetails = (card, type) => {
   };
   const fetchTvDetails = async () => {
     if (card.type !== "show" && !card.first_air_date) {
-      console.log("im called here");
       return;
     }
     try {

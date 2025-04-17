@@ -6,7 +6,6 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    console.log("im here");
     return (<div className="spinner-container">
         <div className="spinner"></div>
       </div>)// Or a spinner

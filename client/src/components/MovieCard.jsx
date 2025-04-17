@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 
 const MovieCard = ({ card, onClick }) => {
-  console.log("im re-rendered from movieCard");
   const imageUrl = card.poster_path ? `https://image.tmdb.org/t/p/w500${card.poster_path}` : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg";
   return (
     <div className="movie-card" onClick={() => onClick(card)}>

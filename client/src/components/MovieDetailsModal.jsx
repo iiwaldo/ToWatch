@@ -15,9 +15,6 @@ import useFetchDetails from "../hooks/useFetchDetails";
 
 const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
-
-  console.log("im re-rendered from movieDetails");
-  console.log(card.id);
   const { user } = useAuth();
   const [originalIndex, setOriginalIndex] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -130,7 +127,6 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
           setIsWatched(false);
           if (type === "watched") {
             setCards((prevCards) => {
-              console.log("movie id before removing = ", card.id);
               const index = prevCards.findIndex((c) => c.id === card.id);
               if (index !== -1) {
                 setOriginalIndex(index); // store index before removal

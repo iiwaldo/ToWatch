@@ -5,7 +5,6 @@ import React , { useState, useCallback } from "react";
 import { FaUserCircle } from "react-icons/fa"; // Add a user profile icon from react-icons
 
 function Navbar() {
-  console.log("im re-rendered from NavBar");
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");

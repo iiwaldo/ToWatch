@@ -3,18 +3,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ActorCard = ({ actor, onClose, type }) => {
-  console.log("im re-rendered Actor-card");
   const navigate = useNavigate();
   const imageURL = actor.profile_path
     ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
     : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg";
   const handleActorClick = async (actor) => {
-    console.log(actor.id);
     const filterParams = new URLSearchParams({
       actorID: actor.id,
       actorName: actor.name,
     });
-    console.log(type);
     if (type !== "home") {
       navigate(
         `/home?filter=${encodeURIComponent(filterParams.toString())}&page=1`

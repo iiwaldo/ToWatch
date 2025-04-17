@@ -5,7 +5,6 @@ const ScrollToTop = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("window is running");
     window.scrollTo({
       top: 0,
       left: 0,
