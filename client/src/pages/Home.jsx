@@ -262,6 +262,7 @@ export default function Home({ type }) {
 
             setCards(response.data.results || []);
             setTotalPages(response.data.total_pages || 1);
+            setLoading(false);
           }
         } else if (searchQuery && type === "home") {
           setSearch(true);
