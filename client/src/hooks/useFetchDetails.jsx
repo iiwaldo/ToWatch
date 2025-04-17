@@ -10,7 +10,7 @@ const useFetchDetails = (card, type) => {
   const [numberOfSeasons, setNumberOfSeasons] = useState(null);
   const [seasonsArr, setSeasonsArr] = useState([]);
   const [loading, setLoading] = useState(true);
-  const BACKEND_URL = process.env.REACT_APP_API_URL;
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
 
   const fetchStatus = async () => {
     try {
