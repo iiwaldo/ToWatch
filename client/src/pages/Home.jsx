@@ -321,7 +321,9 @@ export default function Home({ type }) {
         console.error("Error fetching movies:", error);
         setCards([]);
       } finally {
-        setLoading(false);
+        if (cards.length > 0) {
+          setLoading(false);
+        }
       }
     };
 
