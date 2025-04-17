@@ -104,3 +104,37 @@
     margin-top: 10px;
     text-align: center;
   }
+/* Container for icon-only login buttons */
+.provider-login {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  
+  /* Button styling for icon buttons */
+  .provider-button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 10px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .provider-button:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.05);
+  }
+  
+  /* Logo sizing */
+  .provider-button img {
+    width: 20px;
+    height: 20px;
+  }
+  

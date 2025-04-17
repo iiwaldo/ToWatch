@@ -15,6 +15,7 @@ import useFetchDetails from "../hooks/useFetchDetails";
 
 const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
   console.log("im re-rendered from movieDetails");
+  console.log(card.id);
   const { user } = useAuth();
   const [originalIndex, setOriginalIndex] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -289,7 +290,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
             <img src={imageUrl} alt={title} className="movie-poster" />
 
             {/* Watch Later and Watched icons */}
-            {user && (
+            {
               <div className="button-group">
                 {/* Previous Season */}
                 {dataType === "show" && seasonsArr.length > 1 && (
@@ -303,10 +304,10 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                 )}
 
                 {/* Watch Later */}
-                {renderWatchLaterButton()}
+                {user && renderWatchLaterButton()}
 
                 {/* Watched */}
-                {renderWatchedButton()}
+                {user && renderWatchedButton()}
 
                 {/* Next Season */}
                 {dataType === "show" && seasonsArr.length > 1 && (
@@ -319,7 +320,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                   </button>
                 )}
               </div>
-            )}
+            }
           </div>
 
           <div className="movie-description">
