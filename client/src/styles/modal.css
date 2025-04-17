@@ -349,11 +349,15 @@ button:hover {
   }
 }
 
-@media (max-width: 768px) {
+
+/* Responsive styles for iPhone 12 and other mobile screens */
+@media (max-width: 480px) {
   .modal-content {
     flex-direction: column;
     padding: 16px;
     width: 100%;
+    max-width: none;
+    border-radius: 12px;
   }
 
   .modal-body {
@@ -362,33 +366,78 @@ button:hover {
   }
 
   .movie-image {
-    flex: 1;
+    flex: 0 0 auto;
     max-width: 100%;
     text-align: center;
   }
 
+  .movie-poster {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  .movie-description {
+    padding-left: 0;
+    max-height: none;
+  }
+
   .movie-description h1 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .movie-description p {
     font-size: 1rem;
   }
 
+  .datatype-label {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    top: 8px;
+    left: 8px;
+  }
+
+  .close-btn {
+    top: 10px;
+    right: 12px;
+    font-size: 1.5rem;
+  }
+
   .button-group {
     flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
   }
-}
-@media (max-width: 480px) {
+
+  .icon-btn {
+    padding: 6px;
+    font-size: 18px;
+  }
+
   .cast-list {
-    padding: 10px 0;
+    gap: 10px;
+    padding-bottom: 10px;
   }
 
   .actor-card {
     width: 120px;
   }
 
-  .cast-section h3 {
-    font-size: 1.2rem;
+  .actor-image {
+    height: 160px;
+  }
+
+  .season-nav {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .season-nav-icons {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .season-label {
+    font-size: 0.9rem;
   }
 }
+

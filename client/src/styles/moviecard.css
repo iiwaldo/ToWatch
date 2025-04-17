@@ -261,7 +261,7 @@
     align-items: center;
     z-index: 9999; /* Make sure it's above everything */
   }
-  
+
   .spinner {
     border: 6px solid rgba(255, 255, 255, 0.2);
     border-top: 6px solid #00ffff; /* Neon or accent color */
@@ -269,5 +269,88 @@
     width: 60px;
     height: 60px;
     animation: spin 1s linear infinite;
+  }
+}
+
+/* 📱 Responsive Home Page Styles for Mobile */
+@media (max-width: 480px) {
+  .home-container {
+    padding-top: 180px; /* Reduce for smaller screens */
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .home-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .home-title {
+    font-size: 1.5rem;
+  }
+
+  .filter-button,
+  .sort-button {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .sort-icons-container {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .movie-cards-container {
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .movie-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .movie-poster {
+    height: 220px;
+  }
+
+  .movie-title {
+    font-size: 1rem;
+    padding: 8px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0 10px;
+  }
+
+  .pagination-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .dropdown-menu {
+    width: 100%;
+    right: 0;
+    left: 0;
+    top: 44px;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .dropdown-menu button {
+    font-size: 0.95rem;
+    padding: 12px 20px;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border-width: 5px;
   }
 }
