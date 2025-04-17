@@ -209,6 +209,28 @@
   background-color: rgba(0, 188, 212, 0.1); /* Light hover effect */
   transform: scale(1.1); /* Slight scale effect */
 }
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75); /* Optional: dim the background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Make sure it's above everything */
+}
+
+.spinner {
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  border-top: 6px solid #00ffff; /* Neon or accent color */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
 @media (max-width: 480px) {
   .movie-card {
     max-width: 90%;
@@ -225,5 +247,27 @@
 
   .home-title {
     font-size: 1.3rem;
+  }
+
+  .spinner-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75); /* Optional: dim the background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Make sure it's above everything */
+  }
+  
+  .spinner {
+    border: 6px solid rgba(255, 255, 255, 0.2);
+    border-top: 6px solid #00ffff; /* Neon or accent color */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
   }
 }

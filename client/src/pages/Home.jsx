@@ -12,6 +12,7 @@ import { FaSortUp, FaSortDown } from "react-icons/fa";
 
 export default function Home({ type }) {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const [cards, setCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -319,13 +320,19 @@ export default function Home({ type }) {
       } catch (error) {
         console.error("Error fetching movies:", error);
         setCards([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMovies();
   }, [location.search, type, user, sortOrder]);
 
-  return (
+  return loading ? (
+    <div className="spinner-container">
+      <div className="spinner"></div>
+    </div>
+  ) : (
     <div>
       <Navbar />
       <div className="con">
