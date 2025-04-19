@@ -16,14 +16,13 @@ const FilterModal = ({ onClose, setGenreNames }) => {
   const [genresToSave, setGenresToSave] = useState([]);
   const BACKEND_URL = import.meta.env.VITE_API_URL;
 
-
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const endpoint =
           dataType === "movie"
             ? `${BACKEND_URL}/api/details/movie-genres`
-            : `${BACKEND_URL}api/details/tv-genres`;
+            : `${BACKEND_URL}/api/details/tv-genres`;
         const response = await axios.get(endpoint);
         dataType === "movie"
           ? setMovieGenres(response.data)
