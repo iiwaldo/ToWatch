@@ -311,7 +311,7 @@ const MovieDetailsModal = ({
           &times;
         </button>
 
-        <div className="modal-body" ref={modalBodyRef}>
+        <div className="modal-body">
           <div className="movie-image">
             <div className="datatype-label">{dataType}</div>
 
