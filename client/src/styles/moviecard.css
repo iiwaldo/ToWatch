@@ -220,6 +220,7 @@
   justify-content: center;
   align-items: center;
   z-index: 9999; /* Make sure it's above everything */
+  flex-direction: column; /* This ensures both spinner and text stack vertically */
 }
 
 .spinner {
@@ -229,6 +230,27 @@
   width: 60px;
   height: 60px;
   animation: spin 1s linear infinite;
+  margin-bottom: 20px; /* Space between spinner and text */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-content {
+  text-align: center; /* Ensures the text is centered under the spinner */
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 16px;
+  margin-top: 10px; /* Space between the spinner and the text */
+  font-family: Arial, sans-serif;
 }
 
 @media (max-width: 480px) {
