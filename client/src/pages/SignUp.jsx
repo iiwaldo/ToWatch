@@ -30,8 +30,8 @@ const SignUp = () => {
         email,
         password,
       });
-      login(email, response.data.token);
-      navigate("/"); // Redirect to the login page after successful signup
+      //login(email, response.data.token);
+      navigate("/login"); // Redirect to the login page after successful signup
     } catch (error) {
       // Display a generic error message if email already exists
       if (error.response && error.response.data.message) {
