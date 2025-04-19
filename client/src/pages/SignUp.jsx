@@ -24,6 +24,7 @@ const SignUp = () => {
       return; // Stop form submission
     }
 
+
     try {
       const response = await axios.post(`${BACKEND_URL}/api/auth/signup`, {
         email,
@@ -59,6 +60,7 @@ const SignUp = () => {
             label="Password"
             type="password"
             value={password}
+            minLength={8}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -66,6 +68,7 @@ const SignUp = () => {
             label="Confirm Password"
             type="password"
             value={confirmPassword}
+            minLength={8}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />

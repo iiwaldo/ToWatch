@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function InputField({ label, type, value, onChange, required }) {
+export default function InputField({ label, type, value, onChange, required,minLength=0 }) {
   return (
     <div className="auth-field">
       <input
@@ -10,6 +10,7 @@ export default function InputField({ label, type, value, onChange, required }) {
         value={value}
         onChange={onChange}
         required={required}
+        minLength={minLength}
       />
     </div>
   );
