@@ -231,6 +231,10 @@
   height: 60px;
   animation: spin 1s linear infinite;
   margin-bottom: 20px; /* Space between spinner and text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
 @keyframes spin {
