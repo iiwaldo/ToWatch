@@ -45,7 +45,7 @@ const MovieDetailsModal = ({
     [recommendation[0]?.id && recommendation[1]?.id]
   );
   const dataType = card.type || (card.release_date ? "movie" : "show");
-  console.log(recommendation);
+
 
   const formatDate = (date) => {
     if (!date) {
