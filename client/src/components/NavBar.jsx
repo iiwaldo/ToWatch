@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import { useAuth } from "../context/AuthContext";
-import React , { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { FaUserCircle } from "react-icons/fa"; // Add a user profile icon from react-icons
 
 function Navbar() {
@@ -94,4 +94,4 @@ function Navbar() {
     </nav>
   );
 }
-export default React.memo(Navbar);
+export default Navbar;
