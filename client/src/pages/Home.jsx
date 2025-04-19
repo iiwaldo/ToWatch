@@ -335,9 +335,12 @@ export default function Home({ type }) {
 
   return loading ? (
     <div className="spinner-container">
+    <div className="spinner-content">
       <div className="spinner"></div>
-      <h2>Please wait until Loading is done....</h2>
+      <h2 className="loading-text">Please wait until Loading is done....</h2>
     </div>
+  </div>
+  
   ) : (
     <div>
       <Navbar />

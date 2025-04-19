@@ -270,4 +270,16 @@
     height: 60px;
     animation: spin 1s linear infinite;
   }
+
+  .spinner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .loading-text {
+    color: white;
+    margin-top: 20px;
+    text-align: center;
+  }
 }
