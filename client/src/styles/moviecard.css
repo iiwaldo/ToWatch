@@ -291,6 +291,9 @@
     width: 60px;
     height: 60px;
     animation: spin 1s linear infinite;
+    justify-content: center;
+    display: flex;
+    align-items: center;
   }
 
   .spinner-content {
