@@ -391,6 +391,7 @@ export default function Home({ type }) {
               setCards={setCards}
               card={selectedCard}
               onClose={closeModal}
+              setSelectedCard = {setSelectedCard}
             />
           )}
 

@@ -1,6 +1,7 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import "../styles/modal.css";
+import ModalMovieCard from "./ModalMovieCard";
 import { useAuth } from "../context/AuthContext";
 import {
   FaRegBookmark,
@@ -13,7 +14,13 @@ import {
 import ActorCard from "./ActorCard";
 import useFetchDetails from "../hooks/useFetchDetails";
 
-const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
+const MovieDetailsModal = ({
+  card,
+  onClose,
+  type,
+  setCards,
+  setSelectedCard,
+}) => {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
   const { user } = useAuth();
   const [originalIndex, setOriginalIndex] = useState(null);
@@ -29,10 +36,16 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     seasonsArr,
     loading,
     fetchTrailer,
+    recommendation,
   } = useFetchDetails(card, type);
 
   const stableCast = useMemo(() => cast, [cast[0]?.id && cast[1]?.id]);
+  const stableRecommendation = useMemo(
+    () => recommendation,
+    [recommendation[0]?.id && recommendation[1]?.id]
+  );
   const dataType = card.type || (card.release_date ? "movie" : "show");
+  console.log(recommendation);
 
   const formatDate = (date) => {
     if (!date) {
@@ -45,8 +58,22 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
     let formattedDate = `${day}/${month}/${year}`;
     return formattedDate;
   };
+
+  useEffect(() => {
+    setTitle(card.original_title || card.original_name);
+    setOverview(card.overview);
+    setImageUrl(
+      card.poster_path
+        ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
+        : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg"
+    );
+    setDate(formatDate(card.release_date || card.first_air_date));
+    setSeasonIndex(0);
+    setShowTrailer(false);
+  
+  }, [card]);
   const checkStatus = async (statusType) => {
-    if(!user) {
+    if (!user) {
       return;
     }
     const data = {
@@ -284,7 +311,7 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
           &times;
         </button>
 
-        <div className="modal-body">
+        <div className="modal-body" ref={modalBodyRef}>
           <div className="movie-image">
             <div className="datatype-label">{dataType}</div>
 
@@ -377,6 +404,23 @@ const MovieDetailsModal = ({ card, onClose, type, setCards }) => {
                       type={type}
                       actor={actor}
                       onClose={onClose}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Recommendations section */}
+            {recommendation.length > 0 && (
+              <div className="cast-section">
+                <h3>Recommendation</h3>
+                <div className="cast-list">
+                  {recommendation.map((rec) => (
+                    <ModalMovieCard
+                      key={rec.id}
+                      card={rec}
+                      type={type} // You can also determine based on `rec.media_type` if needed
+                      onClose={onClose}
+                      setSelectedCard={setSelectedCard}
                     />
                   ))}
                 </div>

@@ -7,6 +7,7 @@ const useFetchDetails = (card, type) => {
   const [isWatched, setIsWatched] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [cast, setCast] = useState([]);
+  const [recommendation, setRecommendation] = useState([]);
   const [numberOfSeasons, setNumberOfSeasons] = useState(null);
   const [seasonsArr, setSeasonsArr] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,23 @@ const useFetchDetails = (card, type) => {
       setCast(response.data);
     } catch (error) {
       setCast([]);
+    }
+  };
+  const fetchRecommendation = async () => {
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/api/details/recommendation`,
+        {
+          params: {
+            id: card.id,
+            dataType: card.type || (card.release_date ? "movie" : "show"),
+          },
+        }
+      );
+      const tempArr = response.data.filter(movie => movie.original_language===card.original_language); 
+      setRecommendation(tempArr);
+    } catch (error) {
+      setRecommendation([]);
     }
   };
   const fetchTrailer = async (
@@ -85,6 +103,7 @@ const useFetchDetails = (card, type) => {
     fetchTvDetails();
     fetchTrailer();
     fetchCast();
+    fetchRecommendation();
   }, [card]);
 
   return {
@@ -98,6 +117,7 @@ const useFetchDetails = (card, type) => {
     seasonsArr,
     loading,
     fetchTrailer,
+    recommendation
   };
 };
 

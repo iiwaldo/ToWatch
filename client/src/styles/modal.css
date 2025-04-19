@@ -60,6 +60,7 @@
 }
 
 .modal-body {
+  overflow: auto;
   display: flex;
   gap: 24px;
   width: 100%;
@@ -348,4 +349,3 @@ button:hover {
     transform: rotate(360deg);
   }
 }
-

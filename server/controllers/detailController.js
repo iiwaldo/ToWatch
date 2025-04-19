@@ -173,9 +173,27 @@ async function getTvDetails(req, res) {
     });
     const numberOfSeasons = response.data.number_of_seasons;
     const seasonsArr = response.data.seasons;
-    res.status(200).json({numberOfSeasons:numberOfSeasons,seasonsArr:seasonsArr});
+    res
+      .status(200)
+      .json({ numberOfSeasons: numberOfSeasons, seasonsArr: seasonsArr });
   } catch (error) {
     res.status(500).json("error getting Show Details");
+  }
+}
+
+async function getRecommendation(req, res) {
+  const { id, dataType } = req.query;
+  const url =
+    dataType === "movie"
+      ? `${BASE_URL}/movie/${id}/recommendations`
+      : `${BASE_URL}/tv/${id}/recommendations`;
+  try {
+    const response = await axios.get(url, {
+      params: { api_key: TMDB_API_KEY },
+    });
+    res.status(200).json(response.data.results);
+  } catch (error) {
+    res.status(500).json("Error getting Reccomendations");
   }
 }
 export default {
@@ -188,5 +206,6 @@ export default {
   getFilter,
   getCast,
   getCombinedCredits,
-  getTvDetails
+  getTvDetails,
+  getRecommendation,
 };
