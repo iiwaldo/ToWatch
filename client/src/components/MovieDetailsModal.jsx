@@ -23,6 +23,9 @@ const MovieDetailsModal = ({
 }) => {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
   const { user } = useAuth();
+  const modalRef = useRef(null);
+  const castSectionRef = useRef(null);
+  const recommendationSectionRef = useRef(null);
   const [originalIndex, setOriginalIndex] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
   const {
@@ -46,7 +49,6 @@ const MovieDetailsModal = ({
   );
   const dataType = card.type || (card.release_date ? "movie" : "show");
 
-
   const formatDate = (date) => {
     if (!date) {
       return;
@@ -60,6 +62,15 @@ const MovieDetailsModal = ({
   };
 
   useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+    if (castSectionRef.current) {
+      castSectionRef.current.scrollLeft = 0;
+    }
+    if (recommendationSectionRef.current) {
+      recommendationSectionRef.current.scrollLeft = 0;
+    }
     setTitle(card.original_title || card.original_name);
     setOverview(card.overview);
     setImageUrl(
@@ -70,7 +81,6 @@ const MovieDetailsModal = ({
     setDate(formatDate(card.release_date || card.first_air_date));
     setSeasonIndex(0);
     setShowTrailer(false);
-  
   }, [card]);
   const checkStatus = async (statusType) => {
     if (!user) {
@@ -352,7 +362,7 @@ const MovieDetailsModal = ({
           </div>
 
           <div className="movie-description">
-            <h1>{title}</h1>
+            <h1 ref={modalRef}>{title}</h1>
             <p>{overview}</p>
             <p>
               <strong>Release Date:</strong> {date}
@@ -397,7 +407,7 @@ const MovieDetailsModal = ({
             {stableCast.length > 0 && (
               <div className="cast-section">
                 <h3>Cast</h3>
-                <div className="cast-list">
+                <div className="cast-list" ref={castSectionRef}>
                   {stableCast.map((actor) => (
                     <ActorCard
                       key={actor.id}
@@ -413,7 +423,7 @@ const MovieDetailsModal = ({
             {recommendation.length > 0 && (
               <div className="cast-section">
                 <h3>Recommendation</h3>
-                <div className="cast-list">
+                <div className="cast-list" ref={recommendationSectionRef}>
                   {recommendation.map((rec) => (
                     <ModalMovieCard
                       key={rec.id}
