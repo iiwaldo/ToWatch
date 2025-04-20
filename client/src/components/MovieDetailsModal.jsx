@@ -20,6 +20,7 @@ const MovieDetailsModal = ({
   type,
   setCards,
   setSelectedCard,
+  languageMap,
 }) => {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
   const { user } = useAuth();
@@ -374,6 +375,11 @@ const MovieDetailsModal = ({
                 <strong>Episodes:</strong> {episodes}
               </p>
             )}
+
+            <p>
+              <strong>Language:</strong>{" "}
+              {languageMap.card.original_language || "Unknown"}
+            </p>
 
             <p>
               <strong>Rating:</strong> {card.vote_average}

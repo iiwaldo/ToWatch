@@ -392,6 +392,7 @@ export default function Home({ type }) {
               card={selectedCard}
               onClose={closeModal}
               setSelectedCard = {setSelectedCard}
+              languageMap={languageMap}
             />
           )}
 
