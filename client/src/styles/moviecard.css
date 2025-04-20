@@ -231,10 +231,7 @@
   height: 60px;
   animation: spin 1s linear infinite;
   margin-bottom: 20px; /* Space between spinner and text */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+  justify-items: center;
 }
 
 @keyframes spin {
@@ -246,8 +243,11 @@
   }
 }
 
-.spinner-content {
-  text-align: center; /* Ensures the text is centered under the spinner */
+.spinner-content { /* Ensures the text is centered under the spinner */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .loading-text {
