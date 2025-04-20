@@ -376,8 +376,8 @@ const MovieDetailsModal = ({
             )}
 
             <p>
-              <strong>Language:</strong>
-              {languageMap [card.original_language]}
+              <strong>Language: </strong>
+              {languageMap[card.original_language]}
             </p>
 
             <p>
