@@ -49,6 +49,7 @@ const MovieDetailsModal = ({
     [recommendation[0]?.id && recommendation[1]?.id]
   );
   const dataType = card.type || (card.release_date ? "movie" : "show");
+  console.log(card);
 
   const formatDate = (date) => {
     if (!date) {
@@ -378,7 +379,6 @@ const MovieDetailsModal = ({
 
             <p>
               <strong>Language:</strong>{" "}
-              {languageMap.card.original_language || "Unknown"}
             </p>
 
             <p>
