@@ -21,7 +21,7 @@ const ModalMovieCard = ({ card, onClose, type, setSelectedCard }) => {
         className="actor-image"
       />
       <div className="actor-info">
-        <h4 className="actor-name">{card.original_title || card.name}</h4>
+        <h4 className="actor-name">{card.original_title || card.original_name}</h4>
         <p className="actor-character">
           {card.release_date?.split("-")[0] ||
             card.first_air_date?.split("-")[0]}
