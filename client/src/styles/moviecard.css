@@ -96,7 +96,14 @@
   color: #fff;
   background-color: #333;
 }
-.movie-card:hover .movie-title {
+.movie-date {
+  text-align: center;
+  padding: 10px;
+  font-size: 1.1rem;
+  color: #fff;
+}
+.movie-card:hover .movie-title,
+.movie-card:hover .movie-date {
   color: #00e5ff;
   text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
 }
@@ -243,7 +250,8 @@
   }
 }
 
-.spinner-content { /* Ensures the text is centered under the spinner */
+.spinner-content {
+  /* Ensures the text is centered under the spinner */
   display: flex;
   flex-direction: column;
   justify-content: center;

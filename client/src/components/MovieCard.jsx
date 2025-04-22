@@ -17,7 +17,7 @@ const MovieCard = ({ card, onClick }) => {
         {card.original_title || card.original_name}
       </h3>{" "}
       {/* Add the movie title */}
-      <p className="movie-title">
+      <p className="movie-date">
         {card.release_date?.split("-")[0] || card.first_air_date?.split("-")[0]}
       </p>
     </div>
