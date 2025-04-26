@@ -196,6 +196,40 @@ async function getRecommendation(req, res) {
     res.status(500).json("Error getting Reccomendations");
   }
 }
+async function getProvider(req, res) {
+  const { id, dataType } = req.query;
+  const url =
+    dataType === "movie"
+      ? `${BASE_URL}/movie/${id}/watch/providers`
+      : `${BASE_URL}/tv/${id}/watch/providers`;
+
+  try {
+    const response = await axios.get(url, {
+      params: {
+        api_key: TMDB_API_KEY,
+      },
+    });
+
+    // First try to get providers from AE (UAE)
+    let providers = response.data?.results?.AE?.flatrate;
+
+    // If no AE providers, try to get from EG (Egypt)
+    if (!providers) {
+      providers = response.data?.results?.EG?.flatrate;
+    }
+
+    // If providers found, send them, otherwise send a 404
+    if (providers && providers.length > 0) {
+      res.status(200).json(providers);
+    } else {
+      res.status(404).json({ message: "No providers found for AE or EG." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch providers." });
+  }
+}
+
 export default {
   getPopularMovies,
   getSearchedMovie,
@@ -208,4 +242,5 @@ export default {
   getCombinedCredits,
   getTvDetails,
   getRecommendation,
+  getProvider,
 };

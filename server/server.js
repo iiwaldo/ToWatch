@@ -12,18 +12,21 @@ const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [process.env.CLIENT_URL];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // optional: only needed if using cookies/auth
-  })
-);
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true, // optional: only needed if using cookies/auth
+//   })
+// );
+
+app.use(cors());
+
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);

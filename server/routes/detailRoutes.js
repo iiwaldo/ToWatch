@@ -17,4 +17,5 @@ router.get("/cast", detailController.getCast);
 router.get("/combined_credits", detailController.getCombinedCredits);
 router.get("/tv", detailController.getTvDetails);
 router.get("/recommendation", detailController.getRecommendation);
+router.get("/providers", detailController.getProvider);
 export default router;
