@@ -11,6 +11,7 @@ const useFetchDetails = (card, type) => {
   const [numberOfSeasons, setNumberOfSeasons] = useState(null);
   const [seasonsArr, setSeasonsArr] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [providers, setProviders] = useState([]);
   const BACKEND_URL = import.meta.env.VITE_API_URL;
 
   const fetchStatus = async () => {
@@ -25,6 +26,19 @@ const useFetchDetails = (card, type) => {
       setIsSaved(response.data.isSaved);
     } catch (error) {
       console.log("error getting status");
+    }
+  };
+  const fetchProviders = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/details/providers`, {
+        params: {
+          id: card.id,
+          dataType: card.type || (card.release_date ? "movie" : "show"),
+        },
+      });
+      setProviders(response.data);
+    } catch (error) {
+      setProviders([]);
     }
   };
   const fetchCast = async () => {
@@ -51,7 +65,9 @@ const useFetchDetails = (card, type) => {
           },
         }
       );
-      const tempArr = response.data.filter(movie => movie.original_language===card.original_language); 
+      const tempArr = response.data.filter(
+        (movie) => movie.original_language === card.original_language
+      );
       setRecommendation(tempArr);
     } catch (error) {
       setRecommendation([]);
@@ -104,6 +120,7 @@ const useFetchDetails = (card, type) => {
     fetchTrailer();
     fetchCast();
     fetchRecommendation();
+    fetchProviders();
   }, [card]);
 
   return {
@@ -117,7 +134,8 @@ const useFetchDetails = (card, type) => {
     seasonsArr,
     loading,
     fetchTrailer,
-    recommendation
+    recommendation,
+    providers,
   };
 };
 

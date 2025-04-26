@@ -41,8 +41,9 @@ const MovieDetailsModal = ({
     loading,
     fetchTrailer,
     recommendation,
+    providers,
   } = useFetchDetails(card, type);
-
+  console.log(providers);
   const stableCast = useMemo(() => cast, [cast[0]?.id && cast[1]?.id]);
   const stableRecommendation = useMemo(
     () => recommendation,
@@ -363,6 +364,12 @@ const MovieDetailsModal = ({
 
           <div className="movie-description">
             <h1 ref={modalRef}>{title}</h1>
+            {providers.map((obj) => (
+              <img
+                className="provider-logo"
+                src={`https://image.tmdb.org/t/p/w500${obj.logo_path}`}
+              />
+            ))}
             <p>{overview}</p>
             <p>
               <strong>Release Date:</strong> {date}

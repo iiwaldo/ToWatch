@@ -19,6 +19,14 @@
   color: black;
   border-color: #00e5ff;
 }
+.provider-logo {
+  height: 35px;
+  width: 35px;
+  border: 2px solid black; /* color and thickness */
+  border-radius: 50%;
+  margin-right: 3px;
+  margin-left: 3px;
+}
 
 .modal-content {
   display: flex;

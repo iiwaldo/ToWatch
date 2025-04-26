@@ -25,7 +25,7 @@ app.use(
   })
 );
 
-// app.use(cors());
+ //app.use(cors());
 
 const connectDB = async () => {
   try {
