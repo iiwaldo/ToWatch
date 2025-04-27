@@ -43,7 +43,6 @@ const MovieDetailsModal = ({
     recommendation,
     providers,
   } = useFetchDetails(card, type);
-  console.log(providers);
   const stableCast = useMemo(() => cast, [cast[0]?.id && cast[1]?.id]);
   const stableRecommendation = useMemo(
     () => recommendation,
@@ -82,6 +81,7 @@ const MovieDetailsModal = ({
     setDate(formatDate(card.release_date || card.first_air_date));
     setSeasonIndex(0);
     setShowTrailer(false);
+    fetchTrailer(card.original_title || card.original_name,card.release_date || card.first_air_date)
   }, [card]);
   const checkStatus = async (statusType) => {
     if (!user) {
