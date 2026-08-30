@@ -46,7 +46,7 @@ const MovieDetailsModal = ({
   const stableCast = useMemo(() => cast, [cast[0]?.id && cast[1]?.id]);
   const stableRecommendation = useMemo(
     () => recommendation,
-    [recommendation[0]?.id && recommendation[1]?.id]
+    [recommendation[0]?.id && recommendation[1]?.id],
   );
   const dataType = card.type || (card.release_date ? "movie" : "show");
   const formatDate = (date) => {
@@ -76,12 +76,12 @@ const MovieDetailsModal = ({
     setImageUrl(
       card.poster_path
         ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
-        : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg"
+        : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg",
     );
     setDate(formatDate(card.release_date || card.first_air_date));
     setSeasonIndex(0);
     setShowTrailer(false);
-    fetchTrailer(card.original_title || card.original_name,card.release_date || card.first_air_date)
+    fetchTrailer();
   }, [card]);
   const checkStatus = async (statusType) => {
     if (!user) {
@@ -97,7 +97,7 @@ const MovieDetailsModal = ({
         try {
           const response = await axios.post(
             `${BACKEND_URL}/api/user/watch-later`,
-            data
+            data,
           );
           setIsSaved(true);
           if (type === "watch-later" && originalIndex !== null) {
@@ -120,7 +120,7 @@ const MovieDetailsModal = ({
             `${BACKEND_URL}/api/user/watch-later`,
             {
               data,
-            }
+            },
           );
           setIsSaved(false);
           if (type === "watch-later") {
@@ -143,7 +143,7 @@ const MovieDetailsModal = ({
         try {
           const response = await axios.post(
             `${BACKEND_URL}/api/user/watched`,
-            data
+            data,
           );
           setIsWatched(true);
           if (type === "watched" && originalIndex !== null) {
@@ -163,7 +163,7 @@ const MovieDetailsModal = ({
             `${BACKEND_URL}/api/user/watched`,
             {
               data,
-            }
+            },
           );
           setIsWatched(false);
           if (type === "watched") {
@@ -222,11 +222,11 @@ const MovieDetailsModal = ({
     }
   };
   const [date, setDate] = useState(
-    formatDate(card.release_date || card.first_air_date)
+    formatDate(card.release_date || card.first_air_date),
   );
   const filteredSeasons = useMemo(
     () => seasonsArr.filter((s) => s.name.toLowerCase() !== "specials"),
-    [seasonsArr]
+    [seasonsArr],
   );
   useEffect(() => {
     if (!seasonsArr.length) {
@@ -250,13 +250,13 @@ const MovieDetailsModal = ({
     setImageUrl(
       firstSeason.poster_path
         ? `https://image.tmdb.org/t/p/w500${firstSeason.poster_path}`
-        : tempImage
+        : tempImage,
     );
     setOverview(firstSeason.overview || card.overview);
   }, [seasonsArr]);
 
   const [modalLoading, setModalLoading] = useState(
-    dataType === "show" ? false : true
+    dataType === "show" ? false : true,
   );
 
   const [episodes, setEpisodes] = useState(null);
@@ -266,52 +266,70 @@ const MovieDetailsModal = ({
   const [imageUrl, setImageUrl] = useState(
     card.poster_path
       ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
-      : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg"
+      : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg",
   );
 
-  const handleNextSeason = () => {
+  const handleNextSeason = async () => {
     if (seasonIndex < filteredSeasons.length - 1) {
       const newIndex = seasonIndex + 1;
+      const newSeason = filteredSeasons[newIndex];
+
       const baseTitle = card.original_title || card.original_name;
       const newTitle = `${baseTitle} ${newIndex + 1}`;
-      const newSeason = filteredSeasons[newIndex];
+
       setSeasonIndex(newIndex);
       setTitle(newTitle);
       setDate(formatDate(newSeason.air_date));
+
       const tempImage = imageUrl;
+
       setImageUrl(
         newSeason.poster_path
           ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
-          : tempImage
+          : tempImage,
       );
+
       setEpisodes(newSeason.episode_count);
+
       setOverview(newSeason.overview !== "" ? newSeason.overview : overview);
+
+      // Hide current trailer
       setShowTrailer(false);
-      fetchTrailer(newTitle, newSeason.air_date);
+
+      // Fetch trailer for THIS season
+      await fetchTrailer(newSeason.season_number);
     }
   };
 
-  const handlePrevSeason = () => {
+  const handlePrevSeason = async () => {
     if (seasonIndex > 0) {
       const newIndex = seasonIndex - 1;
+      const newSeason = filteredSeasons[newIndex];
+
       const baseTitle = card.original_title || card.original_name;
+
       const newTitle =
         newIndex === 0 ? baseTitle : `${baseTitle} ${newIndex + 1}`;
-      const newSeason = filteredSeasons[newIndex];
+
       setShowTrailer(false);
+
       setSeasonIndex(newIndex);
       setTitle(newTitle);
       setEpisodes(newSeason.episode_count);
       setDate(formatDate(newSeason.air_date));
+
       const tempImage = imageUrl;
+
       setImageUrl(
         newSeason.poster_path
           ? `https://image.tmdb.org/t/p/w500${newSeason.poster_path}`
-          : imageUrl
+          : tempImage,
       );
+
       setOverview(newSeason.overview !== "" ? newSeason.overview : overview);
 
-      fetchTrailer(newTitle, newSeason.air_date); // ✅ using correct title
+      // Fetch trailer for THIS season
+      await fetchTrailer(newSeason.season_number);
     }
   };
 
@@ -403,10 +421,12 @@ const MovieDetailsModal = ({
 
             {showTrailer && (
               <div className="trailer-container">
+                {console.log("Rendering trailer with ID:", trailerId)}{" "}
+                {/* Debugging log */}
                 <iframe
                   width="100%"
                   height="315"
-                  src={`https://www.youtube.com/embed/${trailerId}?autoplay=1`}
+                  src={`https://www.youtube.com/embed/${trailerId.key}`}
                   title="YouTube video player"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 const useFetchDetails = (card, type) => {
+  console.log("card = ", card);
   const { user } = useAuth();
   const [trailerId, setTrailerId] = useState(card.trailerId || null);
   const [isWatched, setIsWatched] = useState(false);
@@ -63,35 +64,43 @@ const useFetchDetails = (card, type) => {
             id: card.id,
             dataType: card.type || (card.release_date ? "movie" : "show"),
           },
-        }
+        },
       );
       const tempArr = response.data.filter(
-        (movie) => movie.original_language === card.original_language
+        (movie) => movie.original_language === card.original_language,
       );
       setRecommendation(tempArr);
     } catch (error) {
       setRecommendation([]);
     }
   };
-  const fetchTrailer = async (
-    original_title = card.original_title || card.original_name,
-    release_date = card.release_date || card.first_air_date
-  ) => {
+
+  const fetchTrailer = async (seasonNumber = null) => {
     try {
+      setLoading(true);
+
+      const isMovie = card.release_date && !card.first_air_date;
+
       const response = await axios.get(`${BACKEND_URL}/api/details/trailer`, {
         params: {
-          original_title: original_title,
-          original_language: card.original_language,
-          release_date: release_date || null,
-          type: card.release_date ? "movie" : "show",
+          title: card.original_title || card.original_name,
+          type: isMovie ? "movie" : "show",
+          language: card.original_language,
+          seasonNumber: seasonNumber,
         },
       });
+
+      console.log("Trailer response:", response.data);
+
       setTrailerId(response.data);
-      setLoading(false);
     } catch (error) {
-      console.error("Error fetching trailer", error);
+      console.error("Error fetching trailer:", error);
+      setTrailerId(null);
+    } finally {
+      setLoading(false);
     }
   };
+
   const fetchTvDetails = async () => {
     if (card.type !== "show" && !card.first_air_date) {
       return;

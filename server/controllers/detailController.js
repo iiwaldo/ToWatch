@@ -5,7 +5,7 @@ dotenv.config();
 
 const TMDB_API_KEY = process.env.TMBD_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
-const PIPE_URL = "https://pipedapi.adminforge.de/search";
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
 async function getPopularMovies(req, res) {
   const page = req.query.page;
@@ -61,35 +61,128 @@ async function getSearchedTv(req, res) {
   }
 }
 async function getTrailer(req, res) {
-  const { original_title, original_language, release_date, type } = req.query;
-  let year = null;
-  if (release_date) {
-    year = release_date.split("-")[0];
-  }
-  let query = "";
-  if (original_language === "ar") {
-    if (type === "movie") {
-      query = `اعلان فيلم ${original_title} ${year}`;
-    } else {
-      query = `اعلان مسلسل ${original_title} ${year}`;
-    }
-  } else {
-    query = `${original_title} ${year} trailer`;
-  }
+  const { title, type, language, seasonNumber } = req.query;
+
   try {
-    const response = await axios.get(`${PIPE_URL}`, {
-      params: {
-        q: query,
-        filter: "videos",
-      },
-    });
-    console.log(query);
-    const trailerId = response.data.items[0]?.url.split("v=")[1];
-    if (trailerId) {
-      res.status(200).json(trailerId);
+    if (!title) {
+      return res.status(400).json({
+        message: "Title is required",
+      });
     }
+
+    // ==========================
+    // Label
+    // ==========================
+
+    let label;
+
+    if (language?.toLowerCase().startsWith("ar")) {
+      label = type === "movie" ? "إعلان فيلم" : "إعلان مسلسل";
+    } else {
+      label = "Trailer";
+    }
+
+    // ==========================
+    // YouTube search query
+    // ==========================
+
+    let searchQuery;
+
+    if (type === "movie") {
+      searchQuery = `${title} Official Trailer`;
+    } else if (seasonNumber) {
+      if (language?.toLowerCase().startsWith("ar")) {
+        searchQuery = `${title} الموسم ${seasonNumber} إعلان`;
+      } else {
+        searchQuery = `${title} Season ${seasonNumber} Trailer`;
+      }
+    } else {
+      searchQuery = `${title} Trailer`;
+    }
+
+    console.log("YouTube search:", searchQuery);
+
+    // ==========================
+    // YouTube API
+    // ==========================
+
+    const response = await axios.get(
+      "https://www.googleapis.com/youtube/v3/search",
+      {
+        params: {
+          part: "snippet",
+          q: searchQuery,
+          type: "video",
+          maxResults: 5,
+          videoEmbeddable: true,
+          key: process.env.YOUTUBE_API_KEY,
+        },
+      },
+    );
+
+    const results = response.data.items;
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({
+        message: "No trailer found",
+      });
+    }
+
+    // ==========================
+    // Find best result
+    // ==========================
+
+    const lowerTitle = title.toLowerCase();
+
+    let trailer;
+
+    if (type === "show" && seasonNumber) {
+      trailer = results.find((video) => {
+        const videoTitle = video.snippet.title.toLowerCase();
+
+        return (
+          videoTitle.includes(lowerTitle) &&
+          videoTitle.includes(`season ${seasonNumber}`) &&
+          videoTitle.includes("trailer")
+        );
+      });
+    } else {
+      trailer = results.find((video) => {
+        const videoTitle = video.snippet.title.toLowerCase();
+
+        return (
+          videoTitle.includes(lowerTitle) && videoTitle.includes("trailer")
+        );
+      });
+    }
+
+    // If no exact match, use first result
+    if (!trailer) {
+      trailer = results[0];
+    }
+
+    const videoId = trailer.id.videoId;
+
+    console.log("Selected trailer:", {
+      title: trailer.snippet.title,
+      videoId,
+      seasonNumber,
+    });
+
+    return res.status(200).json({
+      key: videoId,
+      url: `https://www.youtube.com/embed/${videoId}`,
+      label,
+    });
   } catch (error) {
-    res.status(500).json("Error getting trailer");
+    console.error(
+      "Error getting trailer:",
+      error.response?.data || error.message,
+    );
+
+    return res.status(500).json({
+      message: "Error getting trailer",
+    });
   }
 }
 async function getMovieGenres(req, res) {
