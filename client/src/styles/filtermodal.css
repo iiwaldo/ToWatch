@@ -1,123 +1,258 @@
-/* Filter-specific modal content tweaks */
+/* ============================= */
+/* Filter Modal */
+/* ============================= */
+
 .filter-modal-content {
-    flex-direction: column;
-    max-width: 600px;
-    max-height: 80vh;
-    padding: 30px;
-    background: rgba(20, 20, 20, 0.95);
-    overflow-y: auto;
-    border-radius: 12px;
+  flex-direction: column;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  padding: 30px;
+  background: rgba(20, 20, 20, 0.95);
+  overflow-y: auto;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.filter-modal-body {
+  width: 100%;
+}
+
+.modal-title {
+  font-size: 2rem;
+  color: #00e5ff;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* ============================= */
+/* Filter Sections */
+/* ============================= */
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-section label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  color: #e0e0e0;
+}
+
+/* ============================= */
+/* Toggle Buttons */
+/* ============================= */
+
+.toggle-group {
+  display: flex;
+  gap: 10px;
+}
+
+.toggle-btn {
+  background-color: transparent;
+  border: 2px solid #00bcd4;
+  color: #00bcd4;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn.active,
+.toggle-btn:hover {
+  background-color: #00bcd4;
+  color: white;
+}
+
+/* ============================= */
+/* Genre Buttons */
+/* ============================= */
+
+.genre-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.genre-btn {
+  padding: 6px 12px;
+  border: 2px solid #444;
+  border-radius: 20px;
+  background-color: transparent;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.genre-btn.selected {
+  background-color: #00e5ff;
+  border-color: #00e5ff;
+  color: #000;
+}
+
+.genre-btn:hover {
+  background-color: #00bcd4;
+  color: white;
+}
+
+/* ============================= */
+/* Apply Button */
+/* ============================= */
+
+.apply-btn {
+  display: block;
+  width: 100%;
+  background-color: #00e5ff;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.apply-btn:hover {
+  background-color: #00bcd4;
+}
+
+/* ============================= */
+/* Inputs */
+/* ============================= */
+
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #121212;
+  color: #fff;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* ============================= */
+/* Filter Rows */
+/* ============================= */
+
+.filter-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.half-width {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ============================= */
+/* 📱 Mobile */
+/* ============================= */
+
+@media (max-width: 480px) {
+  .filter-modal-content {
+    width: 92%;
+    max-width: 360px;
+    max-height: 82vh;
+    padding: 20px 18px;
+    border-radius: 14px;
   }
-  
-  
+
   .filter-modal-body {
     width: 100%;
   }
-  
+
   .modal-title {
-    font-size: 2rem;
-    color: #00e5ff;
-    margin-bottom: 24px;
-    text-align: center;
+    font-size: 1.45rem;
+    margin-bottom: 18px;
   }
-  
-  /* Filter sections */
+
   .filter-section {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
-  
+
   .filter-section label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 8px;
-    color: #e0e0e0;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
   }
-  
+
   /* Toggle buttons */
   .toggle-group {
-    display: flex;
-    gap: 10px;
+    gap: 7px;
   }
-  
+
   .toggle-btn {
-    background-color: transparent;
-    border: 2px solid #00bcd4;
-    color: #00bcd4;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    padding: 7px 12px;
+    font-size: 0.85rem;
+    border-width: 1.5px;
   }
-  
-  .toggle-btn.active,
-  .toggle-btn:hover {
-    background-color: #00bcd4;
-    color: white;
-  }
-  
-  /* Genre buttons */
+
+  /* Genres */
   .genre-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 6px;
   }
-  
+
   .genre-btn {
-    padding: 6px 12px;
-    border: 2px solid #444;
-    border-radius: 20px;
-    background-color: transparent;
-    color: white;
+    padding: 5px 9px;
+    font-size: 0.78rem;
+    border-width: 1.5px;
+  }
+
+  /* Inputs */
+  .auth-input {
+    padding: 8px 10px;
     font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
   }
-  
-  .genre-btn.selected {
-    background-color: #00e5ff;
-    border-color: #00e5ff;
-    color: #000;
+
+  /* Rows become vertical */
+  .filter-row {
+    flex-direction: column;
+    gap: 12px;
   }
-  
-  .genre-btn:hover {
-    background-color: #00bcd4;
-    color: white;
+
+  .half-width {
+    width: 100%;
+    min-width: 0;
   }
-  
+
   /* Apply button */
   .apply-btn {
-    display: block;
-    width: 100%;
-    background-color: #00e5ff;
-    color: white;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-size: 1.1rem;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .apply-btn:hover {
-    background-color: #00bcd4;
-  }
-  .auth-input {
-    width: 100%;
     padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #444;
-    background-color: #121212;
-    color: #fff;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    margin-top: 15px;
   }
-  .filter-row {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+}
+
+/* ============================= */
+/* 📱 Smaller Phones */
+/* ============================= */
+
+@media (max-width: 380px) {
+  .filter-modal-content {
+    width: 94%;
+    max-width: 340px;
+    padding: 17px 14px;
   }
-  
-  .half-width {
-    flex: 1;
-    min-width: 200px;
+
+  .modal-title {
+    font-size: 1.3rem;
   }
+
+  .genre-options {
+    gap: 5px;
+  }
+
+  .genre-btn {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+
+  .toggle-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}

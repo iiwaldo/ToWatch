@@ -195,3 +195,128 @@
 }
 
 
+
+
+/* =========================================================
+   📱 MOBILE NAVBAR — iPhone 16 Pro
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 9px 12px;
+    min-height: 52px;
+    gap: 8px;
+  }
+
+  /* Logo */
+  .logo {
+    flex-shrink: 0;
+  }
+
+  .logo a {
+    font-size: 1.35rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* Search */
+  .search {
+    flex: 1;
+    min-width: 0;
+    padding: 0 4px;
+  }
+
+  .search-input {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+
+    padding: 7px 10px;
+    font-size: 0.85rem;
+
+    border-width: 1px;
+  }
+
+  /* Navbar links */
+  .links {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .links a {
+    margin-left: 8px;
+    font-size: 0.78rem;
+  }
+
+  /* Profile */
+  .profile-dropdown {
+    flex-shrink: 0;
+  }
+
+  .profile-icon {
+    padding: 6px;
+  }
+
+  /* Dropdown */
+  .dropdown-menu {
+    top: 38px;
+    right: 0;
+    width: 160px;
+    border-radius: 7px;
+    padding: 5px 0;
+  }
+
+  .dropdown-menu button {
+    padding: 9px 12px;
+    padding-left: 14px;
+    font-size: 0.85rem;
+  }
+
+  .dropdown-menu button:hover {
+    padding-left: 17px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+
+/* =========================================================
+   📱 VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .navbar {
+    padding: 8px 9px;
+    gap: 5px;
+  }
+
+  .logo a {
+    font-size: 1.15rem;
+  }
+
+  .search {
+    padding: 0 2px;
+  }
+
+  .search-input {
+    padding: 6px 8px;
+    font-size: 0.78rem;
+  }
+
+  .links a {
+    font-size: 0.7rem;
+    margin-left: 5px;
+  }
+
+  .profile-icon {
+    padding: 5px;
+  }
+
+  .dropdown-menu {
+    width: 145px;
+  }
+}

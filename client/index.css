@@ -188,3 +188,279 @@ a:hover {
 .movie-description::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* =========================================================
+   📱 MOBILE — iPhone 16 Pro / Small Screens
+   ========================================================= */
+
+@media (max-width: 600px) {
+  /* Prevent horizontal overflow */
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: 14px;
+  }
+
+  /* Particle background */
+  #particle-canvas {
+    width: 100vw;
+    height: 100dvh;
+  }
+
+  /* -------------------------
+     Glow Box
+     ------------------------- */
+
+  .glow-box {
+    width: calc(100% - 32px);
+    max-width: 360px;
+    box-sizing: border-box;
+
+    padding: 1.5rem 1.2rem;
+    border-radius: 16px;
+
+    box-shadow:
+      0 0 25px rgba(0, 229, 255, 0.08),
+      0 0 50px rgba(0, 229, 255, 0.05),
+      inset 0 0 10px rgba(0, 255, 255, 0.04);
+
+    backdrop-filter: blur(16px);
+
+    /* Disable the large desktop hover/float feeling */
+    transform: none;
+    animation: none;
+  }
+
+  .glow-box:hover {
+    transform: none;
+  }
+
+  /* -------------------------
+     Inputs
+     ------------------------- */
+
+  input,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 9px 11px;
+    font-size: 15px;
+
+    border-radius: 7px;
+  }
+
+  /* -------------------------
+     Links
+     ------------------------- */
+
+  a {
+    font-size: 14px;
+  }
+
+  /* -------------------------
+     Scrollbar
+     ------------------------- */
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  /* -------------------------
+     Close button
+     ------------------------- */
+
+  .close-btn {
+    top: 8px;
+    right: 8px;
+
+    font-size: 1.4rem;
+    padding: 4px 8px;
+  }
+
+  /* -------------------------
+     Modal
+     ------------------------- */
+
+  .movie-details-modal {
+    padding: 10px;
+    align-items: center;
+  }
+
+  .modal-content {
+    width: 94%;
+    max-width: 380px;
+
+    padding: 14px;
+    border-radius: 13px;
+
+    max-height: 90dvh;
+  }
+
+  .modal-body {
+    gap: 12px;
+  }
+
+  /* Description text slightly smaller */
+  .movie-description {
+    padding-left: 5px;
+  }
+
+  .movie-description h1 {
+    font-size: 1.45rem;
+    margin-bottom: 10px;
+  }
+
+  .movie-description p {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    margin-bottom: 7px;
+  }
+
+  /* Poster */
+  .movie-image {
+    max-width: 110px;
+  }
+
+  .movie-poster {
+    border-radius: 8px;
+  }
+
+  /* Data type label */
+  .datatype-label {
+    top: 6px;
+    left: 6px;
+
+    padding: 3px 7px;
+    font-size: 0.65rem;
+    border-radius: 8px;
+  }
+
+  /* Buttons */
+  .button-group {
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  .icon-btn {
+    padding: 6px;
+    font-size: 16px;
+    border-width: 1px;
+  }
+
+  /* Provider logos */
+  .provider-logo {
+    width: 28px;
+    height: 28px;
+    border-width: 1px;
+    margin: 2px;
+  }
+
+  /* Trailer */
+  .trailer-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .trailer-container iframe {
+    width: 100%;
+    height: 190px;
+    border-radius: 8px;
+  }
+
+  /* Cast */
+  .cast-section {
+    margin-top: 18px;
+  }
+
+  .cast-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .cast-list {
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+
+  .actor-card {
+    width: 95px;
+    margin: 4px;
+    border-radius: 6px;
+  }
+
+  .actor-image {
+    height: 125px;
+  }
+
+  .actor-info {
+    padding: 6px;
+  }
+
+  .actor-name {
+    font-size: 0.75rem;
+    margin: 3px 0;
+  }
+
+  .actor-character {
+    font-size: 0.65rem;
+  }
+
+  /* General buttons */
+  button {
+    padding: 9px 14px;
+    font-size: 0.85rem;
+    margin-top: 12px;
+    border-radius: 7px;
+  }
+
+  /* Spinner */
+  .spinner {
+    width: 45px;
+    height: 45px;
+    border-width: 5px;
+  }
+}
+
+
+/* =========================================================
+   📱 EXTRA SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .modal-content {
+    width: 95%;
+    padding: 11px;
+  }
+
+  .movie-image {
+    max-width: 95px;
+  }
+
+  .movie-description h1 {
+    font-size: 1.3rem;
+  }
+
+  .movie-description p {
+    font-size: 0.82rem;
+  }
+
+  .trailer-container iframe {
+    height: 170px;
+  }
+
+  .actor-card {
+    width: 85px;
+  }
+
+  .actor-image {
+    height: 110px;
+  }
+}

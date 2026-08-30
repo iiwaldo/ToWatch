@@ -320,3 +320,193 @@
     text-align: center;
   }
 }
+
+/* =========================================================
+   📱 MOBILE — iPhone 16 Pro
+   ========================================================= */
+
+@media (max-width: 600px) {
+  /* Home */
+  .home-container {
+    padding-top: 80px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Header */
+  .home-header {
+    margin-bottom: 18px;
+    padding: 0 4px;
+    gap: 10px;
+  }
+
+  .home-title {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  /* Filter + Sort buttons */
+  .filter-button,
+  .sort-button {
+    padding: 7px 11px;
+    font-size: 0.78rem;
+    border-radius: 6px;
+    margin-top: 0;
+  }
+
+  /* Movie cards */
+  .movie-cards-container {
+    display: grid;
+
+    /* 2 cards per row */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+    justify-items: center;
+  }
+
+  .movie-card {
+    width: 100%;
+    max-width: 170px;
+    margin: 0;
+
+    border-radius: 7px;
+  }
+
+  /* Disable large hover scale on touch devices */
+  .movie-card:hover {
+    transform: none;
+    animation: none;
+  }
+
+  /* Poster */
+  .movie-poster {
+    width: 100%;
+    height: 235px;
+    object-fit: cover;
+  }
+
+  /* Title */
+  .movie-title {
+    padding: 7px 5px;
+    font-size: 0.85rem;
+
+    /* Prevent very long titles from making cards huge */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Date */
+  .movie-date {
+    padding: 6px 4px;
+    font-size: 0.78rem;
+  }
+
+  /* Pagination */
+  .pagination {
+    margin-top: 20px;
+    padding-bottom: 15px;
+    gap: 5px;
+  }
+
+  .pagination-btn {
+    padding: 7px 11px;
+    margin: 0 3px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+  }
+
+  /* Sort icons */
+  .sort-icon-button {
+    font-size: 1.2rem;
+    padding: 6px;
+  }
+
+  .sort-icon-button:hover {
+    transform: none;
+  }
+
+  /* Sort dropdown */
+  .dropdown-menu {
+    top: 42px;
+    width: 160px;
+    border-radius: 7px;
+    padding: 6px 0;
+  }
+
+  .dropdown-menu button {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .dropdown-menu button:hover {
+    padding-left: 17px;
+  }
+
+  /* Loading screen */
+  .spinner-container {
+    width: 100vw;
+    height: 100dvh;
+  }
+
+  .spinner {
+    width: 45px;
+    height: 45px;
+    border-width: 5px;
+    margin-bottom: 12px;
+  }
+
+  .loading-text {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+}
+
+
+/* =========================================================
+   📱 VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .home-container {
+    padding-top: 75px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .movie-cards-container {
+    gap: 9px;
+  }
+
+  .movie-card {
+    max-width: 155px;
+  }
+
+  .movie-poster {
+    height: 215px;
+  }
+
+  .movie-title {
+    font-size: 0.78rem;
+    padding: 6px 4px;
+  }
+
+  .movie-date {
+    font-size: 0.7rem;
+    padding: 5px 3px;
+  }
+
+  .home-title {
+    font-size: 1.2rem;
+  }
+
+  .filter-button,
+  .sort-button {
+    padding: 6px 9px;
+    font-size: 0.72rem;
+  }
+}
