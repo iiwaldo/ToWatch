@@ -9,6 +9,9 @@ import Pagination from "../components/Pagination";
 import FilterModal from "../components/FilterModal";
 import "../styles/moviecard.css";
 import { FaSortUp, FaSortDown } from "react-icons/fa";
+import { genreMap } from "../utils/genreMap";
+import { languageMap } from "../utils/languageMap";
+import MovieGrid from "../components/MovieGrid";
 
 export default function Home({ type }) {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
@@ -28,131 +31,6 @@ export default function Home({ type }) {
   const [actorArr, setActorArr] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  const genreMap = {
-    28: "Action",
-    12: "Adventure",
-    16: "Animation",
-    35: "Comedy",
-    80: "Crime",
-    99: "Documentary",
-    18: "Drama",
-    10751: "Family",
-    14: "Fantasy",
-    36: "History",
-    27: "Horror",
-    10402: "Music",
-    9648: "Mystery",
-    10749: "Romance",
-    878: "Science Fiction",
-    10770: "TV Movie",
-    53: "Thriller",
-    10752: "War",
-    37: "Western",
-    10759: "Action & Adventure",
-    10762: "Kids",
-    10763: "News",
-    10764: "Reality",
-    10765: "Sci-Fi & Fantasy",
-    10766: "Soap",
-    10767: "Talk",
-    10768: "War & Politics",
-    10769: "Foreign",
-  };
-
-  const languageMap = {
-    af: "Afrikaans",
-    am: "Amharic",
-    ar: "Arabic",
-    az: "Azerbaijani",
-    be: "Belarusian",
-    bg: "Bulgarian",
-    bn: "Bengali",
-    bs: "Bosnian",
-    ca: "Catalan",
-    cs: "Czech",
-    cy: "Welsh",
-    da: "Danish",
-    de: "German",
-    el: "Greek",
-    en: "English",
-    eo: "Esperanto",
-    es: "Spanish",
-    et: "Estonian",
-    eu: "Basque",
-    fa: "Persian",
-    fi: "Finnish",
-    fil: "Filipino",
-    fj: "Fijian",
-    fr: "French",
-    ga: "Irish",
-    gl: "Galician",
-    gu: "Gujarati",
-    he: "Hebrew",
-    hi: "Hindi",
-    hr: "Croatian",
-    ht: "Haitian Creole",
-    hu: "Hungarian",
-    hy: "Armenian",
-    id: "Indonesian",
-    is: "Icelandic",
-    it: "Italian",
-    ja: "Japanese",
-    jv: "Javanese",
-    ka: "Georgian",
-    kk: "Kazakh",
-    km: "Khmer",
-    kn: "Kannada",
-    ko: "Korean",
-    ku: "Kurdish",
-    ky: "Kyrgyz",
-    lo: "Lao",
-    lt: "Lithuanian",
-    lv: "Latvian",
-    mg: "Malagasy",
-    mi: "Maori",
-    mk: "Macedonian",
-    ml: "Malayalam",
-    mn: "Mongolian",
-    mr: "Marathi",
-    ms: "Malay",
-    mt: "Maltese",
-    my: "Burmese",
-    ne: "Nepali",
-    nl: "Dutch",
-    no: "Norwegian",
-    pa: "Punjabi",
-    pl: "Polish",
-    ps: "Pashto",
-    pt: "Portuguese",
-    ro: "Romanian",
-    ru: "Russian",
-    rw: "Kinyarwanda",
-    si: "Sinhala",
-    sk: "Slovak",
-    sl: "Slovenian",
-    so: "Somali",
-    sq: "Albanian",
-    sr: "Serbian",
-    su: "Sundanese",
-    sv: "Swedish",
-    sw: "Swahili",
-    ta: "Tamil",
-    te: "Telugu",
-    tg: "Tajik",
-    th: "Thai",
-    tk: "Turkmen",
-    tl: "Tagalog",
-    tr: "Turkish",
-    tt: "Tatar",
-    uk: "Ukrainian",
-    ur: "Urdu",
-    uz: "Uzbek",
-    vi: "Vietnamese",
-    xh: "Xhosa",
-    yi: "Yiddish",
-    zh: "Chinese",
-    zu: "Zulu",
-  };
 
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
@@ -211,12 +89,12 @@ export default function Home({ type }) {
             const actorName = filterParams.get("actorName") || "Actor";
             const response = await axios.get(
               `${BACKEND_URL}/api/details/combined_credits`,
-              { params: { actorID } }
+              { params: { actorID } },
             );
 
             const credits = response.data || [];
             const uniqueCredits = Array.from(
-              new Map(credits.map((item) => [item.id, item])).values()
+              new Map(credits.map((item) => [item.id, item])).values(),
             );
             const sortedCredits = uniqueCredits.sort((a, b) => {
               const dateA = new Date(a.release_date || a.first_air_date || 0);
@@ -243,7 +121,7 @@ export default function Home({ type }) {
             const capitalizedType =
               type.charAt(0).toUpperCase() + type.slice(1);
             setTitle(
-              `${langName} ${year || ""} ${genreText} ${capitalizedType}'s`
+              `${langName} ${year || ""} ${genreText} ${capitalizedType}'s`,
             );
 
             const response = await axios.get(
@@ -257,7 +135,7 @@ export default function Home({ type }) {
                   sortOrder,
                   type,
                 },
-              }
+              },
             );
 
             setCards(response.data.results || []);
@@ -273,14 +151,14 @@ export default function Home({ type }) {
             `${BACKEND_URL}/api/details/search/movie`,
             {
               params: { query: searchQuery },
-            }
+            },
           );
 
           const tvRes = await axios.get(
             `${BACKEND_URL}/api/details/search/tv`,
             {
               params: { query: searchQuery },
-            }
+            },
           );
 
           const combined = [
@@ -297,7 +175,7 @@ export default function Home({ type }) {
             `${BACKEND_URL}/api/details/popular`,
             {
               params: { page, limit: 20 },
-            }
+            },
           );
           const data = response.data;
           setCards(data.movies || []);
@@ -309,7 +187,7 @@ export default function Home({ type }) {
             `${BACKEND_URL}/api/user/watch-later`,
             {
               params: { userEmail: user.email, page, limit: 20 },
-            }
+            },
           );
           setTitle("Watch Later");
           setCards(response.data.movies || []);
@@ -363,19 +241,11 @@ export default function Home({ type }) {
             )}
           </div>
 
-          <div className="movie-cards-container">
-            {cards.length === 0 ? (
-              <p>No movies / TV shows found</p>
-            ) : (
-              cards.map((card) => (
-                <MovieCard
-                  key={card.id}
-                  card={card}
-                  onClick={handleCardClick}
-                />
-              ))
-            )}
-          </div>
+          <MovieGrid
+            cards={cards}
+            loading={loading}
+            onMovieClick={handleCardClick}
+          />
 
           {!actorFilter && !search && totalPages > 1 && (
             <Pagination
@@ -391,7 +261,7 @@ export default function Home({ type }) {
               setCards={setCards}
               card={selectedCard}
               onClose={closeModal}
-              setSelectedCard = {setSelectedCard}
+              setSelectedCard={setSelectedCard}
               languageMap={languageMap}
             />
           )}

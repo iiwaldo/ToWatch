@@ -1,50 +1,40 @@
-/* 🔥 Ultra Dark & Futuristic Navbar Theme */
+/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, #020202, #1a1a1a);
-  color: #e0f7fa;
+  background: rgba(11, 7, 16, 0.85);
+  backdrop-filter: blur(12px);
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 48px;
-  z-index: 1000; /* Ensure navbar stays on top */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 14px 48px;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(255, 122, 61, 0.08), 0 8px 24px rgba(0, 0, 0, 0.4);
   box-sizing: border-box;
-  transition: all 0.3s ease-in-out;
-  animation: gradientAnimation 30s ease-in-out infinite; /* Animated gradient background */
 }
 
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* 🔶 Logo Styling */
+/* Logo */
 .logo a {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #00e5ff;
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 400;
+  color: var(--accent);
   text-decoration: none;
-  letter-spacing: 1px;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 16px rgba(255, 122, 61, 0.4);
+  transition: color 0.25s ease, text-shadow 0.25s ease;
 }
 
 .logo a:hover {
-  color: #ffffff;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.3), 0 0 16px rgba(0, 255, 255, 0.5); /* Neon glow effect */
+  color: var(--accent-bright);
+  text-shadow: var(--glow-md);
 }
 
-/* 🔍 Search Bar Styling */
+/* Search */
 .search {
   flex: 1;
   display: flex;
@@ -54,58 +44,44 @@
 
 .search-input {
   width: 100%;
-  max-width: 400px;
-  padding: 10px 16px;
-  background-color: transparent;
-  color: white;
-  font-size: 1rem;
-  border: 2px solid transparent;
-  border-radius: 0;
-  background-clip: padding-box;
+  max-width: 420px;
+  padding: 9px 16px;
+  background-color: rgba(255, 122, 61, 0.04);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
 
-  /* Gradient Border Animation */
-  border-image: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
-  border-image-slice: 1;
-  animation: border-glow 3s linear infinite;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+.search-input::placeholder {
+  color: var(--text-faint);
 }
 
 .search-input:focus {
   outline: none;
-  background-color: #121212;
-  border-color: transparent;
-  box-shadow: 0 0 8px #00e5ff, 0 0 16px #00e5ff;
+  border-color: var(--accent);
+  background-color: rgba(255, 122, 61, 0.06);
+  box-shadow: var(--glow-sm);
 }
 
-/* Gradient Border Animation */
-@keyframes border-glow {
-  0% {
-    border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
-  }
-  50% {
-    border-image-source: linear-gradient(270deg, #00e5ff, #00bcd4, #00e5ff);
-  }
-  100% {
-    border-image-source: linear-gradient(270deg, #00bcd4, #00e5ff, #00bcd4);
-  }
-}
-
-/* 🔗 Links Styling */
+/* Links */
 .links a {
   margin-left: 24px;
-  color: #f0f0f0;
+  color: var(--text-muted);
   text-decoration: none;
   font-weight: 500;
-  font-size: 1rem;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
+  font-size: 0.95rem;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 .links a:hover {
-  color: #00e5ff;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4), 0 0 16px rgba(0, 255, 255, 0.6);
+  color: var(--accent-bright);
+  text-shadow: 0 0 10px rgba(255, 122, 61, 0.5);
 }
 
-/* 🔥 Profile Dropdown */
+/* Profile dropdown */
 .profile-dropdown {
   position: relative;
   display: inline-block;
@@ -118,87 +94,64 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 8px;
   border-radius: 50%;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .profile-icon:hover {
-  background-color: rgba(0, 188, 212, 0.1); /* Light hover effect */
-  transform: scale(1.1); /* Slight scale effect */
+  background-color: rgba(255, 122, 61, 0.08);
+  box-shadow: var(--glow-sm);
 }
 
-/* 🛠 Dropdown Menu Styling */
 .dropdown-menu {
   position: absolute;
-  top: 40px; /* Adjust to fit below the icon */
+  top: 42px;
   right: 0;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  width: 200px; /* Fixed width for the dropdown */
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(255, 122, 61, 0.1);
+  width: 190px;
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
+  padding: 6px;
   opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
 }
 
 .profile-dropdown:hover .dropdown-menu {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
-/* 🧨 Dropdown Button Styling */
 .dropdown-menu button {
   background: none;
-  color: white;
+  color: var(--text);
   border: none;
-  padding: 12px;
-  font-size: 1rem;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.3s, padding 0.2s;
-  padding-left: 20px; /* Indentation for text */
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .dropdown-menu button:hover {
-  background-color: #00bcd4;
-  padding-left: 24px; /* Slightly move to the right on hover */
+  background-color: rgba(255, 122, 61, 0.1);
+  color: var(--accent-bright);
 }
 
 .dropdown-menu button:focus {
   outline: none;
 }
 
-/* 🖤 Scrollbar Style */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 10px;
-  border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 255, 255, 0.6);
-  border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
-}
-
-
-
-
 /* =========================================================
-   📱 MOBILE NAVBAR — iPhone 16 Pro
+   📱 MOBILE NAVBAR
    ========================================================= */
 
 @media (max-width: 600px) {
@@ -208,17 +161,13 @@
     gap: 8px;
   }
 
-  /* Logo */
-  .logo {
-    flex-shrink: 0;
-  }
+  .logo { flex-shrink: 0; }
 
   .logo a {
-    font-size: 1.35rem;
-    letter-spacing: 0.5px;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
   }
 
-  /* Search */
   .search {
     flex: 1;
     min-width: 0;
@@ -229,14 +178,10 @@
     width: 100%;
     max-width: none;
     box-sizing: border-box;
-
-    padding: 7px 10px;
+    padding: 7px 12px;
     font-size: 0.85rem;
-
-    border-width: 1px;
   }
 
-  /* Navbar links */
   .links {
     display: flex;
     align-items: center;
@@ -248,45 +193,22 @@
     font-size: 0.78rem;
   }
 
-  /* Profile */
-  .profile-dropdown {
-    flex-shrink: 0;
-  }
+  .profile-dropdown { flex-shrink: 0; }
 
-  .profile-icon {
-    padding: 6px;
-  }
+  .profile-icon { padding: 6px; }
 
-  /* Dropdown */
   .dropdown-menu {
     top: 38px;
     right: 0;
-    width: 160px;
-    border-radius: 7px;
-    padding: 5px 0;
+    width: 150px;
+    padding: 4px;
   }
 
   .dropdown-menu button {
-    padding: 9px 12px;
-    padding-left: 14px;
-    font-size: 0.85rem;
-  }
-
-  .dropdown-menu button:hover {
-    padding-left: 17px;
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    padding: 8px 10px;
+    font-size: 0.82rem;
   }
 }
-
-
-/* =========================================================
-   📱 VERY SMALL PHONES
-   ========================================================= */
 
 @media (max-width: 380px) {
   .navbar {
@@ -294,29 +216,15 @@
     gap: 5px;
   }
 
-  .logo a {
-    font-size: 1.15rem;
-  }
-
-  .search {
-    padding: 0 2px;
-  }
+  .logo a { font-size: 1.3rem; }
 
   .search-input {
-    padding: 6px 8px;
+    padding: 6px 10px;
     font-size: 0.78rem;
   }
 
   .links a {
     font-size: 0.7rem;
     margin-left: 5px;
-  }
-
-  .profile-icon {
-    padding: 5px;
-  }
-
-  .dropdown-menu {
-    width: 145px;
   }
 }

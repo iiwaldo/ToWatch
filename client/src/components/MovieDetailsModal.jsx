@@ -1,8 +1,10 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
+
 import axios from "axios";
 import "../styles/modal.css";
 import ModalMovieCard from "./ModalMovieCard";
 import { useAuth } from "../context/AuthContext";
+
 import {
   FaRegBookmark,
   FaCheckCircle,
@@ -10,7 +12,8 @@ import {
   FaBookmark,
   FaChevronLeft,
   FaChevronRight,
-} from "react-icons/fa"; // Import both filled and outlined icons
+} from "react-icons/fa";
+
 import ActorCard from "./ActorCard";
 import useFetchDetails from "../hooks/useFetchDetails";
 
@@ -23,12 +26,21 @@ const MovieDetailsModal = ({
   languageMap,
 }) => {
   const BACKEND_URL = import.meta.env.VITE_API_URL;
+
   const { user } = useAuth();
+
   const modalRef = useRef(null);
   const castSectionRef = useRef(null);
   const recommendationSectionRef = useRef(null);
+
   const [originalIndex, setOriginalIndex] = useState(null);
+
+  // Controls whether YouTube iframe is visible
   const [showTrailer, setShowTrailer] = useState(false);
+
+  // Controls "No trailer available"
+  const [noTrailer, setNoTrailer] = useState(false);
+
   const {
     trailerId,
     isWatched,
@@ -43,115 +55,231 @@ const MovieDetailsModal = ({
     recommendation,
     providers,
   } = useFetchDetails(card, type);
-  const stableCast = useMemo(() => cast, [cast[0]?.id && cast[1]?.id]);
-  const stableRecommendation = useMemo(
-    () => recommendation,
-    [recommendation[0]?.id && recommendation[1]?.id],
-  );
+
+  const stableCast = useMemo(() => cast, [cast]);
+
+  const stableRecommendation = useMemo(() => recommendation, [recommendation]);
+
   const dataType = card.type || (card.release_date ? "movie" : "show");
+
+  // ----------------------------------------
+  // Format date
+  // ----------------------------------------
   const formatDate = (date) => {
     if (!date) {
-      return;
+      return "";
     }
+
     date = new Date(date);
+
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
     const year = date.getFullYear();
-    let formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
+
+    return `${day}/${month}/${year}`;
   };
 
+  // ----------------------------------------
+  // State
+  // ----------------------------------------
+  const [date, setDate] = useState(
+    formatDate(card.release_date || card.first_air_date),
+  );
+
+  const [modalLoading, setModalLoading] = useState(
+    dataType === "show" ? false : true,
+  );
+
+  const [episodes, setEpisodes] = useState(null);
+
+  const [overview, setOverview] = useState(card.overview);
+
+  const [title, setTitle] = useState(card.original_title || card.original_name);
+
+  const [seasonIndex, setSeasonIndex] = useState(0);
+
+  const [imageUrl, setImageUrl] = useState(
+    card.poster_path
+      ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
+      : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg",
+  );
+
+  // ----------------------------------------
+  // Remove "Specials"
+  // ----------------------------------------
+  const filteredSeasons = useMemo(
+    () => seasonsArr.filter((s) => s.name.toLowerCase() !== "specials"),
+    [seasonsArr],
+  );
+
+  // ----------------------------------------
+  // When card changes
+  // ----------------------------------------
   useEffect(() => {
     if (modalRef.current) {
-      modalRef.current.scrollIntoView({ behavior: "smooth" });
+      modalRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
     }
+
     if (castSectionRef.current) {
       castSectionRef.current.scrollLeft = 0;
     }
+
     if (recommendationSectionRef.current) {
       recommendationSectionRef.current.scrollLeft = 0;
     }
+
     setTitle(card.original_title || card.original_name);
+
     setOverview(card.overview);
+
     setImageUrl(
       card.poster_path
         ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
         : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg",
     );
+
     setDate(formatDate(card.release_date || card.first_air_date));
+
     setSeasonIndex(0);
+
+    // Reset trailer state
     setShowTrailer(false);
-    fetchTrailer();
+    setNoTrailer(false);
   }, [card]);
+
+  // ----------------------------------------
+  // When TV seasons arrive
+  // ----------------------------------------
+  useEffect(() => {
+    if (!seasonsArr.length) {
+      setModalLoading(true);
+      return;
+    }
+
+    const firstSeason = filteredSeasons[0];
+
+    if (!firstSeason) {
+      return;
+    }
+
+    if (seasonsArr.length === 1) {
+      setEpisodes(firstSeason.episode_count);
+
+      setModalLoading(true);
+      return;
+    }
+
+    setModalLoading(true);
+
+    setEpisodes(firstSeason.episode_count);
+
+    setTitle(card.original_title || card.original_name);
+
+    setDate(formatDate(firstSeason.air_date));
+
+    const tempImage = imageUrl;
+
+    setImageUrl(
+      firstSeason.poster_path
+        ? `https://image.tmdb.org/t/p/w500${firstSeason.poster_path}`
+        : tempImage,
+    );
+
+    setOverview(firstSeason.overview || card.overview);
+  }, [seasonsArr]);
+
+  // ----------------------------------------
+  // Watch Later / Watched
+  // ----------------------------------------
   const checkStatus = async (statusType) => {
     if (!user) {
       return;
     }
+
     const data = {
       userEmail: user.email,
       card,
       trailerId,
     };
+
+    // ----------------------------------------
+    // WATCH LATER
+    // ----------------------------------------
     if (statusType === "watch-later") {
       if (!isSaved) {
         try {
-          const response = await axios.post(
-            `${BACKEND_URL}/api/user/watch-later`,
-            data,
-          );
+          await axios.post(`${BACKEND_URL}/api/user/watch-later`, data);
+
           setIsSaved(true);
+
           if (type === "watch-later" && originalIndex !== null) {
             setCards((prevCards) => {
               const updated = [...prevCards];
+
               updated.splice(originalIndex, 0, card);
+
               return updated;
             });
-            setOriginalIndex(null); // Reset after reinserting
+
+            setOriginalIndex(null);
           }
         } catch (error) {
           console.log("Error adding to watch later");
+
           setIsSaved(false);
         }
-      }
-      //else
-      else {
+      } else {
         try {
-          const response = await axios.delete(
-            `${BACKEND_URL}/api/user/watch-later`,
-            {
-              data,
-            },
-          );
+          await axios.delete(`${BACKEND_URL}/api/user/watch-later`, {
+            data,
+          });
+
           setIsSaved(false);
+
           if (type === "watch-later") {
             setCards((prevCards) => {
               const index = prevCards.findIndex((c) => c.id === card.id);
+
               if (index !== -1) {
-                setOriginalIndex(index); // store index before removal
+                setOriginalIndex(index);
+
                 return prevCards.filter((c) => c.id !== card.id);
               }
+
               return prevCards;
             });
           }
         } catch (error) {
           console.log("Error removing from watch later", error);
+
           setIsSaved(true);
         }
       }
-    } else if (statusType === "watched") {
+    }
+
+    // ----------------------------------------
+    // WATCHED
+    // ----------------------------------------
+    else if (statusType === "watched") {
       if (!isWatched) {
         try {
-          const response = await axios.post(
-            `${BACKEND_URL}/api/user/watched`,
-            data,
-          );
+          await axios.post(`${BACKEND_URL}/api/user/watched`, data);
+
           setIsWatched(true);
+
           if (type === "watched" && originalIndex !== null) {
             setCards((prevCards) => {
               const updated = [...prevCards];
+
               updated.splice(originalIndex, 0, card);
+
               return updated;
             });
+
             setOriginalIndex(null);
           }
         } catch (error) {
@@ -159,20 +287,22 @@ const MovieDetailsModal = ({
         }
       } else {
         try {
-          const response = await axios.delete(
-            `${BACKEND_URL}/api/user/watched`,
-            {
-              data,
-            },
-          );
+          await axios.delete(`${BACKEND_URL}/api/user/watched`, {
+            data,
+          });
+
           setIsWatched(false);
+
           if (type === "watched") {
             setCards((prevCards) => {
               const index = prevCards.findIndex((c) => c.id === card.id);
+
               if (index !== -1) {
-                setOriginalIndex(index); // store index before removal
+                setOriginalIndex(index);
+
                 return prevCards.filter((c) => c.id !== card.id);
               }
+
               return prevCards;
             });
           }
@@ -182,14 +312,18 @@ const MovieDetailsModal = ({
       }
     }
   };
+
   const handleWatchLater = async () => {
-    checkStatus("watch-later");
+    await checkStatus("watch-later");
   };
 
   const handleWatched = async () => {
-    checkStatus("watched");
+    await checkStatus("watched");
   };
 
+  // ----------------------------------------
+  // Watch Later button
+  // ----------------------------------------
   const renderWatchLaterButton = () => {
     if (isSaved) {
       return (
@@ -197,15 +331,18 @@ const MovieDetailsModal = ({
           <FaBookmark size={24} />
         </button>
       );
-    } else {
-      return (
-        <button onClick={handleWatchLater} className="icon-btn">
-          <FaRegBookmark size={24} />
-        </button>
-      );
     }
+
+    return (
+      <button onClick={handleWatchLater} className="icon-btn">
+        <FaRegBookmark size={24} />
+      </button>
+    );
   };
 
+  // ----------------------------------------
+  // Watched button
+  // ----------------------------------------
   const renderWatchedButton = () => {
     if (isWatched) {
       return (
@@ -213,72 +350,35 @@ const MovieDetailsModal = ({
           <FaCheckCircle size={24} />
         </button>
       );
-    } else {
-      return (
-        <button onClick={handleWatched} className="icon-btn">
-          <FaRegCheckCircle size={24} />
-        </button>
-      );
-    }
-  };
-  const [date, setDate] = useState(
-    formatDate(card.release_date || card.first_air_date),
-  );
-  const filteredSeasons = useMemo(
-    () => seasonsArr.filter((s) => s.name.toLowerCase() !== "specials"),
-    [seasonsArr],
-  );
-  useEffect(() => {
-    if (!seasonsArr.length) {
-      setModalLoading(true);
-      return;
     }
 
-    const firstSeason = filteredSeasons[0];
-
-    if (seasonsArr.length === 1) {
-      setEpisodes(firstSeason.episode_count);
-      setModalLoading(true);
-      return;
-    }
-    // More than one season
-    setModalLoading(true);
-    setEpisodes(firstSeason.episode_count);
-    setTitle(card.original_title || card.original_name);
-    setDate(formatDate(firstSeason.air_date));
-    const tempImage = imageUrl;
-    setImageUrl(
-      firstSeason.poster_path
-        ? `https://image.tmdb.org/t/p/w500${firstSeason.poster_path}`
-        : tempImage,
+    return (
+      <button onClick={handleWatched} className="icon-btn">
+        <FaRegCheckCircle size={24} />
+      </button>
     );
-    setOverview(firstSeason.overview || card.overview);
-  }, [seasonsArr]);
+  };
 
-  const [modalLoading, setModalLoading] = useState(
-    dataType === "show" ? false : true,
-  );
-
-  const [episodes, setEpisodes] = useState(null);
-  const [overview, setOverview] = useState(card.overview);
-  const [title, setTitle] = useState(card.original_title || card.original_name);
-  const [seasonIndex, setSeasonIndex] = useState(0);
-  const [imageUrl, setImageUrl] = useState(
-    card.poster_path
-      ? `https://image.tmdb.org/t/p/w500${card.poster_path}`
-      : "https://m.media-amazon.com/images/I/61s8vyZLSzL._AC_UF894,1000_QL80_.jpg",
-  );
-
-  const handleNextSeason = async () => {
+  // ----------------------------------------
+  // Next season
+  //
+  // IMPORTANT:
+  // Does NOT fetch trailer.
+  // ----------------------------------------
+  const handleNextSeason = () => {
     if (seasonIndex < filteredSeasons.length - 1) {
       const newIndex = seasonIndex + 1;
+
       const newSeason = filteredSeasons[newIndex];
 
       const baseTitle = card.original_title || card.original_name;
+
       const newTitle = `${baseTitle} ${newIndex + 1}`;
 
       setSeasonIndex(newIndex);
+
       setTitle(newTitle);
+
       setDate(formatDate(newSeason.air_date));
 
       const tempImage = imageUrl;
@@ -293,17 +393,24 @@ const MovieDetailsModal = ({
 
       setOverview(newSeason.overview !== "" ? newSeason.overview : overview);
 
-      // Hide current trailer
+      // Hide trailer
       setShowTrailer(false);
 
-      // Fetch trailer for THIS season
-      await fetchTrailer(newSeason.season_number);
+      // Reset no-trailer message
+      setNoTrailer(false);
     }
   };
 
-  const handlePrevSeason = async () => {
+  // ----------------------------------------
+  // Previous season
+  //
+  // IMPORTANT:
+  // Does NOT fetch trailer.
+  // ----------------------------------------
+  const handlePrevSeason = () => {
     if (seasonIndex > 0) {
       const newIndex = seasonIndex - 1;
+
       const newSeason = filteredSeasons[newIndex];
 
       const baseTitle = card.original_title || card.original_name;
@@ -313,9 +420,14 @@ const MovieDetailsModal = ({
 
       setShowTrailer(false);
 
+      setNoTrailer(false);
+
       setSeasonIndex(newIndex);
+
       setTitle(newTitle);
+
       setEpisodes(newSeason.episode_count);
+
       setDate(formatDate(newSeason.air_date));
 
       const tempImage = imageUrl;
@@ -327,9 +439,29 @@ const MovieDetailsModal = ({
       );
 
       setOverview(newSeason.overview !== "" ? newSeason.overview : overview);
+    }
+  };
 
-      // Fetch trailer for THIS season
-      await fetchTrailer(newSeason.season_number);
+  // ----------------------------------------
+  // WATCH TRAILER
+  // ----------------------------------------
+  const handleWatchTrailer = async () => {
+    // Reset old message
+    setNoTrailer(false);
+
+    const seasonNumber =
+      dataType === "show" ? filteredSeasons[seasonIndex]?.season_number : null;
+
+    const trailer = await fetchTrailer(seasonNumber);
+
+    if (trailer) {
+      // Trailer exists
+      setShowTrailer(true);
+      setNoTrailer(false);
+    } else {
+      // No trailer exists
+      setShowTrailer(false);
+      setNoTrailer(true);
     }
   };
 
@@ -341,59 +473,70 @@ const MovieDetailsModal = ({
         </button>
 
         <div className="modal-body">
+          {/* -------------------------------- */}
+          {/* IMAGE */}
+          {/* -------------------------------- */}
+
           <div className="movie-image">
             <div className="datatype-label">{dataType}</div>
 
             <img src={imageUrl} alt={title} className="movie-poster" />
 
-            {/* Watch Later and Watched icons */}
-            {
-              <div className="button-group">
-                {/* Previous Season */}
-                {dataType === "show" && seasonsArr.length > 1 && (
-                  <button
-                    onClick={handlePrevSeason}
-                    className="icon-btn"
-                    disabled={seasonIndex === 0}
-                  >
-                    <FaChevronLeft />
-                  </button>
-                )}
+            <div className="button-group">
+              {/* Previous Season */}
+              {dataType === "show" && seasonsArr.length > 1 && (
+                <button
+                  onClick={handlePrevSeason}
+                  className="icon-btn"
+                  disabled={seasonIndex === 0}
+                >
+                  <FaChevronLeft />
+                </button>
+              )}
 
-                {/* Watch Later */}
-                {user && renderWatchLaterButton()}
+              {/* Watch Later */}
+              {user && renderWatchLaterButton()}
 
-                {/* Watched */}
-                {user && renderWatchedButton()}
+              {/* Watched */}
+              {user && renderWatchedButton()}
 
-                {/* Next Season */}
-                {dataType === "show" && seasonsArr.length > 1 && (
-                  <button
-                    onClick={handleNextSeason}
-                    className="icon-btn"
-                    disabled={seasonIndex === filteredSeasons.length - 1}
-                  >
-                    <FaChevronRight />
-                  </button>
-                )}
-              </div>
-            }
+              {/* Next Season */}
+              {dataType === "show" && seasonsArr.length > 1 && (
+                <button
+                  onClick={handleNextSeason}
+                  className="icon-btn"
+                  disabled={seasonIndex === filteredSeasons.length - 1}
+                >
+                  <FaChevronRight />
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* -------------------------------- */}
+          {/* DESCRIPTION */}
+          {/* -------------------------------- */}
 
           <div className="movie-description">
             <h1 ref={modalRef}>{title}</h1>
+
+            {/* Providers */}
             {providers.map((obj) => (
               <img
+                key={obj.provider_id || obj.logo_path}
                 className="provider-logo"
                 src={`https://image.tmdb.org/t/p/w500${obj.logo_path}`}
+                alt={obj.provider_name || "Provider"}
               />
             ))}
+
             <p>{overview}</p>
+
             <p>
               <strong>Release Date:</strong> {date}
             </p>
 
-            {/* Show episode count if it's a show and episode data is available */}
+            {/* Episodes */}
             {dataType === "show" && episodes !== null && (
               <p>
                 <strong>Episodes:</strong> {episodes}
@@ -401,28 +544,39 @@ const MovieDetailsModal = ({
             )}
 
             <p>
-              <strong>Language: </strong>
-              {languageMap[card.original_language]}
+              <strong>Language:</strong> {languageMap[card.original_language]}
             </p>
 
             <p>
               <strong>Rating:</strong> {card.vote_average}
             </p>
 
-            {loading || !trailerId ? (
-              <div>Loading trailer...</div>
-            ) : (
-              !showTrailer && (
-                <button onClick={() => setShowTrailer(true)}>
-                  Watch Trailer
-                </button>
-              )
+            {/* -------------------------------- */}
+            {/* TRAILER BUTTON */}
+            {/* -------------------------------- */}
+
+            {!showTrailer && !noTrailer && (
+              <button onClick={handleWatchTrailer} disabled={loading}>
+                {loading ? "Loading trailer..." : "Watch Trailer"}
+              </button>
             )}
 
-            {showTrailer && (
+            {/* -------------------------------- */}
+            {/* NO TRAILER */}
+            {/* -------------------------------- */}
+
+            {noTrailer && !loading && (
+              <div className="no-trailer-message">
+                No trailer available at the moment.
+              </div>
+            )}
+
+            {/* -------------------------------- */}
+            {/* TRAILER */}
+            {/* -------------------------------- */}
+
+            {showTrailer && trailerId && (
               <div className="trailer-container">
-                {console.log("Rendering trailer with ID:", trailerId)}{" "}
-                {/* Debugging log */}
                 <iframe
                   width="100%"
                   height="315"
@@ -435,10 +589,14 @@ const MovieDetailsModal = ({
               </div>
             )}
 
-            {/* Add the cast section */}
+            {/* -------------------------------- */}
+            {/* CAST */}
+            {/* -------------------------------- */}
+
             {stableCast.length > 0 && (
               <div className="cast-section">
                 <h3>Cast</h3>
+
                 <div className="cast-list" ref={castSectionRef}>
                   {stableCast.map((actor) => (
                     <ActorCard
@@ -451,16 +609,21 @@ const MovieDetailsModal = ({
                 </div>
               </div>
             )}
-            {/* Recommendations section */}
-            {recommendation.length > 0 && (
+
+            {/* -------------------------------- */}
+            {/* RECOMMENDATIONS */}
+            {/* -------------------------------- */}
+
+            {stableRecommendation.length > 0 && (
               <div className="cast-section">
                 <h3>Recommendation</h3>
+
                 <div className="cast-list" ref={recommendationSectionRef}>
-                  {recommendation.map((rec) => (
+                  {stableRecommendation.map((rec) => (
                     <ModalMovieCard
                       key={rec.id}
                       card={rec}
-                      type={type} // You can also determine based on `rec.media_type` if needed
+                      type={type}
                       onClose={onClose}
                       setSelectedCard={setSelectedCard}
                     />

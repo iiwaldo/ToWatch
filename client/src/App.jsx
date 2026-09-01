@@ -11,6 +11,8 @@ import "../index.css";
 import ScrollToTop from "./components/ScrollToTop";
 import NavBar from "./components/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import WatchLater from "./pages/WatchLater";
+import Watched from "./pages/Watched";
 
 function App() {
   return (
@@ -25,7 +27,7 @@ function App() {
           path="/watch-later"
           element={
             <ProtectedRoute>
-              <Home type={"watch-later"} />
+              <WatchLater />
             </ProtectedRoute>
           }
         />
@@ -33,7 +35,7 @@ function App() {
           path="/watched"
           element={
             <ProtectedRoute>
-              <Home type={"watched"} />
+              <Watched />
             </ProtectedRoute>
           }
         />

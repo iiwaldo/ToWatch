@@ -1,49 +1,59 @@
 import mongoose from "mongoose";
-
 const movieSchema = new mongoose.Schema(
   {
     id: {
-      type: Number, // TMDB movie ID
+      type: Number,
       required: true,
-      unique: true, // Ensure each movie is unique by its ID
+      unique: true,
     },
+
     original_title: {
       type: String,
       required: true,
     },
-    overview: {
-      type: String,
-    },
-    poster_path: {
-      type: String,
-    },
-    release_date: {
-      type: Date,
-    },
+
+    overview: String,
+
+    poster_path: String,
+
+    release_date: Date,
+
     genre_ids: [
       {
         type: Number,
       },
     ],
+
     vote_average: {
       type: Number,
       default: 0,
     },
-    backdrop_path: {
-      type: String,
-    },
-    // Any other fields you'd like to store
-    trailerId: {
-      type: String,
-    },
+
+    backdrop_path: String,
+
     type: {
       type: String,
+      enum: ["movie", "show"],
+      required: true,
     },
-  },
-  { timestamps: true }
-); // Adds createdAt and updatedAt fields automatically
 
-// Creating the Movie model
+    trailers: [
+      {
+        seasonNumber: {
+          type: Number,
+          default: null,
+        },
+
+        trailerId: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  { timestamps: true },
+);
+
 const Movie = mongoose.model("Movie", movieSchema);
 
 export default Movie;

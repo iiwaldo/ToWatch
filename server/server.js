@@ -37,7 +37,7 @@ const connectDB = async () => {
   }
 };
 
-// connectDB();
+connectDB();
 
 app.use(express.json());
 app.use("/api/auth", authRoutes);

@@ -1,6 +1,7 @@
 import axios from "axios";
 import express, { response } from "express";
 import dotenv from "dotenv"; // Import dotenv
+import Movie from "../models/Movie.js";
 dotenv.config();
 
 const TMDB_API_KEY = process.env.TMBD_API_KEY;
@@ -60,10 +61,17 @@ async function getSearchedTv(req, res) {
     res.status(500).json({ error: "Failed to fetch searched tv shows" });
   }
 }
+
 async function getTrailer(req, res) {
-  const { title, type, language, seasonNumber } = req.query;
+  const { movieID, title, type, language, seasonNumber, date } = req.query;
 
   try {
+    if (!movieID) {
+      return res.status(400).json({
+        message: "Movie ID is required",
+      });
+    }
+
     if (!title) {
       return res.status(400).json({
         message: "Title is required",
@@ -83,21 +91,50 @@ async function getTrailer(req, res) {
     }
 
     // ==========================
+    // Check MongoDB FIRST
+    // ==========================
+
+    const movie = await Movie.findOne({
+      id: Number(movieID),
+    });
+
+    const currentSeason =
+      type === "show" && seasonNumber ? Number(seasonNumber) : null;
+
+    if (movie) {
+      const cachedTrailer = movie.trailers?.find(
+        (trailer) => trailer.seasonNumber === currentSeason,
+      );
+
+      if (cachedTrailer) {
+        console.log("Trailer found in MongoDB:", cachedTrailer.trailerId);
+
+        return res.status(200).json({
+          key: cachedTrailer.trailerId,
+          url: `https://www.youtube.com/embed/${cachedTrailer.trailerId}?playsinline=1&autoplay=1&rel=0`,
+          label,
+        });
+      }
+    }
+
+    // ==========================
     // YouTube search query
     // ==========================
 
     let searchQuery;
 
+    let year = date ? date.split("-")[0] : "";
+
     if (type === "movie") {
-      searchQuery = `${title} Official Trailer`;
+      searchQuery = `${title} Official Trailer ${year}`;
     } else if (seasonNumber) {
       if (language?.toLowerCase().startsWith("ar")) {
-        searchQuery = `${title} الموسم ${seasonNumber} إعلان`;
+        searchQuery = `إعلان مسلسل ${title} الموسم ${seasonNumber} ${year}`;
       } else {
-        searchQuery = `${title} Season ${seasonNumber} Trailer`;
+        searchQuery = `${title} Season ${seasonNumber} Trailer ${year}`;
       }
     } else {
-      searchQuery = `${title} Trailer`;
+      searchQuery = `${title} Trailer ${year}`;
     }
 
     console.log("YouTube search:", searchQuery);
@@ -166,12 +203,52 @@ async function getTrailer(req, res) {
     console.log("Selected trailer:", {
       title: trailer.snippet.title,
       videoId,
-      seasonNumber,
+      seasonNumber: currentSeason,
     });
+
+    // ==========================
+    // SAVE TO MONGODB
+    // ==========================
+
+    let movieToSave = movie;
+
+    // Movie doesn't exist yet
+    if (!movieToSave) {
+      movieToSave = new Movie({
+        id: Number(movieID),
+        original_title: title,
+        type: type === "movie" ? "movie" : "show",
+        trailers: [],
+      });
+    }
+
+    // Check that this season doesn't already have a trailer
+    const trailerAlreadyExists = movieToSave.trailers?.some(
+      (trailer) => trailer.seasonNumber === currentSeason,
+    );
+
+    if (!trailerAlreadyExists) {
+      movieToSave.trailers.push({
+        seasonNumber: currentSeason,
+        trailerId: videoId,
+      });
+
+      await movieToSave.save();
+
+      console.log("Trailer saved to MongoDB:", {
+        movieID,
+        seasonNumber: currentSeason,
+        videoId,
+      });
+    }
+
+    // ==========================
+    // Return trailer
+    // ==========================
 
     return res.status(200).json({
       key: videoId,
-      url: `https://www.youtube.com/embed/${videoId}`,
+      url: `https://www.youtube.com/embed/${videoId}?playsinline=1&autoplay=1&rel=0`,
       label,
     });
   } catch (error) {
@@ -185,6 +262,7 @@ async function getTrailer(req, res) {
     });
   }
 }
+
 async function getMovieGenres(req, res) {
   try {
     const response = await axios.get(`${BASE_URL}/genre/movie/list`, {

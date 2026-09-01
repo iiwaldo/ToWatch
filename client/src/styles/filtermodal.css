@@ -5,10 +5,12 @@
 .filter-modal-content {
   flex-direction: column;
   width: 90%;
-  max-width: 600px;
+  max-width: 560px;
   max-height: 80vh;
-  padding: 30px;
-  background: rgba(20, 20, 20, 0.95);
+  padding: 28px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg), 0 0 50px rgba(255, 122, 61, 0.1);
   overflow-y: auto;
   border-radius: 12px;
   box-sizing: border-box;
@@ -20,8 +22,9 @@
 
 .modal-title {
   font-size: 2rem;
-  color: #00e5ff;
-  margin-bottom: 24px;
+  color: var(--text);
+  text-shadow: 0 0 18px rgba(255, 122, 61, 0.25);
+  margin-bottom: 20px;
   text-align: center;
 }
 
@@ -30,14 +33,15 @@
 /* ============================= */
 
 .filter-section {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .filter-section label {
   font-weight: 600;
   display: block;
   margin-bottom: 8px;
-  color: #e0e0e0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 /* ============================= */
@@ -51,18 +55,20 @@
 
 .toggle-btn {
   background-color: transparent;
-  border: 2px solid #00bcd4;
-  color: #00bcd4;
+  border: 1px solid var(--border-strong);
+  color: var(--accent);
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-family: var(--font-body);
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .toggle-btn.active,
 .toggle-btn:hover {
-  background-color: #00bcd4;
-  color: white;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: var(--glow-sm);
 }
 
 /* ============================= */
@@ -72,29 +78,31 @@
 .genre-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .genre-btn {
-  padding: 6px 12px;
-  border: 2px solid #444;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
   border-radius: 20px;
   background-color: transparent;
-  color: white;
-  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-family: var(--font-body);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .genre-btn.selected {
-  background-color: #00e5ff;
-  border-color: #00e5ff;
-  color: #000;
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: var(--glow-sm);
 }
 
 .genre-btn:hover {
-  background-color: #00bcd4;
-  color: white;
+  border-color: var(--accent);
+  color: var(--accent-bright);
 }
 
 /* ============================= */
@@ -104,19 +112,22 @@
 .apply-btn {
   display: block;
   width: 100%;
-  background-color: #00e5ff;
-  color: white;
+  background-color: var(--accent);
+  color: var(--accent-ink);
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 999px;
   border: none;
-  font-size: 1.1rem;
-  margin-top: 20px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  margin-top: 18px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .apply-btn:hover {
-  background-color: #00bcd4;
+  background-color: var(--accent-bright);
+  box-shadow: var(--glow-md);
 }
 
 /* ============================= */
@@ -125,13 +136,21 @@
 
 .auth-input {
   width: 100%;
-  padding: 10px;
+  padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid #444;
-  background-color: #121212;
-  color: #fff;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text);
   font-size: 1rem;
+  font-family: var(--font-body);
   box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--glow-sm);
 }
 
 /* ============================= */
@@ -140,7 +159,7 @@
 
 .filter-row {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
@@ -167,20 +186,19 @@
   }
 
   .modal-title {
-    font-size: 1.45rem;
-    margin-bottom: 18px;
+    font-size: 1.6rem;
+    margin-bottom: 16px;
   }
 
   .filter-section {
-    margin-bottom: 15px;
+    margin-bottom: 14px;
   }
 
   .filter-section label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-bottom: 6px;
   }
 
-  /* Toggle buttons */
   .toggle-group {
     gap: 7px;
   }
@@ -188,27 +206,22 @@
   .toggle-btn {
     padding: 7px 12px;
     font-size: 0.85rem;
-    border-width: 1.5px;
   }
 
-  /* Genres */
   .genre-options {
     gap: 6px;
   }
 
   .genre-btn {
-    padding: 5px 9px;
+    padding: 5px 10px;
     font-size: 0.78rem;
-    border-width: 1.5px;
   }
 
-  /* Inputs */
   .auth-input {
     padding: 8px 10px;
     font-size: 0.9rem;
   }
 
-  /* Rows become vertical */
   .filter-row {
     flex-direction: column;
     gap: 12px;
@@ -219,11 +232,10 @@
     min-width: 0;
   }
 
-  /* Apply button */
   .apply-btn {
     padding: 10px;
     font-size: 0.95rem;
-    margin-top: 15px;
+    margin-top: 14px;
   }
 }
 
@@ -235,11 +247,11 @@
   .filter-modal-content {
     width: 94%;
     max-width: 340px;
-    padding: 17px 14px;
+    padding: 16px 14px;
   }
 
   .modal-title {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .genre-options {
@@ -247,7 +259,7 @@
   }
 
   .genre-btn {
-    padding: 4px 8px;
+    padding: 4px 9px;
     font-size: 0.75rem;
   }
 

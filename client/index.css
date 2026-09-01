@@ -1,3 +1,31 @@
+/* =========================================================
+   🎬 Design tokens — Spotlight / Marquee theme
+   ========================================================= */
+:root {
+  --bg: #0b0710;
+  --bg-elevated: #170f20;
+  --surface: #1e1729;
+  --surface-hover: #281f35;
+  --border: rgba(255, 122, 61, 0.16);
+  --border-strong: rgba(255, 122, 61, 0.5);
+
+  --accent: #ff7a3d;
+  --accent-bright: #ffa671;
+  --accent-dim: #d9602a;
+  --accent-ink: #1c0f04; /* text color to use ON accent-colored surfaces */
+
+  --text: #f5efe8;
+  --text-muted: #ab9fb3;
+  --text-faint: #675c73;
+
+  --font-display: "Bebas Neue", "Inter", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.65);
+  --glow-sm: 0 0 14px rgba(255, 122, 61, 0.4);
+  --glow-md: 0 0 28px rgba(255, 122, 61, 0.4), 0 0 56px rgba(255, 122, 61, 0.18);
+}
+
 /* 💠 Particle Canvas */
 #particle-canvas {
   position: fixed;
@@ -7,196 +35,138 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  opacity: 1;
+  opacity: 0.6;
   filter: blur(0.6px);
   background: transparent !important;
 }
 
-/* 🔥 Ultra Dark Background */
+/* Base */
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #000;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #e0f7fa;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
-
-  /* remove these lines 👇 */
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background:
+    radial-gradient(ellipse 1100px 550px at 50% -10%, rgba(255, 122, 61, 0.1), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 100% 100%, rgba(139, 92, 246, 0.06), transparent 60%),
+    var(--bg);
+  font-family: var(--font-body);
+  color: var(--text);
 }
 
-/* 🔄 Sexy animated background */
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+h1, h2, h3,
+.home-title,
+.logo a,
+.movie-description h1,
+.modal-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.6px;
 }
 
-/* 💎 Glassy Neon Glow Box */
+/* 💎 Elevated panel (auth screens, etc.) */
 .glow-box {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  padding: 2.5rem 3rem;
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.1), 0 0 80px rgba(0, 229, 255, 0.08),
-    inset 0 0 12px rgba(0, 255, 255, 0.05);
-  backdrop-filter: blur(22px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.4s ease;
-  animation: floatPulse 8s ease-in-out infinite,
-    glowAnimation 5s ease-in-out infinite;
+  background: var(--bg-elevated);
+  border-radius: 14px;
+  padding: 2.25rem 2.75rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* 🧊 Hover: More glow and scale */
 .glow-box:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 60px rgba(0, 255, 255, 0.18),
-    0 0 120px rgba(0, 255, 255, 0.15), inset 0 0 30px rgba(0, 255, 255, 0.1);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lg), var(--glow-sm);
 }
 
-/* 💫 Floating pulse animation */
-@keyframes floatPulse {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* ✨ Neon glow text animation */
-@keyframes glowAnimation {
-  0%,
-  100% {
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.2), 0 0 16px rgba(0, 255, 255, 0.3),
-      0 0 32px rgba(0, 255, 255, 0.4);
-  }
-  50% {
-    text-shadow: 0 0 12px rgba(0, 255, 255, 0.3),
-      0 0 24px rgba(0, 255, 255, 0.5), 0 0 48px rgba(0, 255, 255, 0.6);
-  }
-}
-
-/* 💫 Neon Border for Input */
+/* Inputs */
 input,
 textarea {
-  background: rgba(0, 0, 0, 0.4);
-  border: 2px solid rgba(0, 255, 255, 0.4);
-  color: #e0f7fa;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
   padding: 10px 12px;
   border-radius: 8px;
   font-size: 16px;
-  transition: all 0.3s ease-in-out;
+  font-family: var(--font-body);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: #00e5ff;
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+  border-color: var(--accent);
+  box-shadow: var(--glow-sm);
 }
 
-/* 🖤 Scrollbar Style */
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px; /* Slightly thin scrollbar */
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 255, 255, 0.6);
+  background-color: rgba(255, 122, 61, 0.35);
   border-radius: 10px;
-  border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 255, 255, 0.8);
-  border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
+  background-color: rgba(255, 122, 61, 0.6);
 }
 
-/* 🖤 Scrollbar track */
 ::-webkit-scrollbar-track {
   background: transparent;
-  border-radius: 10px;
 }
 
-/* 🎆 Animation for neon links */
+/* Links */
 a {
-  color: #00e5ff;
+  color: var(--accent);
   text-decoration: none;
-  font-weight: bold;
-  transition: all 0.3s ease-in-out;
+  font-weight: 500;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 a:hover {
-  color: #fff;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+  color: var(--accent-bright);
+  text-shadow: 0 0 10px rgba(255, 122, 61, 0.5);
 }
 
-/* Fix for Close Button */
+/* Close button (shared) */
 .close-btn {
   position: absolute;
   top: 12px;
   right: 16px;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   background: transparent;
   border: none;
-  color: white;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: background-color 0.3s ease, border-radius 0.3s ease;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   z-index: 10;
-  padding: 6px 10px; /* Slight padding */
-  border-radius: 50%; /* Make it circular */
 }
 
 .close-btn:hover {
-  background-color: #00bcd4;
-  border-radius: 50%; /* Ensure circular shape on hover */
+  background-color: var(--surface-hover);
+  color: var(--accent-bright);
+  box-shadow: var(--glow-sm);
 }
 
-/* Optional: Modal Scroll Fix */
+/* Modal scroll fix */
 .movie-description {
   overflow-y: scroll;
   scrollbar-width: thin;
-  scrollbar-color: #00bcd4 #111; /* Scrollbar color */
-}
-
-.movie-description::-webkit-scrollbar {
-  width: 6px;
-}
-
-.movie-description::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 255, 255, 0.6);
-  border-radius: 10px;
-  border: 2px solid rgba(0, 255, 255, 0.2); /* Add a slight neon border */
-}
-
-.movie-description::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 255, 255, 0.8);
-  border-color: rgba(0, 255, 255, 0.8); /* Glow effect when hovered */
-}
-
-.movie-description::-webkit-scrollbar-track {
-  background: transparent;
+  scrollbar-color: rgba(255, 122, 61, 0.35) transparent;
 }
 
 /* =========================================================
-   📱 MOBILE — iPhone 16 Pro / Small Screens
+   📱 MOBILE
    ========================================================= */
-
 @media (max-width: 600px) {
-  /* Prevent horizontal overflow */
-  html,
-  body {
+  html, body {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -207,260 +177,37 @@ a:hover {
     font-size: 14px;
   }
 
-  /* Particle background */
   #particle-canvas {
     width: 100vw;
     height: 100dvh;
+    opacity: 0.4;
   }
-
-  /* -------------------------
-     Glow Box
-     ------------------------- */
 
   .glow-box {
     width: calc(100% - 32px);
     max-width: 360px;
     box-sizing: border-box;
-
-    padding: 1.5rem 1.2rem;
-    border-radius: 16px;
-
-    box-shadow:
-      0 0 25px rgba(0, 229, 255, 0.08),
-      0 0 50px rgba(0, 229, 255, 0.05),
-      inset 0 0 10px rgba(0, 255, 255, 0.04);
-
-    backdrop-filter: blur(16px);
-
-    /* Disable the large desktop hover/float feeling */
-    transform: none;
-    animation: none;
+    padding: 1.4rem 1.1rem;
+    border-radius: 12px;
   }
 
-  .glow-box:hover {
-    transform: none;
-  }
-
-  /* -------------------------
-     Inputs
-     ------------------------- */
-
-  input,
-  textarea {
+  input, textarea {
     width: 100%;
     box-sizing: border-box;
-
     padding: 9px 11px;
     font-size: 15px;
-
     border-radius: 7px;
   }
 
-  /* -------------------------
-     Links
-     ------------------------- */
+  a { font-size: 14px; }
 
-  a {
-    font-size: 14px;
-  }
-
-  /* -------------------------
-     Scrollbar
-     ------------------------- */
-
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-
-  /* -------------------------
-     Close button
-     ------------------------- */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
 
   .close-btn {
     top: 8px;
     right: 8px;
-
-    font-size: 1.4rem;
-    padding: 4px 8px;
-  }
-
-  /* -------------------------
-     Modal
-     ------------------------- */
-
-  .movie-details-modal {
-    padding: 10px;
-    align-items: center;
-  }
-
-  .modal-content {
-    width: 94%;
-    max-width: 380px;
-
-    padding: 14px;
-    border-radius: 13px;
-
-    max-height: 90dvh;
-  }
-
-  .modal-body {
-    gap: 12px;
-  }
-
-  /* Description text slightly smaller */
-  .movie-description {
-    padding-left: 5px;
-  }
-
-  .movie-description h1 {
-    font-size: 1.45rem;
-    margin-bottom: 10px;
-  }
-
-  .movie-description p {
-    font-size: 0.9rem;
-    line-height: 1.45;
-    margin-bottom: 7px;
-  }
-
-  /* Poster */
-  .movie-image {
-    max-width: 110px;
-  }
-
-  .movie-poster {
-    border-radius: 8px;
-  }
-
-  /* Data type label */
-  .datatype-label {
-    top: 6px;
-    left: 6px;
-
-    padding: 3px 7px;
-    font-size: 0.65rem;
-    border-radius: 8px;
-  }
-
-  /* Buttons */
-  .button-group {
-    gap: 5px;
-    margin-top: 6px;
-  }
-
-  .icon-btn {
-    padding: 6px;
-    font-size: 16px;
-    border-width: 1px;
-  }
-
-  /* Provider logos */
-  .provider-logo {
-    width: 28px;
-    height: 28px;
-    border-width: 1px;
-    margin: 2px;
-  }
-
-  /* Trailer */
-  .trailer-container {
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  .trailer-container iframe {
-    width: 100%;
-    height: 190px;
-    border-radius: 8px;
-  }
-
-  /* Cast */
-  .cast-section {
-    margin-top: 18px;
-  }
-
-  .cast-section h3 {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-  }
-
-  .cast-list {
-    gap: 8px;
-    padding-bottom: 8px;
-  }
-
-  .actor-card {
-    width: 95px;
-    margin: 4px;
-    border-radius: 6px;
-  }
-
-  .actor-image {
-    height: 125px;
-  }
-
-  .actor-info {
-    padding: 6px;
-  }
-
-  .actor-name {
-    font-size: 0.75rem;
-    margin: 3px 0;
-  }
-
-  .actor-character {
-    font-size: 0.65rem;
-  }
-
-  /* General buttons */
-  button {
-    padding: 9px 14px;
-    font-size: 0.85rem;
-    margin-top: 12px;
-    border-radius: 7px;
-  }
-
-  /* Spinner */
-  .spinner {
-    width: 45px;
-    height: 45px;
-    border-width: 5px;
-  }
-}
-
-
-/* =========================================================
-   📱 EXTRA SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 380px) {
-  .modal-content {
-    width: 95%;
-    padding: 11px;
-  }
-
-  .movie-image {
-    max-width: 95px;
-  }
-
-  .movie-description h1 {
+    width: 30px;
+    height: 30px;
     font-size: 1.3rem;
-  }
-
-  .movie-description p {
-    font-size: 0.82rem;
-  }
-
-  .trailer-container iframe {
-    height: 170px;
-  }
-
-  .actor-card {
-    width: 85px;
-  }
-
-  .actor-image {
-    height: 110px;
   }
 }
