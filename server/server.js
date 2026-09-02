@@ -14,9 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [process.env.CLIENT_URL];
 
-app.use(cors({
-  origin: allowedOrigins
-}));
+app.use(cors());
 
 const connectDB = async () => {
   try {
