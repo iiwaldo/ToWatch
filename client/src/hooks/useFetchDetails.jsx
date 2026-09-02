@@ -85,59 +85,26 @@ const useFetchDetails = (card, type) => {
   // ----------------------------------------
   // Fetch recommendations + similar
   // ----------------------------------------
+
   const fetchRecommendation = async () => {
     try {
       const dataType = card.type || (card.release_date ? "movie" : "show");
 
-      const [recommendationResponse, similarResponse] = await Promise.all([
-        axios.get(`${BACKEND_URL}/api/details/recommendation`, {
+      const response = await axios.get(
+        `${BACKEND_URL}/api/details/recommendation`,
+        {
           params: {
             id: card.id,
             dataType,
+            language: card.original_language,
           },
-        }),
-
-        axios.get(`${BACKEND_URL}/api/details/similar`, {
-          params: {
-            id: card.id,
-            dataType,
-          },
-        }),
-      ]);
-
-      const recommendations = recommendationResponse.data || [];
-      const similar = similarResponse.data || [];
-
-      // ----------------------------------------
-      // Combine recommendations + similar
-      // ----------------------------------------
-      const combined = [...recommendations, ...similar];
-
-      // ----------------------------------------
-      // Remove duplicates
-      // Also remove the current movie/show
-      // ----------------------------------------
-      const unique = Array.from(
-        new Map(
-          combined
-            .filter((item) => item.id !== card.id)
-            .map((item) => [item.id, item]),
-        ).values(),
+        },
       );
 
-      // ----------------------------------------
-      // Keep only the same language
-      // ----------------------------------------
-      const filtered = unique.filter(
-        (item) => item.original_language === card.original_language,
-      );
-
-      // ----------------------------------------
-      // Limit the number of results
-      // ----------------------------------------
-      setRecommendation(filtered.slice(0, 20));
+      setRecommendation(response.data || []);
     } catch (error) {
-      console.error("Error getting recommendations/similar:", error);
+      console.error("Error getting recommendations:", error);
+
       setRecommendation([]);
     }
   };

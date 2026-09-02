@@ -354,17 +354,115 @@ async function getTvDetails(req, res) {
 
 async function getRecommendation(req, res) {
   const { id, dataType } = req.query;
-  const url =
+
+  if (!id || !dataType) {
+    return res.status(400).json({
+      message: "ID and dataType are required",
+    });
+  }
+
+  const recommendationUrl =
     dataType === "movie"
       ? `${BASE_URL}/movie/${id}/recommendations`
       : `${BASE_URL}/tv/${id}/recommendations`;
+
+  const similarUrl =
+    dataType === "movie"
+      ? `${BASE_URL}/movie/${id}/similar`
+      : `${BASE_URL}/tv/${id}/similar`;
+
   try {
-    const response = await axios.get(url, {
-      params: { api_key: TMDB_API_KEY },
-    });
-    res.status(200).json(response.data.results);
+    // Fetch both from TMDB at the same time
+    const [recommendationResponse, similarResponse] = await Promise.all([
+      axios.get(recommendationUrl, {
+        params: {
+          api_key: TMDB_API_KEY,
+        },
+      }),
+
+      axios.get(similarUrl, {
+        params: {
+          api_key: TMDB_API_KEY,
+        },
+      }),
+    ]);
+
+    const recommendations = recommendationResponse.data?.results || [];
+
+    const similar = similarResponse.data?.results || [];
+
+    // ------------------------------------------------
+    // Recommendations have higher priority.
+    //
+    // If the same movie exists in both lists,
+    // the recommendation version is kept.
+    // ------------------------------------------------
+    const combined = [...recommendations, ...similar];
+
+    // ------------------------------------------------
+    // Remove:
+    // 1. Current movie/show
+    // 2. Duplicate movies/shows
+    // ------------------------------------------------
+    const uniqueMap = new Map();
+
+    for (const item of combined) {
+      if (!item?.id) {
+        continue;
+      }
+
+      // Don't recommend the movie/show we're currently viewing
+      if (Number(item.id) === Number(id)) {
+        continue;
+      }
+
+      // Only add the first occurrence.
+      // Because recommendations come first,
+      // recommendations get priority over similar.
+      if (!uniqueMap.has(item.id)) {
+        uniqueMap.set(item.id, item);
+      }
+    }
+
+    let results = Array.from(uniqueMap.values());
+
+    // ------------------------------------------------
+    // Keep the same original language
+    //
+    // This prevents the carousel from suddenly showing
+    // unrelated-language titles.
+    // ------------------------------------------------
+    const currentLanguage = req.query.language || null;
+
+    if (currentLanguage) {
+      results = results.filter(
+        (item) => item.original_language === currentLanguage,
+      );
+    }
+
+    // ------------------------------------------------
+    // Sort by popularity
+    //
+    // Higher popularity = more likely to be useful
+    // to the user.
+    // ------------------------------------------------
+    results.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
+    // ------------------------------------------------
+    // Return only the best 20
+    // ------------------------------------------------
+    results = results.slice(0, 20);
+
+    res.status(200).json(results);
   } catch (error) {
-    res.status(500).json("Error getting Reccomendations");
+    console.error(
+      "Error getting recommendations/similar:",
+      error.response?.data || error.message,
+    );
+
+    res.status(500).json({
+      message: "Error getting recommendations",
+    });
   }
 }
 
