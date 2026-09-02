@@ -367,6 +367,24 @@ async function getRecommendation(req, res) {
     res.status(500).json("Error getting Reccomendations");
   }
 }
+
+async function getSimilar(req, res) {
+  const { id, dataType } = req.query;
+  const url =
+    dataType === "movie"
+      ? `${BASE_URL}/movie/${id}/similar`
+      : `${BASE_URL}/tv/${id}/similar`;
+  try {
+    const response = await axios.get(url, {
+      params: { api_key: TMDB_API_KEY },
+    });
+    res.status(200).json(response.data.results);
+  } catch (error) {
+    console.error("Error getting similar:", error.message);
+    res.status(500).json("Error getting Similar");
+  }
+}
+
 async function getProvider(req, res) {
   const { id, dataType } = req.query;
   const url =
@@ -413,5 +431,6 @@ export default {
   getCombinedCredits,
   getTvDetails,
   getRecommendation,
+  getSimilar,
   getProvider,
 };

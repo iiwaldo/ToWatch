@@ -83,26 +83,61 @@ const useFetchDetails = (card, type) => {
   };
 
   // ----------------------------------------
-  // Fetch recommendations
+  // Fetch recommendations + similar
   // ----------------------------------------
   const fetchRecommendation = async () => {
     try {
-      const response = await axios.get(
-        `${BACKEND_URL}/api/details/recommendation`,
-        {
+      const dataType = card.type || (card.release_date ? "movie" : "show");
+
+      const [recommendationResponse, similarResponse] = await Promise.all([
+        axios.get(`${BACKEND_URL}/api/details/recommendation`, {
           params: {
             id: card.id,
-            dataType: card.type || (card.release_date ? "movie" : "show"),
+            dataType,
           },
-        },
+        }),
+
+        axios.get(`${BACKEND_URL}/api/details/similar`, {
+          params: {
+            id: card.id,
+            dataType,
+          },
+        }),
+      ]);
+
+      const recommendations = recommendationResponse.data || [];
+      const similar = similarResponse.data || [];
+
+      // ----------------------------------------
+      // Combine recommendations + similar
+      // ----------------------------------------
+      const combined = [...recommendations, ...similar];
+
+      // ----------------------------------------
+      // Remove duplicates
+      // Also remove the current movie/show
+      // ----------------------------------------
+      const unique = Array.from(
+        new Map(
+          combined
+            .filter((item) => item.id !== card.id)
+            .map((item) => [item.id, item]),
+        ).values(),
       );
 
-      const tempArr = response.data.filter(
-        (movie) => movie.original_language === card.original_language,
+      // ----------------------------------------
+      // Keep only the same language
+      // ----------------------------------------
+      const filtered = unique.filter(
+        (item) => item.original_language === card.original_language,
       );
 
-      setRecommendation(tempArr);
+      // ----------------------------------------
+      // Limit the number of results
+      // ----------------------------------------
+      setRecommendation(filtered.slice(0, 20));
     } catch (error) {
+      console.error("Error getting recommendations/similar:", error);
       setRecommendation([]);
     }
   };
@@ -178,7 +213,6 @@ const useFetchDetails = (card, type) => {
 
       if (response.data.numberOfSeasons !== 0) {
         setNumberOfSeasons(response.data.numberOfSeasons);
-
         setSeasonsArr(response.data.seasonsArr);
       }
     } catch (error) {
