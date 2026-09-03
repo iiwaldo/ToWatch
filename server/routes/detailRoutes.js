@@ -16,6 +16,7 @@ router.get("/filter", detailController.getFilter);
 router.get("/cast", detailController.getCast);
 router.get("/combined_credits", detailController.getCombinedCredits);
 router.get("/tv", detailController.getTvDetails);
+router.get("/movie", detailController.getMovieDetails);
 router.get("/recommendation", detailController.getRecommendation);
 //router.get("/similar", detailController.getSimilar);
 router.get("/providers", detailController.getProvider);

@@ -8,6 +8,40 @@ const TMDB_API_KEY = process.env.TMBD_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
+async function getMovieDetails(req, res) {
+  const { movieID, dataType } = req.query;
+
+  if (!movieID || !dataType) {
+    return res.status(400).json({
+      message: "movieID and dataType are required",
+    });
+  }
+
+  try {
+    const url =
+      dataType === "movie"
+        ? `${BASE_URL}/movie/${movieID}`
+        : `${BASE_URL}/tv/${movieID}`;
+
+    const response = await axios.get(url, {
+      params: {
+        api_key: TMDB_API_KEY,
+      },
+    });
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error(
+      "Error getting movie/show details:",
+      error.response?.data || error.message,
+    );
+
+    res.status(500).json({
+      message: "Error getting movie/show details",
+    });
+  }
+}
+
 async function getPopularMovies(req, res) {
   const page = req.query.page;
   const language = "en-US";
@@ -531,4 +565,5 @@ export default {
   getRecommendation,
   getSimilar,
   getProvider,
+  getMovieDetails,
 };
