@@ -13,7 +13,7 @@ async function findOrCreateMovie(card, trailerId) {
   let movie = await Movie.findOne({ id: card.id });
 
   const mediaType = card.type === "movie" ? "movie" : "show";
-
+   console.log(card);
   if (!movie) {
     movie = new Movie({
       id: card.id,
@@ -21,7 +21,7 @@ async function findOrCreateMovie(card, trailerId) {
       language: card.original_language || null,
       poster_path: card.poster_path || null,
       genre_ids: Array.isArray(card.genre_ids) ? card.genre_ids : [],
-      vote_average: card.vote_average === "number" ? card.vote_average : 0,
+      vote_average: card.vote_average || 0,
       type: mediaType,
       trailers: [],
     });
@@ -536,7 +536,6 @@ WATCHED
 
 async function addWatched(req, res) {
   const { userEmail, card, trailerId } = req.body;
-
   if (!userEmail || !card) {
     return res.status(400).json({
       message: "userEmail and card are required",

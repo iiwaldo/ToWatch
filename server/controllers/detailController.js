@@ -996,28 +996,46 @@ async function getProvider(req, res) {
       },
     });
 
-    // First try UAE.
+    // First try UAE, then Egypt
     let providers = response.data?.results?.AE?.flatrate;
 
-    // If UAE has nothing, try Egypt.
     if (!providers) {
       providers = response.data?.results?.EG?.flatrate;
     }
 
-    if (providers && providers.length > 0) {
-      res.status(200).json(providers);
-    } else {
-      res.status(404).json({
-        message: "No providers found for AE or EG.",
-      });
+    providers = providers || [];
+
+    // Get Disney+ from GB
+    const gbProviders = response.data?.results?.GB?.flatrate || [];
+
+    const gbDisney = gbProviders.find(
+      (provider) => provider.provider_id === 337,
+    );
+
+    // Add GB Disney+ only if it exists and isn't already included
+    if (
+      gbDisney &&
+      !providers.some(
+        (provider) => provider.provider_id === gbDisney.provider_id,
+      )
+    ) {
+      providers.push(gbDisney);
     }
+
+    if (providers.length > 0) {
+      return res.status(200).json(providers);
+    }
+
+    return res.status(404).json({
+      message: "No providers found for AE, EG, or GB Disney+.",
+    });
   } catch (error) {
     console.error(
       "Error getting providers:",
       error.response?.data || error.message,
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Failed to fetch providers.",
     });
   }
