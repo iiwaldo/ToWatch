@@ -173,6 +173,7 @@ async function getTrailer(req, res) {
 
     // We need the full TMDB details so MongoDB
     // gets poster, genres, rating, etc.
+
     let tmdbDetails;
     try {
       tmdbDetails = await fetchMovieDetails(movieID, type);
