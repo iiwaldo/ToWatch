@@ -12,11 +12,9 @@ const movieSchema = new mongoose.Schema(
       required: true,
     },
 
-    overview: String,
 
     poster_path: String,
 
-    release_date: Date,
 
     genre_ids: [
       {
@@ -29,7 +27,6 @@ const movieSchema = new mongoose.Schema(
       default: 0,
     },
 
-    backdrop_path: String,
 
     type: {
       type: String,

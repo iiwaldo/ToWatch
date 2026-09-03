@@ -16,12 +16,9 @@ async function findOrCreateMovie(card, trailerId) {
     movie = new Movie({
       id: card.id,
       original_title: card.original_title || card.original_name,
-      overview: card.overview || null,
       poster_path: card.poster_path || null,
-      release_date: card.release_date || card.first_air_date || null,
       genre_ids: card.genre_ids || null,
       vote_average: card.vote_average,
-      backdrop_path: card.backdrop_path,
       trailerId: trailerId,
       type: card.release_date ? "movie" : "show",
     });
