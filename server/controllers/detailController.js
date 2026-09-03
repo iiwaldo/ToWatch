@@ -189,6 +189,9 @@ async function getTrailer(req, res) {
         message: "Error getting movie/show details",
       });
     }
+    const genreIds = Array.isArray(tmdbDetails.genre_ids)
+      ? tmdbDetails.genre_ids
+      : [];
 
     // ==========================
     // YouTube search query
