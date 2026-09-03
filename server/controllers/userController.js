@@ -21,8 +21,7 @@ async function findOrCreateMovie(card, trailerId) {
       language: card.original_language || null,
       poster_path: card.poster_path || null,
       genre_ids: Array.isArray(card.genre_ids) ? card.genre_ids : [],
-      vote_average:
-      typeof card.vote_average === "number" ? card.vote_average : 0,
+      vote_average: card.vote_average === "number" ? card.vote_average : 0,
       type: mediaType,
       trailers: [],
     });
