@@ -12,4 +12,10 @@ router.get("/watched", userController.getWatched);
 router.delete("/watched", userController.deleteWatched);
 router.get("/status", userController.getStatus);
 
+router.post("/watch-later/groups", userController.createWatchLaterGroup);
+
+router.get("/watch-later/groups", userController.getWatchLaterGroups);
+
+router.delete("/watch-later/groups", userController.deleteWatchLaterGroup);
+
 export default router;
