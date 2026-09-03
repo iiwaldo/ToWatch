@@ -12,17 +12,78 @@ This is your existing movie/trailer logic.
 async function findOrCreateMovie(card, trailerId) {
   let movie = await Movie.findOne({ id: card.id });
 
+  const mediaType = card.type === "movie" ? "movie" : "show";
+
   if (!movie) {
     movie = new Movie({
       id: card.id,
-      original_title: card.original_title || card.original_name,
+      original_title: card.original_title || card.original_name || "Unknown",
       language: card.original_language || null,
       poster_path: card.poster_path || null,
-      genre_ids: card.genre_ids || [],
-      vote_average: card.vote_average,
-      trailerId: trailerId,
-      type: card.release_date ? "movie" : "show",
+      genre_ids: Array.isArray(card.genre_ids) ? card.genre_ids : [],
+      vote_average:
+        typeof card.vote_average === "number" ? card.vote_average : 0,
+      type: mediaType,
+      trailers: [],
     });
+
+    if (trailerId) {
+      movie.trailers.push({
+        seasonNumber: null,
+        trailerId,
+      });
+    }
+
+    await movie.save();
+  } else {
+    // Enrich older/incomplete movie documents
+
+    if (!movie.original_title && (card.original_title || card.original_name)) {
+      movie.original_title = card.original_title || card.original_name;
+    }
+
+    if (!movie.language && card.original_language) {
+      movie.language = card.original_language;
+    }
+
+    if (!movie.poster_path && card.poster_path) {
+      movie.poster_path = card.poster_path;
+    }
+
+    if (
+      (!movie.genre_ids || movie.genre_ids.length === 0) &&
+      Array.isArray(card.genre_ids)
+    ) {
+      movie.genre_ids = card.genre_ids;
+    }
+
+    if (
+      (!movie.vote_average || movie.vote_average === 0) &&
+      typeof card.vote_average === "number"
+    ) {
+      movie.vote_average = card.vote_average;
+    }
+
+    // IMPORTANT: use the actual card type
+    movie.type = mediaType;
+
+    if (!movie.trailers) {
+      movie.trailers = [];
+    }
+
+    if (trailerId) {
+      const trailerExists = movie.trailers.some(
+        (trailer) =>
+          trailer.seasonNumber === null && trailer.trailerId === trailerId,
+      );
+
+      if (!trailerExists) {
+        movie.trailers.push({
+          seasonNumber: null,
+          trailerId,
+        });
+      }
+    }
 
     await movie.save();
   }
