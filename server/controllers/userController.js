@@ -16,8 +16,9 @@ async function findOrCreateMovie(card, trailerId) {
     movie = new Movie({
       id: card.id,
       original_title: card.original_title || card.original_name,
+      language: card.original_language || null,
       poster_path: card.poster_path || null,
-      genre_ids: card.genre_ids || null,
+      genre_ids: card.genre_ids || [],
       vote_average: card.vote_average,
       trailerId: trailerId,
       type: card.release_date ? "movie" : "show",

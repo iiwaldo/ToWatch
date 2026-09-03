@@ -12,9 +12,8 @@ const movieSchema = new mongoose.Schema(
       required: true,
     },
 
-
+    language: String,
     poster_path: String,
-
 
     genre_ids: [
       {
@@ -26,7 +25,6 @@ const movieSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-
 
     type: {
       type: String,

@@ -8,6 +8,27 @@ const TMDB_API_KEY = process.env.TMBD_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
+async function fetchMovieDetails(movieID, type) {
+  const url =
+    type === "movie"
+      ? `${BASE_URL}/movie/${movieID}`
+      : `${BASE_URL}/tv/${movieID}`;
+
+  const response = await axios.get(url, {
+    params: {
+      api_key: TMDB_API_KEY,
+    },
+  });
+
+  const movieData = response.data;
+
+  if (!movieData.genre_ids && Array.isArray(movieData.genres)) {
+    movieData.genre_ids = movieData.genres.map((genre) => genre.id);
+  }
+
+  return movieData;
+}
+
 async function getMovieDetails(req, res) {
   const { movieID, dataType } = req.query;
 
@@ -18,18 +39,9 @@ async function getMovieDetails(req, res) {
   }
 
   try {
-    const url =
-      dataType === "movie"
-        ? `${BASE_URL}/movie/${movieID}`
-        : `${BASE_URL}/tv/${movieID}`;
+    const movieData = await fetchMovieDetails(movieID, dataType);
 
-    const response = await axios.get(url, {
-      params: {
-        api_key: TMDB_API_KEY,
-      },
-    });
-
-    res.status(200).json(response.data);
+    res.status(200).json(movieData);
   } catch (error) {
     console.error(
       "Error getting movie/show details:",
@@ -128,12 +140,16 @@ async function getTrailer(req, res) {
     // Check MongoDB FIRST
     // ==========================
 
-    const movie = await Movie.findOne({
+    let movie = await Movie.findOne({
       id: Number(movieID),
     });
 
     const currentSeason =
       type === "show" && seasonNumber ? Number(seasonNumber) : null;
+
+    // ==========================
+    // Check cached trailer
+    // ==========================
 
     if (movie) {
       const cachedTrailer = movie.trailers?.find(
@@ -149,6 +165,28 @@ async function getTrailer(req, res) {
           label,
         });
       }
+    }
+
+    // ==========================
+    // Get full movie/show details
+    // ==========================
+
+    // We need the full TMDB details so MongoDB
+    // gets poster, genres, rating, etc.
+
+    try {
+      tmdbDetails = await fetchMovieDetails(movieID, type);
+
+      console.log("TMDB details fetched for movie:", movieID);
+    } catch (error) {
+      console.error(
+        "Error getting TMDB movie/show details:",
+        error.response?.data || error.message,
+      );
+
+      return res.status(500).json({
+        message: "Error getting movie/show details",
+      });
     }
 
     // ==========================
@@ -186,7 +224,7 @@ async function getTrailer(req, res) {
           type: "video",
           maxResults: 5,
           videoEmbeddable: true,
-          key: process.env.YOUTUBE_API_KEY,
+          key: YOUTUBE_API_KEY,
         },
       },
     );
@@ -227,7 +265,11 @@ async function getTrailer(req, res) {
       });
     }
 
-    // If no exact match, use first result
+    // ==========================
+    // If no exact match,
+    // use first result
+    // ==========================
+
     if (!trailer) {
       trailer = results[0];
     }
@@ -244,37 +286,103 @@ async function getTrailer(req, res) {
     // SAVE TO MONGODB
     // ==========================
 
-    let movieToSave = movie;
+    if (!movie) {
+      // ==========================
+      // Movie doesn't exist
+      // ==========================
 
-    // Movie doesn't exist yet
-    if (!movieToSave) {
-      movieToSave = new Movie({
+      movie = new Movie({
         id: Number(movieID),
-        original_title: title,
+
+        original_title:
+          tmdbDetails.original_title || tmdbDetails.original_name || title,
+
+        poster_path: tmdbDetails.poster_path || null,
+
+        genre_ids: genreIds,
+
+        vote_average: tmdbDetails.vote_average || 0,
+
         type: type === "movie" ? "movie" : "show",
+
         trailers: [],
       });
+    } else {
+      // ==========================
+      // Movie already exists
+      // ==========================
+      // Fill missing movie information
+      // without replacing good existing data.
+      // ==========================
+
+      if (!movie.original_title) {
+        movie.original_title =
+          tmdbDetails.original_title || tmdbDetails.original_name || title;
+      }
+
+      if (!movie.poster_path && tmdbDetails.poster_path) {
+        movie.poster_path = tmdbDetails.poster_path;
+      }
+
+      if (
+        (!movie.genre_ids || movie.genre_ids.length === 0) &&
+        genreIds.length > 0
+      ) {
+        movie.genre_ids = genreIds;
+      }
+
+      if (
+        (!movie.vote_average || movie.vote_average === 0) &&
+        tmdbDetails.vote_average
+      ) {
+        movie.vote_average = tmdbDetails.vote_average;
+      }
+
+      if (!movie.type) {
+        movie.type = type === "movie" ? "movie" : "show";
+      }
+
+      if (!movie.trailers) {
+        movie.trailers = [];
+      }
     }
 
-    // Check that this season doesn't already have a trailer
-    const trailerAlreadyExists = movieToSave.trailers?.some(
+    // ==========================
+    // Check if this season
+    // already has a trailer
+    // ==========================
+
+    const trailerAlreadyExists = movie.trailers?.some(
       (trailer) => trailer.seasonNumber === currentSeason,
     );
 
+    // ==========================
+    // Add trailer
+    // ==========================
+
     if (!trailerAlreadyExists) {
-      movieToSave.trailers.push({
+      movie.trailers.push({
         seasonNumber: currentSeason,
         trailerId: videoId,
       });
-
-      await movieToSave.save();
-
-      console.log("Trailer saved to MongoDB:", {
-        movieID,
-        seasonNumber: currentSeason,
-        videoId,
-      });
     }
+
+    // ==========================
+    // Save movie
+    // ==========================
+
+    await movie.save();
+
+    console.log("Movie + trailer saved to MongoDB:", {
+      movieID,
+      title: movie.original_title,
+      posterPath: movie.poster_path,
+      genreIds: movie.genre_ids,
+      voteAverage: movie.vote_average,
+      type: movie.type,
+      seasonNumber: currentSeason,
+      videoId,
+    });
 
     // ==========================
     // Return trailer
