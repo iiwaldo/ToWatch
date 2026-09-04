@@ -806,6 +806,45 @@ async function getTvDetails(req, res) {
   }
 }
 
+async function getTVSeason(req, res) {
+  const { tvID, seasonNumber } = req.query;
+
+  if (!tvID || seasonNumber === undefined) {
+    return res.status(400).json({
+      message: "tvID and seasonNumber are required",
+    });
+  }
+
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/tv/${tvID}/season/${seasonNumber}`,
+      {
+        params: {
+          api_key: TMDB_API_KEY,
+        },
+      },
+    );
+
+    res.status(200).json({
+      id: response.data.id,
+      name: response.data.name,
+      seasonNumber: response.data.season_number,
+      airDate: response.data.air_date,
+      overview: response.data.overview,
+      posterPath: response.data.poster_path,
+      episodes: response.data.episodes,
+    });
+  } catch (error) {
+    console.error(
+      "Error getting TV season:",
+      error.response?.data || error.message,
+    );
+
+    res.status(500).json({
+      message: "Error getting TV season",
+    });
+  }
+}
 // ============================================================
 // RECOMMENDATIONS
 // ============================================================
@@ -1056,6 +1095,7 @@ export default {
   getCast,
   getCombinedCredits,
   getTvDetails,
+  getTVSeason,
   getRecommendation,
   getSimilar,
   getProvider,
