@@ -1,5 +1,23 @@
 import mongoose from "mongoose";
 
+const watchLaterMovieSchema = new mongoose.Schema(
+  {
+    movie: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Movie",
+      required: true,
+    },
+
+    savedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    _id: false,
+  },
+);
+
 const watchLaterGroupSchema = new mongoose.Schema(
   {
     name: {
@@ -8,12 +26,7 @@ const watchLaterGroupSchema = new mongoose.Schema(
       trim: true,
     },
 
-    movies: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Movie",
-      },
-    ],
+    movies: [watchLaterMovieSchema],
   },
   {
     _id: true,
@@ -31,6 +44,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   profilePicture: {
     type: String,
     default: null,
@@ -53,6 +67,7 @@ const userSchema = new mongoose.Schema({
         ref: "Movie",
         required: true,
       },
+
       watchedAt: {
         type: Date,
         default: Date.now,

@@ -13,7 +13,9 @@ async function findOrCreateMovie(card, trailerId) {
   let movie = await Movie.findOne({ id: card.id });
 
   const mediaType = card.type === "movie" ? "movie" : "show";
+
   console.log(card);
+
   if (!movie) {
     movie = new Movie({
       id: card.id,
@@ -209,6 +211,7 @@ async function getWatchLaterGroups(req, res) {
       };
 
       user.watchLaterGroups.unshift(allGroup);
+
       await user.save();
 
       allGroup = user.watchLaterGroups[0];
@@ -328,20 +331,25 @@ async function addWatchLater(req, res) {
     /*
     Find/create the movie.
 
-    IMPORTANT:
-    This uses your existing trailer logic unchanged.
+    This uses your existing movie/trailer logic unchanged.
     */
     const movie = await findOrCreateMovie(card, trailerId);
 
     /*
     Always add movie to "All".
+
+    savedAt records when the movie was first
+    added to Watch Later.
     */
     const alreadyInAll = allGroup.movies.some(
-      (movieId) => movieId.toString() === movie._id.toString(),
+      (movieItem) => movieItem.movie.toString() === movie._id.toString(),
     );
 
     if (!alreadyInAll) {
-      allGroup.movies.push(movie._id);
+      allGroup.movies.push({
+        movie: movie._id,
+        savedAt: new Date(),
+      });
     }
 
     /*
@@ -358,11 +366,14 @@ async function addWatchLater(req, res) {
       }
 
       const alreadyInGroup = selectedGroup.movies.some(
-        (movieId) => movieId.toString() === movie._id.toString(),
+        (movieItem) => movieItem.movie.toString() === movie._id.toString(),
       );
 
       if (!alreadyInGroup) {
-        selectedGroup.movies.push(movie._id);
+        selectedGroup.movies.push({
+          movie: movie._id,
+          savedAt: new Date(),
+        });
       }
     }
 
@@ -412,9 +423,9 @@ async function getWatchLater(req, res) {
       });
     }
 
-    const movieIds = group.movies;
+    const savedMovies = group.movies;
 
-    const totalMovies = movieIds.length;
+    const totalMovies = savedMovies.length;
 
     const currentPage = Math.max(Number(page), 1);
     const moviesPerPage = Math.max(Number(limit), 1);
@@ -423,14 +434,39 @@ async function getWatchLater(req, res) {
 
     const startIndex = (currentPage - 1) * moviesPerPage;
 
-    const paginatedIds = movieIds.slice(startIndex, startIndex + moviesPerPage);
+    const paginatedMovies = savedMovies.slice(
+      startIndex,
+      startIndex + moviesPerPage,
+    );
+
+    const movieIds = paginatedMovies.map((savedMovie) => savedMovie.movie);
 
     const movies = await Movie.find({
-      _id: { $in: paginatedIds },
+      _id: { $in: movieIds },
     });
 
+    /*
+    Attach savedAt to each movie.
+    */
+    const moviesWithSavedAt = paginatedMovies
+      .map((savedMovie) => {
+        const movie = movies.find(
+          (movie) => movie._id.toString() === savedMovie.movie.toString(),
+        );
+
+        if (!movie) {
+          return null;
+        }
+
+        return {
+          ...movie.toObject(),
+          savedAt: savedMovie.savedAt,
+        };
+      })
+      .filter(Boolean);
+
     res.status(200).json({
-      movies,
+      movies: moviesWithSavedAt,
       currentPage,
       totalPages,
       totalMovies,
@@ -749,9 +785,10 @@ async function getStatus(req, res) {
     */
     const isSaved = user.watchLaterGroups.some((group) =>
       group.movies.some(
-        (movieId) => movieId.toString() === movie._id.toString(),
+        (savedMovie) => savedMovie.movie.toString() === movie._id.toString(),
       ),
     );
+
     const isWatched = user.moviesWatched.some(
       (watchedItem) => watchedItem.movie.toString() === movie._id.toString(),
     );
@@ -830,6 +867,7 @@ export default {
   addWatched,
   getWatched,
   deleteWatched,
+
   updateProfilePicture,
   getStatus,
 };
