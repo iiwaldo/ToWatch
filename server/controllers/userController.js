@@ -689,7 +689,9 @@ async function deleteWatched(req, res) {
       });
     }
 
-    user.moviesWatched.pull(movie._id);
+    user.moviesWatched.pull({
+      movie: movie._id,
+    });
 
     await user.save();
 
@@ -750,9 +752,8 @@ async function getStatus(req, res) {
         (movieId) => movieId.toString() === movie._id.toString(),
       ),
     );
-
     const isWatched = user.moviesWatched.some(
-      (movieId) => movieId.toString() === movie._id.toString(),
+      (watchedItem) => watchedItem.movie.toString() === movie._id.toString(),
     );
 
     res.status(200).json({
