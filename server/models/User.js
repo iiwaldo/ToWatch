@@ -48,8 +48,15 @@ const userSchema = new mongoose.Schema({
 
   moviesWatched: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Movie",
+      movie: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Movie",
+        required: true,
+      },
+      watchedAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   ],
 });

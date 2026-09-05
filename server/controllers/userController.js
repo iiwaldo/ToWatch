@@ -536,6 +536,7 @@ WATCHED
 
 async function addWatched(req, res) {
   const { userEmail, card, trailerId } = req.body;
+
   if (!userEmail || !card) {
     return res.status(400).json({
       message: "userEmail and card are required",
@@ -559,11 +560,15 @@ async function addWatched(req, res) {
     const movie = await findOrCreateMovie(card, trailerId);
 
     const alreadyWatched = user.moviesWatched.some(
-      (movieId) => movieId.toString() === movie._id.toString(),
+      (watchedItem) => watchedItem.movie.toString() === movie._id.toString(),
     );
 
     if (!alreadyWatched) {
-      user.moviesWatched.push(movie._id);
+      user.moviesWatched.push({
+        movie: movie._id,
+        watchedAt: new Date(),
+      });
+
       await user.save();
     }
 
@@ -608,17 +613,40 @@ async function getWatched(req, res) {
 
     const startIndex = (currentPage - 1) * moviesPerPage;
 
-    const paginatedIds = user.moviesWatched.slice(
+    const paginatedWatched = user.moviesWatched.slice(
       startIndex,
       startIndex + moviesPerPage,
     );
 
+    const movieIds = paginatedWatched.map((watchedItem) => watchedItem.movie);
+
     const movies = await Movie.find({
-      _id: { $in: paginatedIds },
+      _id: { $in: movieIds },
     });
 
+    /*
+    Attach watchedAt to each movie.
+    */
+
+    const moviesWithWatchedAt = paginatedWatched
+      .map((watchedItem) => {
+        const movie = movies.find(
+          (movie) => movie._id.toString() === watchedItem.movie.toString(),
+        );
+
+        if (!movie) {
+          return null;
+        }
+
+        return {
+          ...movie.toObject(),
+          watchedAt: watchedItem.watchedAt,
+        };
+      })
+      .filter(Boolean);
+
     res.status(200).json({
-      movies,
+      movies: moviesWithWatchedAt,
       currentPage,
       totalPages,
       totalMovies,
