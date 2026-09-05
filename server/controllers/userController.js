@@ -13,7 +13,7 @@ async function findOrCreateMovie(card, trailerId) {
   let movie = await Movie.findOne({ id: card.id });
 
   const mediaType = card.type === "movie" ? "movie" : "show";
-   console.log(card);
+  console.log(card);
   if (!movie) {
     movie = new Movie({
       id: card.id,
@@ -739,6 +739,50 @@ async function getStatus(req, res) {
   }
 }
 
+// MARK: - Update Profile Picture
+async function updateProfilePicture(req, res) {
+  const { userEmail, profilePicture } = req.body;
+
+  if (!userEmail) {
+    return res.status(400).json({
+      message: "userEmail is required",
+    });
+  }
+
+  if (profilePicture !== null && typeof profilePicture !== "string") {
+    return res.status(400).json({
+      message: "profilePicture must be a string or null",
+    });
+  }
+
+  try {
+    const user = await User.findOne({
+      email: userEmail,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    user.profilePicture = profilePicture || null;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Profile picture updated",
+      profilePicture: user.profilePicture,
+    });
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+
+    res.status(500).json({
+      message: "Error updating profile picture",
+    });
+  }
+}
+
 /*
 ====================================================
 EXPORTS
@@ -757,6 +801,6 @@ export default {
   addWatched,
   getWatched,
   deleteWatched,
-
+  updateProfilePicture,
   getStatus,
 };
